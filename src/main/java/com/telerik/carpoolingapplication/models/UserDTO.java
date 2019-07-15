@@ -11,6 +11,9 @@ public class UserDTO {
     private Double ratingAsPassenger;
     private String avatarUri;
 
+    public UserDTO() {
+    }
+
     public UserDTO(int id, String username, String firstName, String lastName, String email
             , String phone, Double ratingAsDriver, Double ratingAsPassenger, String avatarUri) {
         this.id = id;

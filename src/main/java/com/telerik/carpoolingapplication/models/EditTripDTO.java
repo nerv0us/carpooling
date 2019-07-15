@@ -1,44 +1,30 @@
 package com.telerik.carpoolingapplication.models;
 
-import com.telerik.carpoolingapplication.models.enums.TripStatus;
-
-import java.util.List;
-
-public class TripDTO {
+public class EditTripDTO {
     private int id;
-    private UserDTO driver;
     private String carModel;
     private String message;
     //Date-time format
-    private String departureTime;
+    private String departure;
     private String origin;
     private String destination;
     private int availablePlaces;
-    private List<PassengerDTO> passengers;
-    private TripStatus tripStatus;
-    private List<CommentDTO> comments;
     private boolean smoking;
     private boolean pets;
     private boolean luggage;
 
-    public TripDTO() {
+    public EditTripDTO() {
     }
 
-    public TripDTO(int id, UserDTO driver, String carModel, String message
-            , String departureTime, String origin, String destination, int availablePlaces
-            , List<PassengerDTO> passengers, TripStatus tripStatus, List<CommentDTO> comments
-            , boolean smoking, boolean pets, boolean luggage) {
+    public EditTripDTO(int id, String carModel, String message, String departure, String origin
+            , String destination, int availablePlaces, boolean smoking, boolean pets, boolean luggage) {
         this.id = id;
-        this.driver = driver;
         this.carModel = carModel;
         this.message = message;
-        this.departureTime = departureTime;
+        this.departure = departure;
         this.origin = origin;
         this.destination = destination;
         this.availablePlaces = availablePlaces;
-        this.passengers = passengers;
-        this.tripStatus = tripStatus;
-        this.comments = comments;
         this.smoking = smoking;
         this.pets = pets;
         this.luggage = luggage;
@@ -50,14 +36,6 @@ public class TripDTO {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public UserDTO getDriver() {
-        return driver;
-    }
-
-    public void setDriver(UserDTO driver) {
-        this.driver = driver;
     }
 
     public String getCarModel() {
@@ -76,12 +54,12 @@ public class TripDTO {
         this.message = message;
     }
 
-    public String getDepartureTime() {
-        return departureTime;
+    public String getDeparture() {
+        return departure;
     }
 
-    public void setDepartureTime(String departureTime) {
-        this.departureTime = departureTime;
+    public void setDeparture(String departure) {
+        this.departure = departure;
     }
 
     public String getOrigin() {
@@ -106,30 +84,6 @@ public class TripDTO {
 
     public void setAvailablePlaces(int availablePlaces) {
         this.availablePlaces = availablePlaces;
-    }
-
-    public List<PassengerDTO> getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(List<PassengerDTO> passengers) {
-        this.passengers = passengers;
-    }
-
-    public TripStatus getTripStatus() {
-        return tripStatus;
-    }
-
-    public void setTripStatus(TripStatus tripStatus) {
-        this.tripStatus = tripStatus;
-    }
-
-    public List<CommentDTO> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<CommentDTO> comments) {
-        this.comments = comments;
     }
 
     public boolean isSmoking() {
