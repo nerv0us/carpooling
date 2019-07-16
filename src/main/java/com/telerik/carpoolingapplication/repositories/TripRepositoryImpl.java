@@ -8,7 +8,6 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -58,12 +57,12 @@ public class TripRepositoryImpl implements TripRepository {
             //Ask for equal responses and validations and then catch exceptions!
             UserDTO fakeUser = session.get(UserDTO.class, 1);
             if (fakeUser == null){
-                throw new IllegalArgumentException(Constants.Unauthorized);
+                throw new IllegalArgumentException(Constants.UNAUTHORIZED_MESSAGE);
             }
 
             TripDTO tripToEdit = session.get(TripDTO.class, editTripDTO.getId());
             if (tripToEdit == null){
-                throw new IllegalArgumentException(Constants.InvalidIdSupplied);
+                throw new IllegalArgumentException(Constants.INVALID_ID_SUPPLIED_MESSAGE);
             }
 
             ModelsMapper.updateTrip(tripToEdit, editTripDTO);

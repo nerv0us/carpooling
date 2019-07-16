@@ -15,11 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/trips")
-public class RestTripController {
+public class TripRestController {
     private TripService tripService;
 
     @Autowired
-    public RestTripController(TripService tripService) {
+    public TripRestController(TripService tripService) {
         this.tripService = tripService;
     }
 
@@ -50,6 +50,6 @@ public class RestTripController {
 
         tripService.editTrip(editTripDTO);
 
-        return Constants.TripUpdated;
+        return Constants.TRIP_UPDATED_MESSAGE;
     }
 }
