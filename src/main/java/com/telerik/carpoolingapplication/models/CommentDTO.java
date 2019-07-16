@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.models;
 
+
 public class CommentDTO {
     private int id;
     private String message;
