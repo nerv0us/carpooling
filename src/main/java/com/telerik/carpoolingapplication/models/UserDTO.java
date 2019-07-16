@@ -1,11 +1,23 @@
 package com.telerik.carpoolingapplication.models;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "users")
 public class UserDTO {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotNull
     private String username;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @NotNull
     private String email;
+    @NotNull
     private String phone;
     private Double ratingAsDriver;
     private Double ratingAsPassenger;

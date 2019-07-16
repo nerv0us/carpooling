@@ -2,19 +2,38 @@ package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Entity
+@Table(name = "trips")
 public class TripDTO {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne
+    @NotNull
     private UserDTO driver;
+    @NotNull
     private String carModel;
+    @NotNull
     private String message;
     //Date-time format
+    @NotNull
     private String departureTime;
+    @NotNull
     private String origin;
+    @NotNull
     private String destination;
+    @NotNull
     private int availablePlaces;
+    @ManyToMany()
+    @JoinTable(name = "trips_passengers",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private List<PassengerDTO> passengers;
+    @NotNull
     private TripStatus tripStatus;
     private List<CommentDTO> comments;
     private boolean smoking;

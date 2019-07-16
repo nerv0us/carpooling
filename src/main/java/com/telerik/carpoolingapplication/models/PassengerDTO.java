@@ -2,14 +2,29 @@ package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
 
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "passengers")
 public class PassengerDTO {
+    @Id
     private int userId;
+    @NotNull
     private String username;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @NotNull
     private String email;
+    @NotNull
     private String phone;
     private Double ratingAsPassenger;
+    @NotNull
     private PassengerStatus passengerStatus;
 
     public PassengerDTO() {

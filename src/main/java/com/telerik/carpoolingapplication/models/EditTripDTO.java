@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.models;
 
 public class EditTripDTO {
+    //?
     private int id;
     private String carModel;
     private String message;

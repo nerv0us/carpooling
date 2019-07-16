@@ -1,9 +1,20 @@
 package com.telerik.carpoolingapplication.models;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
+@Entity
+@Table(name = "comments")
 public class CommentDTO {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotNull
     private String message;
+
+    @ManyToOne
+    @NotNull
     private UserDTO author;
 
     public CommentDTO() {
