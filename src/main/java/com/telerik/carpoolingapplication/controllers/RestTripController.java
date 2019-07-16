@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.CreateTripDTO;
+import com.telerik.carpoolingapplication.models.EditTripDTO;
 import com.telerik.carpoolingapplication.models.TripDTO;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.services.TripService;
@@ -42,5 +43,13 @@ public class RestTripController {
         tripService.createTrip(createTripDTO);
 
         return Constants.tripCreated;
+    }
+
+    @PutMapping
+    public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO){
+
+        tripService.editTrip(editTripDTO);
+
+        return Constants.TripUpdated;
     }
 }

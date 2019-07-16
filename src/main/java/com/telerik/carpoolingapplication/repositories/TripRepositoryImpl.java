@@ -1,9 +1,7 @@
 package com.telerik.carpoolingapplication.repositories;
 
-import com.telerik.carpoolingapplication.models.CreateTripDTO;
-import com.telerik.carpoolingapplication.models.ModelsMapper;
-import com.telerik.carpoolingapplication.models.TripDTO;
-import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.constants.Constants;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -45,6 +43,33 @@ public class TripRepositoryImpl implements TripRepository {
 
             TripDTO newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeUser);
             session.save(newTrip);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void editTrip(EditTripDTO editTripDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            //Fake user for testing purposes that needs to be an authenticated user!
+            //
+
+            //Ask for equal responses and validations and then catch exceptions!
+            UserDTO fakeUser = session.get(UserDTO.class, 1);
+            if (fakeUser == null){
+                throw new IllegalArgumentException(Constants.Unauthorized);
+            }
+
+            TripDTO tripToEdit = session.get(TripDTO.class, editTripDTO.getId());
+            if (tripToEdit == null){
+                throw new IllegalArgumentException(Constants.InvalidIdSupplied);
+            }
+
+            ModelsMapper.updateTrip(tripToEdit, editTripDTO);
+
+            session.update(tripToEdit);
+
             session.getTransaction().commit();
         }
     }
