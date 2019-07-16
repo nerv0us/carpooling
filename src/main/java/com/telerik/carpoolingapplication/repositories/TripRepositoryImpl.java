@@ -1,13 +1,16 @@
 package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.CreateTripDTO;
+import com.telerik.carpoolingapplication.models.ModelsMapper;
 import com.telerik.carpoolingapplication.models.TripDTO;
+import com.telerik.carpoolingapplication.models.UserDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -33,25 +36,16 @@ public class TripRepositoryImpl implements TripRepository {
 
     @Override
     public void createTrip(CreateTripDTO createTripDTO) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
+            //Fake user for testing purposes that needs to be an authenticated user!
+            //
+            UserDTO fakeUser = session.get(UserDTO.class, 1);
 
-
-            /*    TripDTO newTrip = new TripDTO();*/
-            /*    newTrip.setCarModel(createTripDTO.getCarModel());*/
-            /*    newTrip.setMessage(createTripDTO.g);*/
-            /*}*/
-            /*{*/
-            /*        "message": "string",*/
-            /*        "departureTime": "2019-07-16T10:07:00.646Z",*/
-            /*        "origin": "string",*/
-            /*        "destination": "string",*/
-            /*        "availablePlaces": 0,*/
-            /*        "smoking": true,*/
-            /*        "pets": true,*/
-            /*        "luggage": true*/
-            /*}*/
+            TripDTO newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeUser);
+            session.save(newTrip);
+            session.getTransaction().commit();
         }
     }
 }

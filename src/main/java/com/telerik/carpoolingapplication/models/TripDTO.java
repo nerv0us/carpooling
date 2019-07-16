@@ -12,16 +12,21 @@ public class TripDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @ManyToOne
     @NotNull
     private UserDTO driver;
+
     @NotNull
     private String carModel;
+
     @NotNull
     private String message;
+
     //Date-time format
     @NotNull
     private String departureTime;
+
     @NotNull
     private String origin;
     @NotNull
