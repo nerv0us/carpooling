@@ -30,8 +30,9 @@ public class PassengerDTO {
     public PassengerDTO() {
     }
 
-    public PassengerDTO(int userId, String username, String firstName, String lastName
-            , String email, String phone, Double ratingAsPassenger, PassengerStatus passengerStatus) {
+    public PassengerDTO(int userId, @NotNull String username, @NotNull String firstName
+            , @NotNull String lastName, @NotNull String email, @NotNull String phone
+            , Double ratingAsPassenger, @NotNull PassengerStatus passengerStatus) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;

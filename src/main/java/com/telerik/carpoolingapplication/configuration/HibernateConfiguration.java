@@ -19,10 +19,10 @@ public class HibernateConfiguration {
     private String dbUrl, dbUsername, dbPassword;
 
     @Autowired
-    public HibernateConfiguration(Environment environment) {
-        this.dbUrl = environment.getProperty("spring.datasource.url");
-        this.dbUsername = environment.getProperty("spring.datasource.username");
-        this.dbPassword = environment.getProperty("spring.datasource.password");
+    public HibernateConfiguration(Environment env) {
+        this.dbUrl = env.getProperty("spring.datasource.url");
+        this.dbUsername = env.getProperty("spring.datasource.username");
+        this.dbPassword = env.getProperty("spring.datasource.password");
     }
 
     @Bean
@@ -53,7 +53,7 @@ public class HibernateConfiguration {
 
         hibernateProperties.setProperty("spring.jpa.properties.hibernate.dialect"
                 , "org.hibernate.dialect.MySQLDialect");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
+        /*hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");*/
 
         return hibernateProperties;
     }

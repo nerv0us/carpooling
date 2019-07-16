@@ -20,8 +20,7 @@ public class CommentDTO {
     public CommentDTO() {
     }
 
-    public CommentDTO(int id, String message, UserDTO author) {
-        this.id = id;
+    public CommentDTO(@NotNull String message, @NotNull UserDTO author) {
         this.message = message;
         this.author = author;
     }

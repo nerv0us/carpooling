@@ -31,10 +31,14 @@ public class TripDTO {
     @ManyToMany()
     @JoinTable(name = "trips_passengers",
             joinColumns = {@JoinColumn(name = "trip_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")})
+            inverseJoinColumns = {@JoinColumn(name = "passenger_id")})
     private List<PassengerDTO> passengers;
     @NotNull
     private TripStatus tripStatus;
+    @OneToMany
+    @JoinTable(name = "trips_comments",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
     private List<CommentDTO> comments;
     private boolean smoking;
     private boolean pets;
@@ -43,11 +47,10 @@ public class TripDTO {
     public TripDTO() {
     }
 
-    public TripDTO(int id, UserDTO driver, String carModel, String message
-            , String departureTime, String origin, String destination, int availablePlaces
-            , List<PassengerDTO> passengers, TripStatus tripStatus, List<CommentDTO> comments
-            , boolean smoking, boolean pets, boolean luggage) {
-        this.id = id;
+    public TripDTO(@NotNull UserDTO driver, @NotNull String carModel, @NotNull String message
+            , @NotNull String departureTime, @NotNull String origin, @NotNull String destination
+            , @NotNull int availablePlaces, List<PassengerDTO> passengers, @NotNull TripStatus tripStatus
+            , List<CommentDTO> comments, boolean smoking, boolean pets, boolean luggage) {
         this.driver = driver;
         this.carModel = carModel;
         this.message = message;

@@ -26,9 +26,9 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(int id, String username, String firstName, String lastName, String email
-            , String phone, Double ratingAsDriver, Double ratingAsPassenger, String avatarUri) {
-        this.id = id;
+    public UserDTO(@NotNull String username, @NotNull String firstName, @NotNull String lastName
+            , @NotNull String email, @NotNull String phone, Double ratingAsDriver
+            , Double ratingAsPassenger, String avatarUri) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
