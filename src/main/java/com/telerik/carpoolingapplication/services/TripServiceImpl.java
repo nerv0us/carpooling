@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.CreateTripDTO;
+import com.telerik.carpoolingapplication.models.EditTripDTO;
 import com.telerik.carpoolingapplication.models.TripDTO;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
@@ -31,5 +32,10 @@ public class TripServiceImpl implements TripService {
     @Override
     public void createTrip(CreateTripDTO createTripDTO) {
         tripRepository.createTrip(createTripDTO);
+    }
+
+    @Override
+    public void editTrip(EditTripDTO editTripDTO) {
+        tripRepository.editTrip(editTripDTO);
     }
 }

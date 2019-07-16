@@ -1,13 +1,14 @@
 package com.telerik.carpoolingapplication.repositories;
 
-import com.telerik.carpoolingapplication.models.CreateTripDTO;
-import com.telerik.carpoolingapplication.models.TripDTO;
+import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.constants.Constants;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -33,25 +34,43 @@ public class TripRepositoryImpl implements TripRepository {
 
     @Override
     public void createTrip(CreateTripDTO createTripDTO) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
+            //Fake user for testing purposes that needs to be an authenticated user!
+            //
+            UserDTO fakeUser = session.get(UserDTO.class, 1);
 
+            TripDTO newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeUser);
+            session.save(newTrip);
+            session.getTransaction().commit();
+        }
+    }
 
-            /*    TripDTO newTrip = new TripDTO();*/
-            /*    newTrip.setCarModel(createTripDTO.getCarModel());*/
-            /*    newTrip.setMessage(createTripDTO.g);*/
-            /*}*/
-            /*{*/
-            /*        "message": "string",*/
-            /*        "departureTime": "2019-07-16T10:07:00.646Z",*/
-            /*        "origin": "string",*/
-            /*        "destination": "string",*/
-            /*        "availablePlaces": 0,*/
-            /*        "smoking": true,*/
-            /*        "pets": true,*/
-            /*        "luggage": true*/
-            /*}*/
+    @Override
+    public void editTrip(EditTripDTO editTripDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            //Fake user for testing purposes that needs to be an authenticated user!
+            //
+
+            //Ask for equal responses and validations and then catch exceptions!
+            UserDTO fakeUser = session.get(UserDTO.class, 1);
+            if (fakeUser == null){
+                throw new IllegalArgumentException(Constants.Unauthorized);
+            }
+
+            TripDTO tripToEdit = session.get(TripDTO.class, editTripDTO.getId());
+            if (tripToEdit == null){
+                throw new IllegalArgumentException(Constants.InvalidIdSupplied);
+            }
+
+            ModelsMapper.updateTrip(tripToEdit, editTripDTO);
+
+            session.update(tripToEdit);
+
+            session.getTransaction().commit();
         }
     }
 }

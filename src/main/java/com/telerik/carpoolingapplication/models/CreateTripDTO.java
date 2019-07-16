@@ -76,7 +76,7 @@ public class CreateTripDTO {
         this.availablePlaces = availablePlaces;
     }
 
-    public boolean isSmoking() {
+    public boolean smoking() {
         return smoking;
     }
 
@@ -84,7 +84,7 @@ public class CreateTripDTO {
         this.smoking = smoking;
     }
 
-    public boolean isPets() {
+    public boolean pets() {
         return pets;
     }
 
@@ -92,7 +92,7 @@ public class CreateTripDTO {
         this.pets = pets;
     }
 
-    public boolean isLuggage() {
+    public boolean luggage() {
         return luggage;
     }
 

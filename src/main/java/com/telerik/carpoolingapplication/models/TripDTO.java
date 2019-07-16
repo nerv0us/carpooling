@@ -12,16 +12,21 @@ public class TripDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @ManyToOne
     @NotNull
     private UserDTO driver;
+
     @NotNull
     private String carModel;
+
     @NotNull
     private String message;
+
     //Date-time format
     @NotNull
     private String departureTime;
+
     @NotNull
     private String origin;
     @NotNull
@@ -154,7 +159,7 @@ public class TripDTO {
         this.comments = comments;
     }
 
-    public boolean isSmoking() {
+    public boolean smoking() {
         return smoking;
     }
 
@@ -162,7 +167,7 @@ public class TripDTO {
         this.smoking = smoking;
     }
 
-    public boolean isPets() {
+    public boolean pets() {
         return pets;
     }
 
@@ -170,7 +175,7 @@ public class TripDTO {
         this.pets = pets;
     }
 
-    public boolean isLuggage() {
+    public boolean luggage() {
         return luggage;
     }
 
