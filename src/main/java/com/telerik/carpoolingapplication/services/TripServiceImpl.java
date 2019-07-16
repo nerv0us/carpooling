@@ -22,7 +22,7 @@ public class TripServiceImpl implements TripService {
     public List<TripDTO> getTrips() {
         List<TripDTO> trips = tripRepository.getTrips();
         if (trips == null || trips.isEmpty()){
-            throw new IllegalArgumentException(Constants.noAvailableTrips);
+            throw new IllegalArgumentException(Constants.NOT_AVAILABLE_TRIPS_MESSAGE);
         }
 
         return trips;

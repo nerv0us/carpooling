@@ -41,6 +41,6 @@ public class RestTripController {
         //Add unauthorized logic and response here!
         tripService.createTrip(createTripDTO);
 
-        return Constants.tripCreated;
+        return Constants.TRIP_CREATED_MESSAGE;
     }
 }
