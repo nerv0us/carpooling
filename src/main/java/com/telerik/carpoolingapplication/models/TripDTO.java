@@ -159,7 +159,7 @@ public class TripDTO {
         this.comments = comments;
     }
 
-    public boolean isSmoking() {
+    public boolean smoking() {
         return smoking;
     }
 
@@ -167,7 +167,7 @@ public class TripDTO {
         this.smoking = smoking;
     }
 
-    public boolean isPets() {
+    public boolean pets() {
         return pets;
     }
 
@@ -175,7 +175,7 @@ public class TripDTO {
         this.pets = pets;
     }
 
-    public boolean isLuggage() {
+    public boolean luggage() {
         return luggage;
     }
 
