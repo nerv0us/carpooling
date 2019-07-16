@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.repositories;
 
+import com.telerik.carpoolingapplication.models.CreateTripDTO;
 import com.telerik.carpoolingapplication.models.TripDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,5 +29,29 @@ public class TripRepositoryImpl implements TripRepository {
         Query<TripDTO> query = session.createQuery("from TripDTO", TripDTO.class);
 
         return query.list();
+    }
+
+    @Override
+    public void createTrip(CreateTripDTO createTripDTO) {
+        try(Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+
+
+            /*    TripDTO newTrip = new TripDTO();*/
+            /*    newTrip.setCarModel(createTripDTO.getCarModel());*/
+            /*    newTrip.setMessage(createTripDTO.g);*/
+            /*}*/
+            /*{*/
+            /*        "message": "string",*/
+            /*        "departureTime": "2019-07-16T10:07:00.646Z",*/
+            /*        "origin": "string",*/
+            /*        "destination": "string",*/
+            /*        "availablePlaces": 0,*/
+            /*        "smoking": true,*/
+            /*        "pets": true,*/
+            /*        "luggage": true*/
+            /*}*/
+        }
     }
 }
