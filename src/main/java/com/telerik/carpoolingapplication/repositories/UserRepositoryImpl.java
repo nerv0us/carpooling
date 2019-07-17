@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.repositories;
 
-import com.telerik.carpoolingapplication.models.LoginDTO;
+import com.telerik.carpoolingapplication.models.ModelsMapper;
 import com.telerik.carpoolingapplication.models.UserDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,7 +22,12 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void editUser(UserDTO userDTO) {
-
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            UserDTO userToEdit = session.get(UserDTO.class, userDTO.getId());
+            ModelsMapper.editUser(userToEdit, userDTO);
+            session.getTransaction().commit();
+        }
     }
 
     @Override
@@ -42,12 +47,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void authorize(LoginDTO loginDTO) {
-
+    public UserDTO getById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(UserDTO.class, id);
     }
 
     @Override
     public void createUser(UserDTO userDTO) {
-
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.save(userDTO);
+            session.getTransaction().commit();
+        }
     }
 }
