@@ -63,4 +63,15 @@ public class ModelsMapper {
         userToEdit.setRatingAsPassenger(userDTO.getRatingAsPassenger());
         userToEdit.setAvatarUri(userDTO.getAvatarUri());
     }
+
+    public static UserDTO createUser(CreateUserDTO userDTO) {
+        UserDTO user = new UserDTO();
+        user.setUsername(userDTO.getUsername());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone());
+
+        return user;
+    }
 }

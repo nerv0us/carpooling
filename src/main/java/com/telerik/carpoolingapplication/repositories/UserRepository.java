@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.repositories;
 
+import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
 
 public interface UserRepository {
@@ -10,6 +11,6 @@ public interface UserRepository {
 
     UserDTO getById(int id);
 
-    void createUser(UserDTO userDTO);
+    void createUser(CreateUserDTO userDTO);
 
 }

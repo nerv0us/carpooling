@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.services;
 
+import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
 
 public interface UserService {
@@ -8,5 +9,5 @@ public interface UserService {
 
     UserDTO getUser(String username);
 
-    String createUser(UserDTO userDTO);
+    String createUser(CreateUserDTO userDTO);
 }

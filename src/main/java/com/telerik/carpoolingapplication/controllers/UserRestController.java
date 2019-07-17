@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.controllers;
 
+import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
 import com.telerik.carpoolingapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class UserRestController {
     }
 
     @PostMapping("/register")
-    public UserDTO createUser(@Valid @RequestBody UserDTO userDTO) {
+    public CreateUserDTO createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         try {
             service.createUser(userDTO);
         } catch (IllegalArgumentException e) {
