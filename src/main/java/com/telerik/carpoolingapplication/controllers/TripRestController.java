@@ -43,7 +43,7 @@ public class TripRestController {
         //Add unauthorized logic and response here!
         tripService.createTrip(createTripDTO);
 
-        return Messages.TRIP_CREATED_MESSAGE;
+        return Messages.CREATED_MESSAGE;
     }
 
     @PutMapping
@@ -52,7 +52,7 @@ public class TripRestController {
         //Add response logic here!
         tripService.editTrip(editTripDTO);
 
-        return Messages.TRIP_UPDATED_MESSAGE;
+        return Messages.UPDATED_MESSAGE;
     }
 
     @GetMapping("/{id}")
