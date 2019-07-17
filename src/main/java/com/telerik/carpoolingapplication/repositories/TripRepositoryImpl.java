@@ -1,7 +1,8 @@
 package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
-import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.constants.Messages;
+import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -56,18 +57,87 @@ public class TripRepositoryImpl implements TripRepository {
 
             //Ask for equal responses and validations and then catch exceptions!
             UserDTO fakeUser = session.get(UserDTO.class, 1);
-            if (fakeUser == null){
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED_MESSAGE);
+            if (fakeUser == null) {
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
             }
 
             TripDTO tripToEdit = session.get(TripDTO.class, editTripDTO.getId());
-            if (tripToEdit == null){
-                throw new IllegalArgumentException(Constants.INVALID_ID_SUPPLIED_MESSAGE);
+            if (tripToEdit == null) {
+                throw new IllegalArgumentException(Messages.INVALID_ID_SUPPLIED_MESSAGE);
             }
 
             ModelsMapper.updateTrip(tripToEdit, editTripDTO);
 
             session.update(tripToEdit);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public TripDTO getTrip(int id) {
+        TripDTO tripDTO;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            tripDTO = session.get(TripDTO.class, id);
+            session.getTransaction().commit();
+        }
+        return tripDTO;
+    }
+
+    @Override
+    public void changeTripStatus(TripDTO tripDTO, TripStatus updatedStatus) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            tripDTO.setTripStatus(updatedStatus);
+            session.update(tripDTO);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void addComment(TripDTO tripDTO, CommentDTO commentDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            UserDTO fakeUser = session.get(UserDTO.class, commentDTO.getAuthor().getId());
+
+            //Setting fakeUser as author for testing purposes!
+            commentDTO.setAuthor(fakeUser);
+            if (fakeUser == null) {
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+            }
+
+            session.save(commentDTO);
+            tripDTO.getComments().add(commentDTO);
+            session.update(tripDTO);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void apply(TripDTO tripDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            //For testing purposes! Should be logged user!
+            UserDTO fakeUser = session.get(UserDTO.class, 2);
+            if (fakeUser == null) {
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+            }
+
+            //For testing purposes! Should be logged user!
+            PassengerDTO fakePassenger = session.get(PassengerDTO.class, fakeUser.getId());
+            if (fakePassenger == null){
+                fakePassenger = ModelsMapper.fromUserToPassanger(fakeUser);
+            }
+            if (fakePassenger.getUserId() == tripDTO.getDriver().getId()){
+                throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
+            }
+
+            tripDTO.getPassengers().add(fakePassenger);
+            session.update(tripDTO);
 
             session.getTransaction().commit();
         }
