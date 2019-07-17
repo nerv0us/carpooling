@@ -94,4 +94,25 @@ public class TripRepositoryImpl implements TripRepository {
             session.getTransaction().commit();
         }
     }
+
+    @Override
+    public void addComment(TripDTO tripDTO, CommentDTO commentDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            UserDTO fakeUser = session.get(UserDTO.class, commentDTO.getAuthor().getId());
+
+            //Setting fakeUser as author for testing purposes!
+            commentDTO.setAuthor(fakeUser);
+            if (fakeUser == null) {
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+            }
+
+            session.save(commentDTO);
+            tripDTO.getComments().add(commentDTO);
+            session.update(tripDTO);
+
+            session.getTransaction().commit();
+        }
+    }
 }

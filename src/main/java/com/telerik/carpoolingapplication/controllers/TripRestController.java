@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.controllers;
 
+import com.telerik.carpoolingapplication.models.CommentDTO;
 import com.telerik.carpoolingapplication.models.CreateTripDTO;
 import com.telerik.carpoolingapplication.models.EditTripDTO;
 import com.telerik.carpoolingapplication.models.TripDTO;
@@ -65,18 +66,34 @@ public class TripRestController {
     }
 
     @PatchMapping("/{id}")
-    public String changeTripStatus(@PathVariable int id, @RequestParam String status){
+    public String changeTripStatus(@PathVariable int id, @RequestParam String status) {
         //Add unauthorized and forbidden logic and response!
         try {
             tripService.changeTripStatus(id, status);
-        } catch (IllegalArgumentException e){
-            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)){
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-            if (e.getMessage().equals(Messages.NO_SUCH_STATUS)){
+            if (e.getMessage().equals(Messages.NO_SUCH_STATUS)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
         }
         return Messages.STATUS_CHANGED;
+    }
+
+    @PostMapping("/{id}")
+    public String addComment(@PathVariable int id, @RequestBody CommentDTO commentDTO) {
+        try {
+            tripService.addComment(id, commentDTO);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().equals(Messages.UNAUTHORIZED_MESSAGE)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+        }
+
+        return Messages.COMMENT_ADDED;
     }
 }

@@ -1,6 +1,10 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -29,17 +33,24 @@ public class TripDTO {
 
     @NotNull
     private String origin;
+
     @NotNull
     private String destination;
+
     @NotNull
     private int availablePlaces;
+
     @ManyToMany()
     @JoinTable(name = "trips_passengers",
             joinColumns = {@JoinColumn(name = "trip_id")},
             inverseJoinColumns = {@JoinColumn(name = "passenger_id")})
     private List<PassengerDTO> passengers;
+
     @NotNull
     private TripStatus tripStatus;
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany
     @JoinTable(name = "trips_comments",
             joinColumns = {@JoinColumn(name = "trip_id")},

@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.services;
 
+import com.telerik.carpoolingapplication.models.CommentDTO;
 import com.telerik.carpoolingapplication.models.CreateTripDTO;
 import com.telerik.carpoolingapplication.models.EditTripDTO;
 import com.telerik.carpoolingapplication.models.TripDTO;
@@ -52,6 +53,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public void changeTripStatus(int id, String status) {
+        // Throws IllegalArgumentException(Messages.TRIP_NOT_FOUND);
         TripDTO tripDTO = getTrip(id);
         try {
             TripStatus updatedStatus = TripStatus.valueOf(status);
@@ -59,5 +61,14 @@ public class TripServiceImpl implements TripService {
         }catch (IllegalArgumentException e){
             throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
         }
+    }
+
+    @Override
+    public void addComment(int id, CommentDTO commentDTO) {
+        // Throws IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+        TripDTO tripDTO = getTrip(id);
+
+        // Throws IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+        tripRepository.addComment(tripDTO, commentDTO);
     }
 }
