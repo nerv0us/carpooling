@@ -13,4 +13,5 @@ public class Messages {
     public static final String COMMENT_ADDED = "Comment added!";
     public static final String APPLIED = "You have successfully applied for this trip";
     public static final String YOUR_OWN_TRIP = "You cannot apply for your own trip";
+    public static final String ALREADY_APPLIED = "You have already applied for this trip";
 }
