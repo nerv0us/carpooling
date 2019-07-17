@@ -81,7 +81,7 @@ public class TripRestController {
         return Messages.STATUS_CHANGED;
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/comments")
     public String addComment(@PathVariable int id, @RequestBody CommentDTO commentDTO) {
         try {
             tripService.addComment(id, commentDTO);
