@@ -22,4 +22,6 @@ public interface TripRepository {
     void addComment(TripDTO tripDTO, CommentDTO commentDTO);
 
     void apply(TripDTO tripDTO);
+
+    void changePassengerStatus(int tripId, int passengerId, String status);
 }

@@ -78,7 +78,7 @@ public class TripRestController {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
         }
-        return Messages.STATUS_CHANGED;
+        return Messages.TRIP_STATUS_CHANGED;
     }
 
     @PostMapping("/{id}/comments")
@@ -97,10 +97,10 @@ public class TripRestController {
     }
 
     @PostMapping("/{id}/passengers")
-    public String apply(@PathVariable int id){
+    public String apply(@PathVariable int id) {
         try {
             tripService.apply(id);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Messages.UNAUTHORIZED_MESSAGE)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
@@ -113,5 +113,24 @@ public class TripRestController {
         }
 
         return Messages.APPLIED;
+    }
+
+    @PatchMapping("{tripId}/passengers/{passengerId}")
+    public String changePassengerStatus(@PathVariable int tripId, @PathVariable int passengerId
+            , @RequestParam String status) {
+        try {
+            tripService.changePassengerStatus(tripId, passengerId, status);
+        } catch (IllegalArgumentException e){
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND) || e.getMessage().equals("Passenger not found!")) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.NO_SUCH_STATUS)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            }
+
+        }
+
+
+        return Messages.PASSENGER_STATUS_CHANGED;
     }
 }

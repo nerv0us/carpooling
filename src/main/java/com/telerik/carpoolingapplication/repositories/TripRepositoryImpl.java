@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Messages;
+import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -129,8 +130,8 @@ public class TripRepositoryImpl implements TripRepository {
             }
 
             //For testing purposes! Should be logged user!
-            PassengerDTO fakePassenger =  ModelsMapper.fromUserToPassanger(fakeUser);
-            if (fakePassenger.getUserId() == tripDTO.getDriver().getId()){
+            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassanger(fakeUser);
+            if (fakePassenger.getUserId() == tripDTO.getDriver().getId()) {
                 throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
             }
 
@@ -140,13 +141,44 @@ public class TripRepositoryImpl implements TripRepository {
                     .findFirst()
                     .orElse(null);
 
-            if (passengerDTO != null){
+            if (passengerDTO != null) {
                 throw new IllegalArgumentException(Messages.ALREADY_APPLIED);
             }
 
             tripDTO.getPassengers().add(fakePassenger);
             session.save(fakePassenger);
             session.update(tripDTO);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void changePassengerStatus(int tripId, int passengerId, String status) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            TripDTO tripDTO = getTrip(tripId);
+            if (tripDTO == null) {
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+            }
+
+            List<PassengerDTO> passengers = tripDTO.getPassengers();
+            PassengerDTO passengerDTO = passengers.stream()
+                    .filter(p -> p.getId() == passengerId)
+                    .findFirst()
+                    .orElse(null);
+            if (passengerDTO == null) {           //Should become constant after merge!
+                throw new IllegalArgumentException("Passenger not found!");
+            }
+
+            try {
+                PassengerStatus passengerStatus = PassengerStatus.valueOf(status);
+                passengerDTO.setPassengerStatus(passengerStatus);
+            }catch (IllegalArgumentException e){
+                throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
+            }
+            session.update(passengerDTO);
 
             session.getTransaction().commit();
         }

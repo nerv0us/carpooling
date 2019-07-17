@@ -1,9 +1,6 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.models.CommentDTO;
-import com.telerik.carpoolingapplication.models.CreateTripDTO;
-import com.telerik.carpoolingapplication.models.EditTripDTO;
-import com.telerik.carpoolingapplication.models.TripDTO;
+import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
@@ -78,5 +75,10 @@ public class TripServiceImpl implements TripService {
         TripDTO tripDTO = getTrip(id);
 
         tripRepository.apply(tripDTO);
+    }
+
+    @Override
+    public void changePassengerStatus(int tripId, int passengerId, String status) {
+        tripRepository.changePassengerStatus(tripId,passengerId,status);
     }
 }
