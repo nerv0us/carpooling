@@ -52,4 +52,26 @@ public class ModelsMapper {
 
         return passengerDTO;
     }
+
+    public static void editUser(UserDTO userToEdit, UserDTO userDTO) {
+        userToEdit.setUsername(userDTO.getUsername());
+        userToEdit.setFirstName(userDTO.getFirstName());
+        userToEdit.setLastName(userDTO.getLastName());
+        userToEdit.setEmail(userDTO.getEmail());
+        userToEdit.setPhone(userDTO.getPhone());
+        userToEdit.setRatingAsDriver(userDTO.getRatingAsDriver());
+        userToEdit.setRatingAsPassenger(userDTO.getRatingAsPassenger());
+        userToEdit.setAvatarUri(userDTO.getAvatarUri());
+    }
+
+    public static UserDTO createUser(CreateUserDTO userDTO) {
+        UserDTO user = new UserDTO();
+        user.setUsername(userDTO.getUsername());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone());
+
+        return user;
+    }
 }

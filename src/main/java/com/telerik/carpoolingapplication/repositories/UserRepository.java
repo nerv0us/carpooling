@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.repositories;
 
-import com.telerik.carpoolingapplication.models.LoginDTO;
+import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
 
 public interface UserRepository {
@@ -9,8 +9,8 @@ public interface UserRepository {
 
     UserDTO getUser(String username);
 
-    void authorize(LoginDTO loginDTO);
+    UserDTO getById(int id);
 
-    void createUser(UserDTO userDTO);
+    void createUser(CreateUserDTO userDTO);
 
 }
