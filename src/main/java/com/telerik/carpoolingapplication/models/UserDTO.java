@@ -1,5 +1,7 @@
 package com.telerik.carpoolingapplication.models;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -32,8 +34,10 @@ public class UserDTO {
     @Size(min = 4, max = 25, message = "Phone number should be between 4 and 25 characters.")
     private String phone;
 
+    @ColumnDefault("0")
     private Double ratingAsDriver;
 
+    @ColumnDefault("0")
     private Double ratingAsPassenger;
 
     private String avatarUri;
