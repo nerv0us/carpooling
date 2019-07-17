@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 
 import java.util.ArrayList;
@@ -35,5 +36,20 @@ public class ModelsMapper {
         tripToEdit.setSmoking(editTripDTO.smoking());
         tripToEdit.setPets(editTripDTO.pets());
         tripToEdit.setLuggage(editTripDTO.luggage());
+    }
+
+    public static PassengerDTO fromUserToPassanger(UserDTO userDTO) {
+        PassengerDTO passengerDTO = new PassengerDTO();
+
+        passengerDTO.setUserId(userDTO.getId());
+        passengerDTO.setUsername(userDTO.getUsername());
+        passengerDTO.setFirstName(userDTO.getFirstName());
+        passengerDTO.setLastName(userDTO.getLastName());
+        passengerDTO.setEmail(userDTO.getEmail());
+        passengerDTO.setPhone(userDTO.getPhone());
+        passengerDTO.setRatingAsPassenger(userDTO.getRatingAsPassenger());
+        passengerDTO.setPassengerStatus(PassengerStatus.pending);
+
+        return passengerDTO;
     }
 }

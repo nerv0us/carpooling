@@ -40,6 +40,8 @@ public class TripDTO {
     @NotNull
     private int availablePlaces;
 
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany()
     @JoinTable(name = "trips_passengers",
             joinColumns = {@JoinColumn(name = "trip_id")},

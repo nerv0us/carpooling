@@ -71,4 +71,12 @@ public class TripServiceImpl implements TripService {
         // Throws IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
         tripRepository.addComment(tripDTO, commentDTO);
     }
+
+    @Override
+    public void apply(int id) {
+        // Throws IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+        TripDTO tripDTO = getTrip(id);
+
+        tripRepository.apply(tripDTO);
+    }
 }

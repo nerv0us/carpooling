@@ -115,4 +115,31 @@ public class TripRepositoryImpl implements TripRepository {
             session.getTransaction().commit();
         }
     }
+
+    @Override
+    public void apply(TripDTO tripDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            //For testing purposes! Should be logged user!
+            UserDTO fakeUser = session.get(UserDTO.class, 2);
+            if (fakeUser == null) {
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+            }
+
+            //For testing purposes! Should be logged user!
+            PassengerDTO fakePassenger = session.get(PassengerDTO.class, fakeUser.getId());
+            if (fakePassenger == null){
+                fakePassenger = ModelsMapper.fromUserToPassanger(fakeUser);
+            }
+            if (fakePassenger.getUserId() == tripDTO.getDriver().getId()){
+                throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
+            }
+
+            tripDTO.getPassengers().add(fakePassenger);
+            session.update(tripDTO);
+
+            session.getTransaction().commit();
+        }
+    }
 }

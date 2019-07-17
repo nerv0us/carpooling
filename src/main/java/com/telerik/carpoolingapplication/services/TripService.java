@@ -19,4 +19,6 @@ public interface TripService {
     void changeTripStatus(int id, String status);
 
     void addComment(int id, CommentDTO commentDTO);
+
+    void apply(int id);
 }

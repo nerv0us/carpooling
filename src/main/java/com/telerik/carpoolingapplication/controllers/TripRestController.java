@@ -93,7 +93,14 @@ public class TripRestController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
         }
-
         return Messages.COMMENT_ADDED;
+    }
+
+    @PostMapping("/{id}/passengers")
+    public String apply(@PathVariable int id){
+
+        tripService.apply(id);
+
+        return Messages.APPLIED;
     }
 }

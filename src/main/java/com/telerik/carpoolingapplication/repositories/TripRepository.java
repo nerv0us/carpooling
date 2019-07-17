@@ -20,4 +20,6 @@ public interface TripRepository {
     void changeTripStatus(TripDTO tripDTO, TripStatus updatedStatus);
 
     void addComment(TripDTO tripDTO, CommentDTO commentDTO);
+
+    void apply(TripDTO tripDTO);
 }

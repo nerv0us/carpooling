@@ -2,16 +2,17 @@ package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
 
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "passengers")
 public class PassengerDTO {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @NotNull
     private int userId;
     @NotNull
     private String username;
