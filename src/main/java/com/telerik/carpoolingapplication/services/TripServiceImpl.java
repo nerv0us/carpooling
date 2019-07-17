@@ -25,7 +25,7 @@ public class TripServiceImpl implements TripService {
     public List<TripDTO> getTrips() {
         List<TripDTO> trips = tripRepository.getTrips();
         if (trips == null || trips.isEmpty()) {
-            throw new IllegalArgumentException(Messages.NOT_AVAILABLE_TRIPS_MESSAGE);
+            throw new IllegalArgumentException(Messages.NOT_AVAILABLE_TRIPS);
         }
         return trips;
     }
@@ -68,7 +68,7 @@ public class TripServiceImpl implements TripService {
         // Throws IllegalArgumentException(Messages.TRIP_NOT_FOUND);
         TripDTO tripDTO = getTrip(id);
 
-        // Throws IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+        // Throws IllegalArgumentException(Messages.UNAUTHORIZED);
         tripRepository.addComment(tripDTO, commentDTO);
     }
 

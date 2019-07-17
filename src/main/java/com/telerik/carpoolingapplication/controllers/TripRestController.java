@@ -43,7 +43,7 @@ public class TripRestController {
         //Add unauthorized logic and response here!
         tripService.createTrip(createTripDTO);
 
-        return Messages.CREATED_MESSAGE;
+        return Messages.TRIP_CREATED;
     }
 
     @PutMapping
@@ -52,7 +52,7 @@ public class TripRestController {
         //Add response logic here!
         tripService.editTrip(editTripDTO);
 
-        return Messages.UPDATED_MESSAGE;
+        return Messages.TRIP_UPDATED;
     }
 
     @GetMapping("/{id}")
@@ -86,7 +86,7 @@ public class TripRestController {
         try {
             tripService.addComment(id, commentDTO);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Messages.UNAUTHORIZED_MESSAGE)) {
+            if (e.getMessage().equals(Messages.UNAUTHORIZED)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
             if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {

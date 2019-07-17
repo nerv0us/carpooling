@@ -58,12 +58,12 @@ public class TripRepositoryImpl implements TripRepository {
             //Ask for equal responses and validations and then catch exceptions!
             UserDTO fakeUser = session.get(UserDTO.class, 1);
             if (fakeUser == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
             TripDTO tripToEdit = session.get(TripDTO.class, editTripDTO.getId());
             if (tripToEdit == null) {
-                throw new IllegalArgumentException(Messages.INVALID_ID_SUPPLIED_MESSAGE);
+                throw new IllegalArgumentException(Messages.INVALID_ID_SUPPLIED);
             }
 
             ModelsMapper.updateTrip(tripToEdit, editTripDTO);
@@ -105,7 +105,7 @@ public class TripRepositoryImpl implements TripRepository {
             //Setting fakeUser as author for testing purposes!
             commentDTO.setAuthor(fakeUser);
             if (fakeUser == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
             session.save(commentDTO);
@@ -124,7 +124,7 @@ public class TripRepositoryImpl implements TripRepository {
             //For testing purposes! Should be logged user!
             UserDTO fakeUser = session.get(UserDTO.class, 2);
             if (fakeUser == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
             //For testing purposes! Should be logged user!
