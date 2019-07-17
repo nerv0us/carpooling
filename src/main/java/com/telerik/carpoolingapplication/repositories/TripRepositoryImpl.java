@@ -72,4 +72,11 @@ public class TripRepositoryImpl implements TripRepository {
             session.getTransaction().commit();
         }
     }
+
+    @Override
+    public TripDTO getTrip(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        TripDTO tripDTO = session.get(TripDTO.class, id);
+        return tripDTO;
+    }
 }

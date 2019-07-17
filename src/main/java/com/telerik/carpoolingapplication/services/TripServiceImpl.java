@@ -25,7 +25,6 @@ public class TripServiceImpl implements TripService {
         if (trips == null || trips.isEmpty()){
             throw new IllegalArgumentException(Constants.NOT_AVAILABLE_TRIPS_MESSAGE);
         }
-
         return trips;
     }
 
@@ -37,5 +36,16 @@ public class TripServiceImpl implements TripService {
     @Override
     public void editTrip(EditTripDTO editTripDTO) {
         tripRepository.editTrip(editTripDTO);
+    }
+
+    @Override
+    public TripDTO getTrip(int id) {
+        TripDTO tripDTO = tripRepository.getTrip(id);
+
+        if (tripDTO == null){
+            throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
+        }
+
+        return tripDTO;
     }
 }

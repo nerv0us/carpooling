@@ -12,4 +12,6 @@ public interface TripRepository {
     void createTrip(CreateTripDTO createTripDTO);
 
     void editTrip(EditTripDTO editTripDTO);
+
+    TripDTO getTrip(int id);
 }

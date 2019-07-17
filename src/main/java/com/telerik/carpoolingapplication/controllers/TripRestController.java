@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/trips")
+@RequestMapping("/api/trips")
 public class TripRestController {
     private TripService tripService;
 
@@ -46,10 +46,21 @@ public class TripRestController {
     }
 
     @PutMapping
-    public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO){
+    public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO) {
 
+        //Add response logic here!
         tripService.editTrip(editTripDTO);
 
         return Constants.TRIP_UPDATED_MESSAGE;
+    }
+
+    @GetMapping("/{id}")
+    public TripDTO getTrip(@PathVariable int id) {
+        //Add unauthorized logic and response!
+        try {
+            return tripService.getTrip(id);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 }
