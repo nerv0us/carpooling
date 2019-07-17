@@ -3,7 +3,7 @@ package com.telerik.carpoolingapplication.controllers;
 import com.telerik.carpoolingapplication.models.CreateTripDTO;
 import com.telerik.carpoolingapplication.models.EditTripDTO;
 import com.telerik.carpoolingapplication.models.TripDTO;
-import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +42,7 @@ public class TripRestController {
         //Add unauthorized logic and response here!
         tripService.createTrip(createTripDTO);
 
-        return Constants.TRIP_CREATED_MESSAGE;
+        return Messages.TRIP_CREATED_MESSAGE;
     }
 
     @PutMapping
@@ -51,7 +51,7 @@ public class TripRestController {
         //Add response logic here!
         tripService.editTrip(editTripDTO);
 
-        return Constants.TRIP_UPDATED_MESSAGE;
+        return Messages.TRIP_UPDATED_MESSAGE;
     }
 
     @GetMapping("/{id}")

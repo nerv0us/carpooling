@@ -3,7 +3,7 @@ package com.telerik.carpoolingapplication.services;
 import com.telerik.carpoolingapplication.models.CreateTripDTO;
 import com.telerik.carpoolingapplication.models.EditTripDTO;
 import com.telerik.carpoolingapplication.models.TripDTO;
-import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class TripServiceImpl implements TripService {
     public List<TripDTO> getTrips() {
         List<TripDTO> trips = tripRepository.getTrips();
         if (trips == null || trips.isEmpty()){
-            throw new IllegalArgumentException(Constants.NOT_AVAILABLE_TRIPS_MESSAGE);
+            throw new IllegalArgumentException(Messages.NOT_AVAILABLE_TRIPS_MESSAGE);
         }
         return trips;
     }
@@ -43,7 +43,7 @@ public class TripServiceImpl implements TripService {
         TripDTO tripDTO = tripRepository.getTrip(id);
 
         if (tripDTO == null){
-            throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
+            throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
         }
 
         return tripDTO;

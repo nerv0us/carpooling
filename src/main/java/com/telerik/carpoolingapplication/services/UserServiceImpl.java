@@ -2,14 +2,14 @@ package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.LoginDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
-import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUser(String username) {
         UserDTO user = userRepository.getUser(username);
         if (user == null) {
-            throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND_MESSAGE, username));
+            throw new IllegalArgumentException(String.format(Messages.USER_NOT_FOUND_MESSAGE, username));
         }
         return user;
     }
