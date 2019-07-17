@@ -98,8 +98,19 @@ public class TripRestController {
 
     @PostMapping("/{id}/passengers")
     public String apply(@PathVariable int id){
-
-        tripService.apply(id);
+        try {
+            tripService.apply(id);
+        } catch (IllegalArgumentException e){
+            if (e.getMessage().equals(Messages.UNAUTHORIZED_MESSAGE)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.YOUR_OWN_TRIP) || e.getMessage().equals(Messages.ALREADY_APPLIED)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            }
+        }
 
         return Messages.APPLIED;
     }

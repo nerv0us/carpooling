@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -122,21 +123,29 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
 
             //For testing purposes! Should be logged user!
-            UserDTO fakeUser = session.get(UserDTO.class, 2);
+            UserDTO fakeUser = session.get(UserDTO.class, 3);
             if (fakeUser == null) {
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
             }
 
             //For testing purposes! Should be logged user!
-            PassengerDTO fakePassenger = session.get(PassengerDTO.class, fakeUser.getId());
-            if (fakePassenger == null){
-                fakePassenger = ModelsMapper.fromUserToPassanger(fakeUser);
-            }
+            PassengerDTO fakePassenger =  ModelsMapper.fromUserToPassanger(fakeUser);
             if (fakePassenger.getUserId() == tripDTO.getDriver().getId()){
                 throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
             }
 
+            List<PassengerDTO> passengers = tripDTO.getPassengers();
+            PassengerDTO passengerDTO = passengers.stream()
+                    .filter(p -> p.getUserId() == fakePassenger.getUserId())
+                    .findFirst()
+                    .orElse(null);
+
+            if (passengerDTO != null){
+                throw new IllegalArgumentException(Messages.ALREADY_APPLIED);
+            }
+
             tripDTO.getPassengers().add(fakePassenger);
+            session.save(fakePassenger);
             session.update(tripDTO);
 
             session.getTransaction().commit();
