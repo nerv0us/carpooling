@@ -63,4 +63,20 @@ public class TripRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
+    @PatchMapping("/{id}")
+    public String changeTripStatus(@PathVariable int id, @RequestParam String status){
+        //Add unauthorized and forbidden logic and response!
+        try {
+            tripService.changeTripStatus(id, status);
+        } catch (IllegalArgumentException e){
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.NO_SUCH_STATUS)){
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            }
+        }
+        return Messages.STATUS_CHANGED;
+    }
 }

@@ -8,5 +8,6 @@ public class Messages {
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized!";
     public static final String INVALID_ID_SUPPLIED_MESSAGE = "Invalid ID supplied!";
     public static final String TRIP_NOT_FOUND = "Trip not found!";
-
+    public static final String STATUS_CHANGED = "Trip status changed!";
+    public static final String NO_SUCH_STATUS = "Status doesn't exist!";
 }

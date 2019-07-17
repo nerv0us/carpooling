@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Messages;
+import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -56,12 +57,12 @@ public class TripRepositoryImpl implements TripRepository {
 
             //Ask for equal responses and validations and then catch exceptions!
             UserDTO fakeUser = session.get(UserDTO.class, 1);
-            if (fakeUser == null){
+            if (fakeUser == null) {
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED_MESSAGE);
             }
 
             TripDTO tripToEdit = session.get(TripDTO.class, editTripDTO.getId());
-            if (tripToEdit == null){
+            if (tripToEdit == null) {
                 throw new IllegalArgumentException(Messages.INVALID_ID_SUPPLIED_MESSAGE);
             }
 
@@ -75,7 +76,22 @@ public class TripRepositoryImpl implements TripRepository {
 
     @Override
     public TripDTO getTrip(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(TripDTO.class, id);
+        TripDTO tripDTO;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            tripDTO = session.get(TripDTO.class, id);
+            session.getTransaction().commit();
+        }
+        return tripDTO;
+    }
+
+    @Override
+    public void changeTripStatus(TripDTO tripDTO, TripStatus updatedStatus) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            tripDTO.setTripStatus(updatedStatus);
+            session.update(tripDTO);
+            session.getTransaction().commit();
+        }
     }
 }
