@@ -36,4 +36,15 @@ public class ModelsMapper {
         tripToEdit.setPets(editTripDTO.pets());
         tripToEdit.setLuggage(editTripDTO.luggage());
     }
+
+    public static void editUser(UserDTO userToEdit, UserDTO userDTO) {
+        userToEdit.setUsername(userDTO.getUsername());
+        userToEdit.setFirstName(userDTO.getFirstName());
+        userToEdit.setLastName(userDTO.getLastName());
+        userToEdit.setEmail(userDTO.getEmail());
+        userToEdit.setPhone(userDTO.getPhone());
+        userToEdit.setRatingAsDriver(userDTO.getRatingAsDriver());
+        userToEdit.setRatingAsPassenger(userDTO.getRatingAsPassenger());
+        userToEdit.setAvatarUri(userDTO.getAvatarUri());
+    }
 }
