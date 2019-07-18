@@ -26,4 +26,5 @@ public class Messages {
     public static final String USER_CREATED = "User created!";
     public static final String USER_UPDATED = "User updated!";
     public static final String DRIVER_RATED = "You have successfully rated this driver!";
+    public static final String PASSENGER_RATED = "You have successfully rated this passenger!";
 }
