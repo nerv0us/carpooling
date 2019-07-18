@@ -58,6 +58,16 @@ public class TripDTO {
             joinColumns = {@JoinColumn(name = "trip_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})
     private List<CommentDTO> comments;
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany
+    @JoinTable(name = "trips_ratings",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "rating_id")})
+    private List<RatingDTO> ratings;
+
+
     private boolean smoking;
     private boolean pets;
     private boolean luggage;

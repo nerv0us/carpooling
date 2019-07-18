@@ -209,6 +209,7 @@ public class TripRepositoryImpl implements TripRepository {
         }
     }
 
+    // Fix RatingDTO class and generate corresponding tables in database!
     @Override
     public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
         try (Session session = sessionFactory.openSession()) {

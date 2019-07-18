@@ -116,7 +116,7 @@ public class TripRestController {
             , @RequestParam String status) {
         try {
             tripService.changePassengerStatus(tripId, passengerId, status);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Messages.TRIP_NOT_FOUND) || e.getMessage().equals("Passenger not found!")) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
@@ -129,11 +129,11 @@ public class TripRestController {
     }
 
     @PostMapping("{id}/driver/rate")
-    public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO){
+    public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO) {
 
         try {
             tripService.rateDriver(id, ratingDTO);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
@@ -141,11 +141,11 @@ public class TripRestController {
     }
 
     @PostMapping("{tripId}/passengers/{passengerId}/rate")
-    public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId, @RequestBody RatingDTO ratingDTO){
+    public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId, @RequestBody RatingDTO ratingDTO) {
 
         try {
             tripService.ratePassenger(tripId, passengerId, ratingDTO);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
