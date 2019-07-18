@@ -1,22 +1,73 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Entity
+@Table(name = "trips")
 public class TripDTO {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne
+    @NotNull
     private UserDTO driver;
+
+    @NotNull
     private String carModel;
+
+    @NotNull
     private String message;
+
     //Date-time format
+    @NotNull
     private String departureTime;
+
+    @NotNull
     private String origin;
+
+    @NotNull
     private String destination;
+
+    @NotNull
     private int availablePlaces;
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany()
+    @JoinTable(name = "trips_passengers",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "passenger_id")})
     private List<PassengerDTO> passengers;
+
+    @NotNull
     private TripStatus tripStatus;
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany
+    @JoinTable(name = "trips_comments",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
     private List<CommentDTO> comments;
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany
+    @JoinTable(name = "trips_ratings",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "rating_id")})
+    private List<RatingDTO> ratings;
+
+
     private boolean smoking;
     private boolean pets;
     private boolean luggage;
@@ -24,11 +75,10 @@ public class TripDTO {
     public TripDTO() {
     }
 
-    public TripDTO(int id, UserDTO driver, String carModel, String message
-            , String departureTime, String origin, String destination, int availablePlaces
-            , List<PassengerDTO> passengers, TripStatus tripStatus, List<CommentDTO> comments
-            , boolean smoking, boolean pets, boolean luggage) {
-        this.id = id;
+    public TripDTO(@NotNull UserDTO driver, @NotNull String carModel, @NotNull String message
+            , @NotNull String departureTime, @NotNull String origin, @NotNull String destination
+            , @NotNull int availablePlaces, List<PassengerDTO> passengers, @NotNull TripStatus tripStatus
+            , List<CommentDTO> comments, boolean smoking, boolean pets, boolean luggage) {
         this.driver = driver;
         this.carModel = carModel;
         this.message = message;
@@ -132,7 +182,7 @@ public class TripDTO {
         this.comments = comments;
     }
 
-    public boolean isSmoking() {
+    public boolean smoking() {
         return smoking;
     }
 
@@ -140,7 +190,7 @@ public class TripDTO {
         this.smoking = smoking;
     }
 
-    public boolean isPets() {
+    public boolean pets() {
         return pets;
     }
 
@@ -148,7 +198,7 @@ public class TripDTO {
         this.pets = pets;
     }
 
-    public boolean isLuggage() {
+    public boolean luggage() {
         return luggage;
     }
 

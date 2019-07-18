@@ -2,21 +2,38 @@ package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "passengers")
 public class PassengerDTO {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @NotNull
     private int userId;
+    @NotNull
     private String username;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @NotNull
     private String email;
+    @NotNull
     private String phone;
     private Double ratingAsPassenger;
+    @NotNull
     private PassengerStatus passengerStatus;
 
     public PassengerDTO() {
     }
 
-    public PassengerDTO(int userId, String username, String firstName, String lastName
-            , String email, String phone, Double ratingAsPassenger, PassengerStatus passengerStatus) {
+    public PassengerDTO(int userId, @NotNull String username, @NotNull String firstName
+            , @NotNull String lastName, @NotNull String email, @NotNull String phone
+            , Double ratingAsPassenger, @NotNull PassengerStatus passengerStatus) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -25,6 +42,14 @@ public class PassengerDTO {
         this.phone = phone;
         this.ratingAsPassenger = ratingAsPassenger;
         this.passengerStatus = passengerStatus;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getUserId() {

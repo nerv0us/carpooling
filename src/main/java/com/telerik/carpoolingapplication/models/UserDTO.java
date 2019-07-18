@@ -1,22 +1,53 @@
 package com.telerik.carpoolingapplication.models;
 
+import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+@Entity
+@Table(name = "users")
 public class UserDTO {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotNull
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.")
     private String username;
+
+    @NotNull
+    @Size(min = 3, max = 25, message = "First name should be between 3 and 25 characters.")
     private String firstName;
+
+    @NotNull
+    @Size(min = 3, max = 25, message = "Last name should be between 3 and 25 characters.")
     private String lastName;
+
+    @NotNull
+    @Email
     private String email;
+
+    @NotNull
+    @Size(min = 4, max = 25, message = "Phone number should be between 4 and 25 characters.")
     private String phone;
+
+    @ColumnDefault("0")
     private Double ratingAsDriver;
+
+    @ColumnDefault("0")
     private Double ratingAsPassenger;
+
     private String avatarUri;
 
     public UserDTO() {
     }
 
-    public UserDTO(int id, String username, String firstName, String lastName, String email
-            , String phone, Double ratingAsDriver, Double ratingAsPassenger, String avatarUri) {
-        this.id = id;
+    public UserDTO(@NotNull String username, @NotNull String firstName, @NotNull String lastName
+            , @NotNull String email, @NotNull String phone, Double ratingAsDriver
+            , Double ratingAsPassenger, String avatarUri) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;

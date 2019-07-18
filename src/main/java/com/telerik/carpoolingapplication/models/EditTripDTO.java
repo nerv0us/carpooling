@@ -5,7 +5,7 @@ public class EditTripDTO {
     private String carModel;
     private String message;
     //Date-time format
-    private String departure;
+    private String departureTime;
     private String origin;
     private String destination;
     private int availablePlaces;
@@ -16,12 +16,12 @@ public class EditTripDTO {
     public EditTripDTO() {
     }
 
-    public EditTripDTO(int id, String carModel, String message, String departure, String origin
+    public EditTripDTO(int id, String carModel, String message, String departureTime, String origin
             , String destination, int availablePlaces, boolean smoking, boolean pets, boolean luggage) {
         this.id = id;
         this.carModel = carModel;
         this.message = message;
-        this.departure = departure;
+        this.departureTime = departureTime;
         this.origin = origin;
         this.destination = destination;
         this.availablePlaces = availablePlaces;
@@ -54,12 +54,12 @@ public class EditTripDTO {
         this.message = message;
     }
 
-    public String getDeparture() {
-        return departure;
+    public String getDepartureTime() {
+        return departureTime;
     }
 
-    public void setDeparture(String departure) {
-        this.departure = departure;
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
     }
 
     public String getOrigin() {
@@ -86,7 +86,7 @@ public class EditTripDTO {
         this.availablePlaces = availablePlaces;
     }
 
-    public boolean isSmoking() {
+    public boolean smoking() {
         return smoking;
     }
 
@@ -94,7 +94,7 @@ public class EditTripDTO {
         this.smoking = smoking;
     }
 
-    public boolean isPets() {
+    public boolean pets() {
         return pets;
     }
 
@@ -102,7 +102,7 @@ public class EditTripDTO {
         this.pets = pets;
     }
 
-    public boolean isLuggage() {
+    public boolean luggage() {
         return luggage;
     }
 
