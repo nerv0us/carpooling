@@ -25,4 +25,5 @@ public class Messages {
     public static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     public static final String USER_CREATED = "User created!";
     public static final String USER_UPDATED = "User updated!";
+    public static final String DRIVER_RATED = "You have successfully rated this driver!";
 }
