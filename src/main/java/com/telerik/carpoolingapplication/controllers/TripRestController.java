@@ -129,8 +129,8 @@ public class TripRestController {
             }
 
         }
-
-
         return Messages.PASSENGER_STATUS_CHANGED;
     }
+
+
 }
