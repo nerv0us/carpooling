@@ -124,8 +124,9 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
 
             //For testing purposes! Should be logged user!
-            UserDTO fakeUser = session.get(UserDTO.class, 3);
+            UserDTO fakeUser = session.get(UserDTO.class, 2);
             if (fakeUser == null) {
+                //Look why this doesn't work!
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
@@ -163,19 +164,13 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
 
-            List<PassengerDTO> passengers = tripDTO.getPassengers();
-            PassengerDTO passengerDTO = passengers.stream()
-                    .filter(p -> p.getId() == passengerId)
-                    .findFirst()
-                    .orElse(null);
-            if (passengerDTO == null) {           //Should become constant after merge!
-                throw new IllegalArgumentException("Passenger not found!");
-            }
+            // Throws IllegalArgumentException("Passenger not found!")
+            PassengerDTO passengerDTO = findPassengerOrThrowNotFound(tripDTO.getPassengers(), passengerId);
 
             try {
                 PassengerStatus passengerStatus = PassengerStatus.valueOf(status);
                 passengerDTO.setPassengerStatus(passengerStatus);
-            }catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
             }
             session.update(passengerDTO);
@@ -200,7 +195,7 @@ public class TripRepositoryImpl implements TripRepository {
 
             // Change default value of rating as driver and rating as passenger in users and passengers!
             Double currentRating = userDTO.getRatingAsDriver();
-            if (currentRating == null){
+            if (currentRating == null) {
                 currentRating = 0D;
             }
 
@@ -212,5 +207,50 @@ public class TripRepositoryImpl implements TripRepository {
 
             session.getTransaction().commit();
         }
+    }
+
+    @Override
+    public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            TripDTO tripDTO = getTrip(tripId);
+            if (tripDTO == null) {
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+            }
+
+            // Add unauthorized and forbidden validations when security is implemented!
+
+            // Throws IllegalArgumentException("Passenger not found!")
+            PassengerDTO passengerDTO = findPassengerOrThrowNotFound(tripDTO.getPassengers(), passengerId);
+
+            Double currentRating = passengerDTO.getRatingAsPassenger();
+            if (currentRating == null) {
+                currentRating = 0D;
+            }
+            currentRating += ratingDTO.getRating();
+
+            passengerDTO.setRatingAsPassenger(currentRating);
+
+            UserDTO userDTO = session.get(UserDTO.class, passengerDTO.getUserId());
+            userDTO.setRatingAsPassenger(currentRating);
+
+            session.update(passengerDTO);
+            session.update(userDTO);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    private static PassengerDTO findPassengerOrThrowNotFound(List<PassengerDTO> passengers, int passengerId) {
+        PassengerDTO passengerDTO = passengers.stream()
+                .filter(p -> p.getId() == passengerId)
+                .findFirst()
+                .orElse(null);
+        if (passengerDTO == null) {           //Should become constant after merge!
+            throw new IllegalArgumentException("Passenger not found!");
+        }
+
+        return passengerDTO;
     }
 }

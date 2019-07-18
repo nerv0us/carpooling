@@ -55,7 +55,7 @@ public class TripServiceImpl implements TripService {
         try {
             TripStatus updatedStatus = TripStatus.valueOf(status);
             tripRepository.changeTripStatus(tripDTO, updatedStatus);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
         }
     }
@@ -79,11 +79,16 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public void changePassengerStatus(int tripId, int passengerId, String status) {
-        tripRepository.changePassengerStatus(tripId,passengerId,status);
+        tripRepository.changePassengerStatus(tripId, passengerId, status);
     }
 
     @Override
     public void rateDriver(int id, RatingDTO ratingDTO) {
         tripRepository.rateDriver(id, ratingDTO);
+    }
+
+    @Override
+    public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
+        tripRepository.ratePassenger(tripId, passengerId, ratingDTO);
     }
 }

@@ -108,7 +108,6 @@ public class TripRestController {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
         }
-
         return Messages.APPLIED;
     }
 
@@ -139,5 +138,17 @@ public class TripRestController {
         }
 
         return Messages.DRIVER_RATED;
+    }
+
+    @PostMapping("{tripId}/passengers/{passengerId}/rate")
+    public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId, @RequestBody RatingDTO ratingDTO){
+
+        try {
+            tripService.ratePassenger(tripId, passengerId, ratingDTO);
+        }catch (IllegalArgumentException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+        return Messages.PASSENGER_RATED;
     }
 }
