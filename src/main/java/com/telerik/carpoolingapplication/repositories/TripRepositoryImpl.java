@@ -183,4 +183,34 @@ public class TripRepositoryImpl implements TripRepository {
             session.getTransaction().commit();
         }
     }
+
+    @Override
+    public void rateDriver(int id, RatingDTO ratingDTO) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            TripDTO tripDTO = getTrip(id);
+            if (tripDTO == null) {
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+            }
+
+            // Add unauthorized and forbidden validations when security is implemented!
+
+            UserDTO userDTO = tripDTO.getDriver();
+
+            // Change default value of rating as driver and rating as passenger in users and passengers!
+            Double currentRating = userDTO.getRatingAsDriver();
+            if (currentRating == null){
+                currentRating = 0D;
+            }
+
+            currentRating += ratingDTO.getRating();
+
+            userDTO.setRatingAsDriver(currentRating);
+
+            session.update(userDTO);
+
+            session.getTransaction().commit();
+        }
+    }
 }

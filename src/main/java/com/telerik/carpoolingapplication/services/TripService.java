@@ -1,9 +1,6 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.models.CommentDTO;
-import com.telerik.carpoolingapplication.models.CreateTripDTO;
-import com.telerik.carpoolingapplication.models.EditTripDTO;
-import com.telerik.carpoolingapplication.models.TripDTO;
+import com.telerik.carpoolingapplication.models.*;
 
 import java.util.List;
 
@@ -23,4 +20,6 @@ public interface TripService {
     void apply(int id);
 
     void changePassengerStatus(int tripId, int passengerId, String status);
+
+    void rateDriver(int id, RatingDTO ratingDTO);
 }

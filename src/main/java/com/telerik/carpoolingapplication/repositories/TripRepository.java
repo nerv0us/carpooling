@@ -1,9 +1,6 @@
 package com.telerik.carpoolingapplication.repositories;
 
-import com.telerik.carpoolingapplication.models.CommentDTO;
-import com.telerik.carpoolingapplication.models.CreateTripDTO;
-import com.telerik.carpoolingapplication.models.EditTripDTO;
-import com.telerik.carpoolingapplication.models.TripDTO;
+import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 
 import java.util.List;
@@ -24,4 +21,6 @@ public interface TripRepository {
     void apply(TripDTO tripDTO);
 
     void changePassengerStatus(int tripId, int passengerId, String status);
+
+    void rateDriver(int id, RatingDTO ratingDTO);
 }

@@ -1,9 +1,6 @@
 package com.telerik.carpoolingapplication.controllers;
 
-import com.telerik.carpoolingapplication.models.CommentDTO;
-import com.telerik.carpoolingapplication.models.CreateTripDTO;
-import com.telerik.carpoolingapplication.models.EditTripDTO;
-import com.telerik.carpoolingapplication.models.TripDTO;
+import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,5 +129,15 @@ public class TripRestController {
         return Messages.PASSENGER_STATUS_CHANGED;
     }
 
+    @PostMapping("{id}/driver/rate")
+    public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO){
 
+        try {
+            tripService.rateDriver(id, ratingDTO);
+        } catch (IllegalArgumentException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+        return Messages.DRIVER_RATED;
+    }
 }
