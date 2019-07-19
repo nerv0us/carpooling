@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
     public void storeFile(int userId, MultipartFile file) throws IOException {
         try {
             fileService.storeFile(userId, file);
-        } catch (IOException e) {
-            throw new IOException("Failed to store file ", e);
+        } catch (IllegalArgumentException ex) {
+            throw new IOException("Failed to store file ", ex);
         }
     }
 }
