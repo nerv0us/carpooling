@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -40,7 +39,6 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
 
             //Fake user for testing purposes that needs to be an authenticated user!
-            //
             UserDTO fakeUser = session.get(UserDTO.class, 1);
 
             TripDTO newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeUser);
@@ -123,15 +121,14 @@ public class TripRepositoryImpl implements TripRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            //For testing purposes! Should be logged user!
-            UserDTO fakeUser = session.get(UserDTO.class, 2);
-            if (fakeUser == null) {
-                //Look why this doesn't work!
+            //For testing purposes! Should be logged user!     //Example
+            UserDTO loggedUser = session.get(UserDTO.class, 4);
+            if (loggedUser == null){
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
             //For testing purposes! Should be logged user!
-            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassanger(fakeUser);
+            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassanger(loggedUser);
             if (fakePassenger.getUserId() == tripDTO.getDriver().getId()) {
                 throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
             }
@@ -179,41 +176,62 @@ public class TripRepositoryImpl implements TripRepository {
         }
     }
 
+    //Add additional validations for rate, like if trip is over or what the status of driver/passenger is!
     @Override
-    public void rateDriver(int id, RatingDTO ratingDTO) {
+    public void rateDriver(int id, DriverRatingDTO driverRatingDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            TripDTO tripDTO = getTrip(id);
-            if (tripDTO == null) {
+            TripDTO currentTrip = getTrip(id);
+            if (currentTrip == null) {
                 throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+            }
+
+            //Testing purposes, should be logged user!
+            UserDTO loggedUser = session.get(UserDTO.class, driverRatingDTO.getRatingGiverId());
+            if (loggedUser == null){
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+            }
+
+            List<DriverRatingDTO> driverRatings = currentTrip.getDriverRatings();
+            DriverRatingDTO checkIfUserHasRated = driverRatings.stream()
+                    .filter(r -> r.getRatingGiverId() == loggedUser.getId())
+                    .findFirst()
+                    .orElse(null);
+
+            if (checkIfUserHasRated != null){
+                throw new IllegalArgumentException(Messages.DRIVER_ALREADY_RATED);
             }
 
             // Add unauthorized and forbidden validations when security is implemented!
 
-            UserDTO userDTO = tripDTO.getDriver();
+            UserDTO driver = currentTrip.getDriver();
 
             // Change default value of rating as driver and rating as passenger in users and passengers!
-            Double currentRating = userDTO.getRatingAsDriver();
+            Double currentRating = driver.getRatingAsDriver();
             if (currentRating == null) {
                 currentRating = 0D;
             }
+            currentRating += driverRatingDTO.getRating();
+            driver.setRatingAsDriver(currentRating);
 
-            currentRating += ratingDTO.getRating();
-
-            userDTO.setRatingAsDriver(currentRating);
-
-            session.update(userDTO);
+            currentTrip.getDriverRatings().add(driverRatingDTO);
+            session.save(driverRatingDTO);
+            session.update(driver);
+            session.update(currentTrip);
 
             session.getTransaction().commit();
         }
     }
 
-    // Fix RatingDTO class and generate corresponding tables in database!
+    // Fix DriverRatingDTO class and generate corresponding tables in database!
     @Override
-    public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
+    public void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+
+            //Avoiding errors!
+            passengerRatingDTO.setRatingReceiverId(passengerId);
 
             TripDTO tripDTO = getTrip(tripId);
             if (tripDTO == null) {
@@ -225,17 +243,32 @@ public class TripRepositoryImpl implements TripRepository {
             // Throws IllegalArgumentException("Passenger not found!")
             PassengerDTO passengerDTO = findPassengerOrThrowNotFound(tripDTO.getPassengers(), passengerId);
 
+            List<PassengerRatingDTO> passengersRatings = tripDTO.getPassengersRatings();
+            PassengerRatingDTO checkIfPassengerIsRated = passengersRatings.stream()
+                    .filter(r -> r.getRatingReceiverId() == passengerId)
+                    .findFirst()
+                    .orElse(null);
+
+            if (checkIfPassengerIsRated != null){
+                throw new IllegalArgumentException(Messages.PASSENGER_ALREADY_RATED);
+            }
+
+
             Double currentRating = passengerDTO.getRatingAsPassenger();
             if (currentRating == null) {
                 currentRating = 0D;
             }
-            currentRating += ratingDTO.getRating();
-
+            currentRating += passengerRatingDTO.getRating();
             passengerDTO.setRatingAsPassenger(currentRating);
 
             UserDTO userDTO = session.get(UserDTO.class, passengerDTO.getUserId());
             userDTO.setRatingAsPassenger(currentRating);
 
+            tripDTO.getPassengersRatings().add(passengerRatingDTO);
+
+            session.save(passengerRatingDTO);
+
+            session.update(tripDTO);
             session.update(passengerDTO);
             session.update(userDTO);
 

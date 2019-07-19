@@ -27,4 +27,6 @@ public class Messages {
     public static final String USER_UPDATED = "User updated!";
     public static final String DRIVER_RATED = "You have successfully rated this driver!";
     public static final String PASSENGER_RATED = "You have successfully rated this passenger!";
+    public static final String DRIVER_ALREADY_RATED = "You have already rated this driver!";
+    public static final String PASSENGER_ALREADY_RATED = "You have already rated this passenger!";
 }

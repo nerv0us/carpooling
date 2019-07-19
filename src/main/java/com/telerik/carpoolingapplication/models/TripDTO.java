@@ -1,6 +1,5 @@
 package com.telerik.carpoolingapplication.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.annotations.LazyCollection;
@@ -62,11 +61,18 @@ public class TripDTO {
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany
-    @JoinTable(name = "trips_ratings",
+    @JoinTable(name = "trips_driver_ratings",
             joinColumns = {@JoinColumn(name = "trip_id")},
             inverseJoinColumns = {@JoinColumn(name = "rating_id")})
-    private List<RatingDTO> ratings;
+    private List<DriverRatingDTO> driverRatings;
 
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany
+    @JoinTable(name = "trips_passengers_ratings",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "rating_id")})
+    private List<PassengerRatingDTO> passengersRatings;
 
     private boolean smoking;
     private boolean pets;
@@ -78,7 +84,8 @@ public class TripDTO {
     public TripDTO(@NotNull UserDTO driver, @NotNull String carModel, @NotNull String message
             , @NotNull String departureTime, @NotNull String origin, @NotNull String destination
             , @NotNull int availablePlaces, List<PassengerDTO> passengers, @NotNull TripStatus tripStatus
-            , List<CommentDTO> comments, boolean smoking, boolean pets, boolean luggage) {
+            , List<CommentDTO> comments, List<DriverRatingDTO> driverRatings
+            , List<PassengerRatingDTO> passengersRatings, boolean smoking, boolean pets, boolean luggage) {
         this.driver = driver;
         this.carModel = carModel;
         this.message = message;
@@ -89,6 +96,8 @@ public class TripDTO {
         this.passengers = passengers;
         this.tripStatus = tripStatus;
         this.comments = comments;
+        this.driverRatings = driverRatings;
+        this.passengersRatings = passengersRatings;
         this.smoking = smoking;
         this.pets = pets;
         this.luggage = luggage;
@@ -96,10 +105,6 @@ public class TripDTO {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public UserDTO getDriver() {
@@ -182,7 +187,23 @@ public class TripDTO {
         this.comments = comments;
     }
 
-    public boolean smoking() {
+    public List<DriverRatingDTO> getDriverRatings() {
+        return driverRatings;
+    }
+
+    public void setDriverRatings(List<DriverRatingDTO> driverRatings) {
+        this.driverRatings = driverRatings;
+    }
+
+    public List<PassengerRatingDTO> getPassengersRatings() {
+        return passengersRatings;
+    }
+
+    public void setPassengersRatings(List<PassengerRatingDTO> passengersRatings) {
+        this.passengersRatings = passengersRatings;
+    }
+
+    public boolean isSmoking() {
         return smoking;
     }
 
@@ -190,7 +211,7 @@ public class TripDTO {
         this.smoking = smoking;
     }
 
-    public boolean pets() {
+    public boolean isPets() {
         return pets;
     }
 
@@ -198,7 +219,7 @@ public class TripDTO {
         this.pets = pets;
     }
 
-    public boolean luggage() {
+    public boolean isLuggage() {
         return luggage;
     }
 
