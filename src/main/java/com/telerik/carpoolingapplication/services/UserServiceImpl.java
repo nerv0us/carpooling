@@ -7,15 +7,20 @@ import com.telerik.carpoolingapplication.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private FileService fileService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, FileService fileService) {
         this.userRepository = userRepository;
+        this.fileService = fileService;
     }
 
     @Override
@@ -24,13 +29,21 @@ public class UserServiceImpl implements UserService {
         if (userToEdit == null) {
             throw new IllegalArgumentException(String.format(Messages.USER_NOT_FOUND, userDTO.getId()));
         }
-        userRepository.editUser(userDTO);
+        UserDTO user = userRepository.getByUsername(userDTO.getUsername());
+        if (user != null) {
+            throw new IllegalArgumentException(String.format(Messages.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
+        }
+        try {
+            userRepository.editUser(userDTO);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format(Messages.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+        }
         return Messages.USER_UPDATED;
     }
 
     @Override
-    public UserDTO getUser(String username) {
-        UserDTO user = userRepository.getUser(username);
+    public UserDTO getByUsername(String username) {
+        UserDTO user = userRepository.getByUsername(username);
         if (user == null) {
             throw new IllegalArgumentException(String.format(Messages.USERNAME_NOT_FOUND, username));
         }
@@ -38,8 +51,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO getById(int id) {
+        return userRepository.getById(id);
+    }
+
+    @Override
     public String createUser(CreateUserDTO userDTO) {
-        UserDTO user = userRepository.getUser(userDTO.getUsername());
+        UserDTO user = userRepository.getByUsername(userDTO.getUsername());
         if (user != null) {
             throw new IllegalArgumentException(String.format(Messages.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
         }
@@ -49,5 +67,14 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException(String.format(Messages.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
         }
         return Messages.USER_CREATED;
+    }
+
+    @Override
+    public void storeFile(int userId, MultipartFile file) throws IOException {
+        try {
+            fileService.storeFile(userId, file);
+        } catch (IOException e) {
+            throw new IOException("Failed to store file ", e);
+        }
     }
 }

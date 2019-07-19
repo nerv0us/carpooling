@@ -7,10 +7,12 @@ public interface UserRepository {
 
     void editUser(UserDTO userDTO);
 
-    UserDTO getUser(String username);
+    UserDTO getByUsername(String username);
 
     UserDTO getById(int id);
 
     void createUser(CreateUserDTO userDTO);
+
+    void saveImage(int userId, String imageName);
 
 }

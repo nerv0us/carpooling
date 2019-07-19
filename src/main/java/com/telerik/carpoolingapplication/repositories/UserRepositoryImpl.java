@@ -27,13 +27,16 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             UserDTO userToEdit = session.get(UserDTO.class, userDTO.getId());
+            if (isEmailExist(userDTO.getEmail())) {
+                throw new IllegalArgumentException(String.format(Messages.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+            }
             ModelsMapper.editUser(userToEdit, userDTO);
             session.getTransaction().commit();
         }
     }
 
     @Override
-    public UserDTO getUser(String username) {
+    public UserDTO getByUsername(String username) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             Query<UserDTO> query = session.createQuery("from UserDTO where username = :username", UserDTO.class);
@@ -63,6 +66,17 @@ public class UserRepositoryImpl implements UserRepository {
             }
             UserDTO user = ModelsMapper.createUser(userDTO);
             session.save(user);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void saveImage(int userId, String filePath) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            UserDTO userToUpdate = session.get(UserDTO.class, userId);
+            userToUpdate.setAvatarUri(filePath);
+            session.update(userToUpdate);
             session.getTransaction().commit();
         }
     }
