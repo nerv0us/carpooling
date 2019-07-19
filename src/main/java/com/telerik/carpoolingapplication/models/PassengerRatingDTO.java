@@ -19,9 +19,8 @@ public class PassengerRatingDTO {
     public PassengerRatingDTO() {
     }
 
-    public PassengerRatingDTO(@NotNull double rating, int ratingReceiverId) {
+    public PassengerRatingDTO(@NotNull double rating) {
         this.rating = rating;
-        this.ratingReceiverId = ratingReceiverId;
     }
 
     public int getId() {
