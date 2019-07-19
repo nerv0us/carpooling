@@ -7,36 +7,52 @@ import javax.validation.constraints.NotNull;
 @Table(name = "ratings")
 public class RatingDTO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotNull
-    private Double rating;
+    private double rating;
 
-    @ManyToOne
     @NotNull
-    private UserDTO userDTO;
+    private int ratingGiverId;
+
+    @NotNull
+    private int ratingReceiverId;
 
     public RatingDTO() {
     }
 
-    public RatingDTO(Double rating, UserDTO userDTO) {
+    public RatingDTO(@NotNull double rating, @NotNull int ratingGiverId, @NotNull int ratingReceiverId) {
         this.rating = rating;
-        this.userDTO = userDTO;
+        this.ratingGiverId = ratingGiverId;
+        this.ratingReceiverId = ratingReceiverId;
     }
 
-    public Double getRating() {
+    public int getId() {
+        return id;
+    }
+
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
-    public UserDTO getUserDTO() {
-        return userDTO;
+    public int getRatingGiverId() {
+        return ratingGiverId;
     }
 
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
+    public void setRatingGiverId(int ratingGiverId) {
+        this.ratingGiverId = ratingGiverId;
+    }
+
+    public int getRatingReceiverId() {
+        return ratingReceiverId;
+    }
+
+    public void setRatingReceiverId(int ratingReceiverId) {
+        this.ratingReceiverId = ratingReceiverId;
     }
 }

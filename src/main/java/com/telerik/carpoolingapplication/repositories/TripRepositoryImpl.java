@@ -225,6 +225,11 @@ public class TripRepositoryImpl implements TripRepository {
             // Throws IllegalArgumentException("Passenger not found!")
             PassengerDTO passengerDTO = findPassengerOrThrowNotFound(tripDTO.getPassengers(), passengerId);
 
+            List<RatingDTO> currentRatings = tripDTO.getRatings();
+
+            /*RatingDTO*/
+
+
             Double currentRating = passengerDTO.getRatingAsPassenger();
             if (currentRating == null) {
                 currentRating = 0D;

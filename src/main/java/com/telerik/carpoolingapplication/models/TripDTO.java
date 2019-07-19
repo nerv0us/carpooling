@@ -67,7 +67,6 @@ public class TripDTO {
             inverseJoinColumns = {@JoinColumn(name = "rating_id")})
     private List<RatingDTO> ratings;
 
-
     private boolean smoking;
     private boolean pets;
     private boolean luggage;
@@ -96,10 +95,6 @@ public class TripDTO {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public UserDTO getDriver() {
@@ -204,5 +199,25 @@ public class TripDTO {
 
     public void setLuggage(boolean luggage) {
         this.luggage = luggage;
+    }
+
+    public List<RatingDTO> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<RatingDTO> ratings) {
+        this.ratings = ratings;
+    }
+
+    public boolean isSmoking() {
+        return smoking;
+    }
+
+    public boolean isPets() {
+        return pets;
+    }
+
+    public boolean isLuggage() {
+        return luggage;
     }
 }
