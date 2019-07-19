@@ -71,7 +71,7 @@ public class ModelsMapper {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
-
+        user.setAvatarUri("static/images/users/defaultUserPhoto.jpg");
         return user;
     }
 }
