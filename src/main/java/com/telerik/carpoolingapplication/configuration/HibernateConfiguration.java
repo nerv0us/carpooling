@@ -53,7 +53,7 @@ public class HibernateConfiguration {
 
         hibernateProperties.setProperty("spring.jpa.properties.hibernate.dialect"
                 , "org.hibernate.dialect.MySQLDialect");
-        /*hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");*/
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
 
         return hibernateProperties;
     }

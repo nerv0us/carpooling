@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -189,21 +188,28 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
 
+            //Testing purposes!
+            UserDTO loggedUser = session.get(UserDTO.class, 2);
+
+
+
             // Add unauthorized and forbidden validations when security is implemented!
 
-            UserDTO userDTO = tripDTO.getDriver();
+            UserDTO driver = tripDTO.getDriver();
 
             // Change default value of rating as driver and rating as passenger in users and passengers!
-            Double currentRating = userDTO.getRatingAsDriver();
+            Double currentRating = driver.getRatingAsDriver();
             if (currentRating == null) {
                 currentRating = 0D;
             }
 
             currentRating += ratingDTO.getRating();
 
-            userDTO.setRatingAsDriver(currentRating);
+            driver.setRatingAsDriver(currentRating);
 
-            session.update(userDTO);
+            session.save(ratingDTO);
+
+            session.update(driver);
 
             session.getTransaction().commit();
         }
@@ -225,7 +231,7 @@ public class TripRepositoryImpl implements TripRepository {
             // Throws IllegalArgumentException("Passenger not found!")
             PassengerDTO passengerDTO = findPassengerOrThrowNotFound(tripDTO.getPassengers(), passengerId);
 
-            List<RatingDTO> currentRatings = tripDTO.getRatings();
+            List<RatingDTO> currentRatings = tripDTO.getDriverRatings();
 
             /*RatingDTO*/
 
