@@ -3,15 +3,14 @@ package com.telerik.carpoolingapplication.controllers;
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
 import com.telerik.carpoolingapplication.services.UserService;
-import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/users")
@@ -55,12 +54,11 @@ public class UserRestController {
 
     @PostMapping("/{id}")
     public void uploadFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
-        System.out.println("Uploading...");
         if (file == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Filename is invalid");
         }
-        if (isFileValid(file)) {
-            throw new InvalidFileNameException(file.getOriginalFilename(), "Invalid file name");
+        if (isFileInvalid(file)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid file name");
         }
         try {
             service.storeFile(id, file);
@@ -69,8 +67,10 @@ public class UserRestController {
         }
     }
 
-    private boolean isFileValid(MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        return fileName.contains("..") && fileName.matches("([^\\s]+(\\.(?i)(jpg|jpeg|png|gif))$)");
+    private boolean isFileInvalid(MultipartFile file) {
+        return !Objects.equals(file.getContentType(), "image/jpeg") &&
+                !Objects.equals(file.getContentType(), "image/jpg") &&
+                !Objects.equals(file.getContentType(), "image/png") &&
+                !Objects.equals(file.getContentType(), "image/gif");
     }
 }
