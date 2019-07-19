@@ -83,12 +83,12 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void rateDriver(int id, RatingDTO ratingDTO) {
-        tripRepository.rateDriver(id, ratingDTO);
+    public void rateDriver(int id, DriverRatingDTO driverRatingDTO) {
+        tripRepository.rateDriver(id, driverRatingDTO);
     }
 
     @Override
-    public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
-        tripRepository.ratePassenger(tripId, passengerId, ratingDTO);
+    public void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO) {
+        tripRepository.ratePassenger(tripId, passengerId, passengerRatingDTO);
     }
 }

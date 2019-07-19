@@ -129,10 +129,10 @@ public class TripRestController {
     }
 
     @PostMapping("{id}/driver/rate")
-    public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO) {
+    public String rateDriver(@PathVariable int id, @RequestBody DriverRatingDTO driverRatingDTO) {
 
         try {
-            tripService.rateDriver(id, ratingDTO);
+            tripService.rateDriver(id, driverRatingDTO);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -142,9 +142,10 @@ public class TripRestController {
 
     //Update and add validations!
     @PostMapping("{tripId}/passengers/{passengerId}/rate")
-    public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId, @RequestBody RatingDTO ratingDTO) {
+    public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId
+            , @RequestBody PassengerRatingDTO passengerRatingDTO) {
         try {
-            tripService.ratePassenger(tripId, passengerId, ratingDTO);
+            tripService.ratePassenger(tripId, passengerId, passengerRatingDTO);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

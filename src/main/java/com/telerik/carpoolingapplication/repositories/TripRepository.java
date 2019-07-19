@@ -22,7 +22,7 @@ public interface TripRepository {
 
     void changePassengerStatus(int tripId, int passengerId, String status);
 
-    void rateDriver(int id, RatingDTO ratingDTO);
+    void rateDriver(int id, DriverRatingDTO driverRatingDTO);
 
-    void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO);
+    void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO);
 }

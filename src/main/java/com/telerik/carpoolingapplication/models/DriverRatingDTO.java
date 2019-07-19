@@ -4,8 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "ratings")
-public class RatingDTO {
+@Table(name = "driver_ratings")
+public class DriverRatingDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -16,16 +16,12 @@ public class RatingDTO {
     @NotNull
     private int ratingGiverId;
 
-    @NotNull
-    private int ratingReceiverId;
-
-    public RatingDTO() {
+    public DriverRatingDTO() {
     }
 
-    public RatingDTO(@NotNull double rating, @NotNull int ratingGiverId, @NotNull int ratingReceiverId) {
+    public DriverRatingDTO(@NotNull double rating, @NotNull int ratingGiverId) {
         this.rating = rating;
         this.ratingGiverId = ratingGiverId;
-        this.ratingReceiverId = ratingReceiverId;
     }
 
     public int getId() {
@@ -46,13 +42,5 @@ public class RatingDTO {
 
     public void setRatingGiverId(int ratingGiverId) {
         this.ratingGiverId = ratingGiverId;
-    }
-
-    public int getRatingReceiverId() {
-        return ratingReceiverId;
-    }
-
-    public void setRatingReceiverId(int ratingReceiverId) {
-        this.ratingReceiverId = ratingReceiverId;
     }
 }

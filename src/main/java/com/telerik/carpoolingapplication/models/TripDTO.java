@@ -64,7 +64,7 @@ public class TripDTO {
     @JoinTable(name = "trips_driver_ratings",
             joinColumns = {@JoinColumn(name = "trip_id")},
             inverseJoinColumns = {@JoinColumn(name = "rating_id")})
-    private List<RatingDTO> driverRatings;
+    private List<DriverRatingDTO> driverRatings;
 
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -72,7 +72,7 @@ public class TripDTO {
     @JoinTable(name = "trips_passengers_ratings",
             joinColumns = {@JoinColumn(name = "trip_id")},
             inverseJoinColumns = {@JoinColumn(name = "rating_id")})
-    private List<RatingDTO> passengersRatings;
+    private List<PassengerRatingDTO> passengersRatings;
 
     private boolean smoking;
     private boolean pets;
@@ -84,8 +84,8 @@ public class TripDTO {
     public TripDTO(@NotNull UserDTO driver, @NotNull String carModel, @NotNull String message
             , @NotNull String departureTime, @NotNull String origin, @NotNull String destination
             , @NotNull int availablePlaces, List<PassengerDTO> passengers, @NotNull TripStatus tripStatus
-            , List<CommentDTO> comments, List<RatingDTO> driverRatings, List<RatingDTO> passengersRatings
-            , boolean smoking, boolean pets, boolean luggage) {
+            , List<CommentDTO> comments, List<DriverRatingDTO> driverRatings
+            , List<PassengerRatingDTO> passengersRatings, boolean smoking, boolean pets, boolean luggage) {
         this.driver = driver;
         this.carModel = carModel;
         this.message = message;
@@ -187,19 +187,19 @@ public class TripDTO {
         this.comments = comments;
     }
 
-    public List<RatingDTO> getDriverRatings() {
+    public List<DriverRatingDTO> getDriverRatings() {
         return driverRatings;
     }
 
-    public void setDriverRatings(List<RatingDTO> driverRatings) {
+    public void setDriverRatings(List<DriverRatingDTO> driverRatings) {
         this.driverRatings = driverRatings;
     }
 
-    public List<RatingDTO> getPassengersRatings() {
+    public List<PassengerRatingDTO> getPassengersRatings() {
         return passengersRatings;
     }
 
-    public void setPassengersRatings(List<RatingDTO> passengersRatings) {
+    public void setPassengersRatings(List<PassengerRatingDTO> passengersRatings) {
         this.passengersRatings = passengersRatings;
     }
 

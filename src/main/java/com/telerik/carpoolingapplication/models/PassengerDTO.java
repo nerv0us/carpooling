@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,8 @@ public class PassengerDTO {
     private String email;
     @NotNull
     private String phone;
+    @NotNull
+    @ColumnDefault("0")
     private Double ratingAsPassenger;
     @NotNull
     private PassengerStatus passengerStatus;

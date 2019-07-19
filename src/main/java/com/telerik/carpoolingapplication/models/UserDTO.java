@@ -34,9 +34,11 @@ public class UserDTO {
     @Size(min = 4, max = 25, message = "Phone number should be between 4 and 25 characters.")
     private String phone;
 
+    @NotNull
     @ColumnDefault("0")
     private Double ratingAsDriver;
 
+    @NotNull
     @ColumnDefault("0")
     private Double ratingAsPassenger;
 
