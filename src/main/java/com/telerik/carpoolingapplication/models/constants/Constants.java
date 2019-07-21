@@ -32,5 +32,5 @@ public class Constants {
     public static final String DEFAULT_USER_IMAGE_NAME = "defaultUserPhoto";
 
     // Storage constants
-    public static final String STORAGE_ROUTE = "/Users/jiwkojelew/Telerik/Final Project/carpooling-application/src/main/resources/static/images/users/";
+    public static final String STORAGE_ROUTE = "/tmp/images/users/";
 }

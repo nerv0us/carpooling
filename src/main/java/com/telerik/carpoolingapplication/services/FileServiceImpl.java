@@ -9,11 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,15 +21,17 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService {
     private UserRepository userRepository;
     private FileRepository fileRepository;
+    private Path currentRelativePath;
 
     public FileServiceImpl(UserRepository userRepository, FileRepository fileRepository) {
         this.userRepository = userRepository;
         this.fileRepository = fileRepository;
     }
 
+
     @Override
     public void storeFile(int userId, MultipartFile file) throws IOException {
-        if(file.getSize() > 5242880) {
+        if (file.getSize() > 5242880) {
             throw new IllegalArgumentException("File should be less than 5MB");
         }
         if (isFileFormatInvalid(file)) {
@@ -44,8 +45,12 @@ public class FileServiceImpl implements FileService {
             Files.delete(Paths.get(user.getAvatarUri()));
         }
 
+        currentRelativePath = Paths.get("");
+        String projectPath = currentRelativePath.normalize().toAbsolutePath().getParent().toString();
+        String imageDirectory = getImageDirectory(projectPath);
+
         String fileName = changeFileName(file);
-        String filePath = Constants.STORAGE_ROUTE + fileName;
+        String filePath = imageDirectory + fileName;
 
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
@@ -53,6 +58,17 @@ public class FileServiceImpl implements FileService {
         } catch (IOException e) {
             throw new IOException("Failed to store file " + fileName, e);
         }
+    }
+
+    private String getImageDirectory(String projectPath) {
+        String imageDirectory = projectPath + Constants.STORAGE_ROUTE;
+
+        File dir = new File(imageDirectory);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        return imageDirectory;
     }
 
     private boolean isFileFormatInvalid(MultipartFile file) {
