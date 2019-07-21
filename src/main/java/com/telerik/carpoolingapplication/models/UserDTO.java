@@ -1,17 +1,12 @@
 package com.telerik.carpoolingapplication.models;
 
 import org.hibernate.annotations.ColumnDefault;
-
-import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-@Table(name = "users")
 public class UserDTO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     private int id;
 
     @NotNull
@@ -36,20 +31,21 @@ public class UserDTO {
 
     @NotNull
     @ColumnDefault("0")
-    private Double ratingAsDriver;
+    private double ratingAsDriver;
 
     @NotNull
     @ColumnDefault("0")
-    private Double ratingAsPassenger;
+    private double ratingAsPassenger;
 
     private String avatarUri;
 
     public UserDTO() {
     }
 
-    public UserDTO(@NotNull String username, @NotNull String firstName, @NotNull String lastName
+    public UserDTO(@NotNull int id,@NotNull String username, @NotNull String firstName, @NotNull String lastName
             , @NotNull String email, @NotNull String phone, Double ratingAsDriver
             , Double ratingAsPassenger, String avatarUri) {
+        this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -130,5 +126,13 @@ public class UserDTO {
 
     public void setAvatarUri(String avatarUri) {
         this.avatarUri = avatarUri;
+    }
+
+    public void setRatingAsDriver(double ratingAsDriver) {
+        this.ratingAsDriver = ratingAsDriver;
+    }
+
+    public void setRatingAsPassenger(double ratingAsPassenger) {
+        this.ratingAsPassenger = ratingAsPassenger;
     }
 }

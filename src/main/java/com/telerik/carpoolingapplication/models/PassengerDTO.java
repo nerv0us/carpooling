@@ -1,18 +1,10 @@
 package com.telerik.carpoolingapplication.models;
 
-import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
-import org.hibernate.annotations.ColumnDefault;
+import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "passengers")
 public class PassengerDTO {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     @NotNull
     private int userId;
     @NotNull
@@ -26,17 +18,16 @@ public class PassengerDTO {
     @NotNull
     private String phone;
     @NotNull
-    @ColumnDefault("0")
     private Double ratingAsPassenger;
     @NotNull
-    private PassengerStatus passengerStatus;
+    private PassengerStatusEnum passengerStatusEnum;
 
     public PassengerDTO() {
     }
 
     public PassengerDTO(int userId, @NotNull String username, @NotNull String firstName
             , @NotNull String lastName, @NotNull String email, @NotNull String phone
-            , Double ratingAsPassenger, @NotNull PassengerStatus passengerStatus) {
+            , Double ratingAsPassenger) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -44,15 +35,6 @@ public class PassengerDTO {
         this.email = email;
         this.phone = phone;
         this.ratingAsPassenger = ratingAsPassenger;
-        this.passengerStatus = passengerStatus;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getUserId() {
@@ -111,11 +93,11 @@ public class PassengerDTO {
         this.ratingAsPassenger = ratingAsPassenger;
     }
 
-    public PassengerStatus getPassengerStatus() {
-        return passengerStatus;
+    public PassengerStatusEnum getPassengerStatusEnum() {
+        return passengerStatusEnum;
     }
 
-    public void setPassengerStatus(PassengerStatus passengerStatus) {
-        this.passengerStatus = passengerStatus;
+    public void setPassengerStatusEnum(PassengerStatusEnum passengerStatusEnum) {
+        this.passengerStatusEnum = passengerStatusEnum;
     }
 }

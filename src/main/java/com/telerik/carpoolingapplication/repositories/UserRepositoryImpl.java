@@ -3,7 +3,7 @@ package com.telerik.carpoolingapplication.repositories;
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.ModelsMapper;
 import com.telerik.carpoolingapplication.models.UserDTO;
-import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.constants.Messages;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
             session.beginTransaction();
             UserDTO userToEdit = session.get(UserDTO.class, userDTO.getId());
             if (isEmailExist(userDTO.getEmail())) {
-                throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+                throw new IllegalArgumentException(String.format(Messages.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
             }
             ModelsMapper.editUser(userToEdit, userDTO);
             session.getTransaction().commit();
@@ -62,7 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             if (isEmailExist(userDTO.getEmail())) {
-                throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+                throw new IllegalArgumentException(String.format(Messages.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
             }
             UserDTO user = ModelsMapper.createUser(userDTO);
             session.save(user);

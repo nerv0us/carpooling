@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.models.constants;
 
-public class Constants {
+public class Messages {
     // Trip constants
     public static final String NOT_AVAILABLE_TRIPS = "There are no trips available!";
     public static final String TRIP_CREATED = "Trip created!";
@@ -17,6 +17,8 @@ public class Constants {
     public static final String UNAUTHORIZED_MESSAGE = "Not authorized!";
     public static final String ALREADY_APPLIED = "You have already applied for this trip!";
     public static final String PASSENGER_STATUS_CHANGED = "Passenger status changed!";
+    public static final String YOU_DO_NOT_PARTICIPATE = "You do not participate in this trip!";
+    public static final String TRIP_NOT_FINISHED = "You cannot add comments before trip is finished!!";
 
     // User constants
     public static final String USER_NOT_FOUND = "User with ID %d not found!";

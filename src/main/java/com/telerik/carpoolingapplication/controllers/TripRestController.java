@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.*;
-import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,7 @@ public class TripRestController {
         this.tripService = tripService;
     }
 
+    //Add filtering and sorting!
     @GetMapping
     public List<TripDTO> getTrips() {
         List<TripDTO> trips;
@@ -40,7 +41,7 @@ public class TripRestController {
         //Add unauthorized logic and response here!
         tripService.createTrip(createTripDTO);
 
-        return Constants.TRIP_CREATED;
+        return Messages.TRIP_CREATED;
     }
 
     @PutMapping
@@ -49,7 +50,7 @@ public class TripRestController {
         //Add response logic here!
         tripService.editTrip(editTripDTO);
 
-        return Constants.TRIP_UPDATED;
+        return Messages.TRIP_UPDATED;
     }
 
     @GetMapping("/{id}")
@@ -68,14 +69,14 @@ public class TripRestController {
         try {
             tripService.changeTripStatus(id, status);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.NO_SUCH_STATUS)) {
+            if (e.getMessage().equals(Messages.NO_SUCH_STATUS)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
         }
-        return Constants.TRIP_STATUS_CHANGED;
+        return Messages.TRIP_STATUS_CHANGED;
     }
 
     @PostMapping("/{id}/comments")
@@ -83,32 +84,38 @@ public class TripRestController {
         try {
             tripService.addComment(id, commentDTO);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.UNAUTHORIZED)) {
+            if (e.getMessage().equals(Messages.UNAUTHORIZED)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
+            if (e.getMessage().equals(Messages.YOU_DO_NOT_PARTICIPATE)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.TRIP_NOT_FINISHED)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            }
         }
-        return Constants.COMMENT_ADDED;
+        return Messages.COMMENT_ADDED;
     }
 
-    @PostMapping("/{id}/passengers")
+    /*@PostMapping("/{id}/passengers")
     public String apply(@PathVariable int id) {
         try {
             tripService.apply(id);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.UNAUTHORIZED_MESSAGE)) {
+            if (e.getMessage().equals(Messages.UNAUTHORIZED_MESSAGE)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.YOUR_OWN_TRIP) || e.getMessage().equals(Constants.ALREADY_APPLIED)) {
+            if (e.getMessage().equals(Messages.YOUR_OWN_TRIP) || e.getMessage().equals(Messages.ALREADY_APPLIED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
         }
-        return Constants.APPLIED;
+        return Messages.APPLIED;
     }
 
     @PatchMapping("{tripId}/passengers/{passengerId}")
@@ -117,15 +124,15 @@ public class TripRestController {
         try {
             tripService.changePassengerStatus(tripId, passengerId, status);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND) || e.getMessage().equals("Passenger not found!")) {
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND) || e.getMessage().equals("Passenger not found!")) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.NO_SUCH_STATUS)) {
+            if (e.getMessage().equals(Messages.NO_SUCH_STATUS)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
 
         }
-        return Constants.PASSENGER_STATUS_CHANGED;
+        return Messages.PASSENGER_STATUS_CHANGED;
     }
 
     @PostMapping("{id}/driver/rate")
@@ -137,7 +144,7 @@ public class TripRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
-        return Constants.DRIVER_RATED;
+        return Messages.DRIVER_RATED;
     }
 
     //Update and add validations!
@@ -149,6 +156,6 @@ public class TripRestController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        return Constants.PASSENGER_RATED;
-    }
+        return Messages.PASSENGER_RATED;
+    }*/
 }
