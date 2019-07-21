@@ -1,8 +1,7 @@
 package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
-import com.telerik.carpoolingapplication.models.constants.Constants;
-import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
+import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,9 +27,11 @@ public class TripRepositoryImpl implements TripRepository {
         Session session = sessionFactory.getCurrentSession();
 
         //Think if query should return all trips or only those that are not passed!
-        Query<TripDTO> query = session.createQuery("from TripDTO", TripDTO.class);
+        Query<Trip> query = session.createQuery("from Trip", Trip.class);
 
-        return query.list();
+        List<TripDTO> tripDTOS = ModelsMapper.fromTrip(query.list());
+
+        return tripDTOS;
     }
 
     @Override
@@ -39,9 +40,9 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
 
             //Fake user for testing purposes that needs to be an authenticated user!
-            UserDTO fakeUser = session.get(UserDTO.class, 1);
+            User fakeDriver = session.get(User.class, 1);
 
-            TripDTO newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeUser);
+            Trip newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeDriver);
             session.save(newTrip);
             session.getTransaction().commit();
         }
@@ -53,17 +54,16 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
 
             //Fake user for testing purposes that needs to be an authenticated user!
-            //
 
             //Ask for equal responses and validations and then catch exceptions!
-            UserDTO fakeUser = session.get(UserDTO.class, 1);
-            if (fakeUser == null) {
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
+            User fakeDriver = session.get(User.class, 1);
+            if (fakeDriver == null) {
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
-            TripDTO tripToEdit = session.get(TripDTO.class, editTripDTO.getId());
+            Trip tripToEdit = session.get(Trip.class, editTripDTO.getId());
             if (tripToEdit == null) {
-                throw new IllegalArgumentException(Constants.INVALID_ID_SUPPLIED);
+                throw new IllegalArgumentException(Messages.INVALID_ID_SUPPLIED);
             }
 
             ModelsMapper.updateTrip(tripToEdit, editTripDTO);
@@ -79,7 +79,11 @@ public class TripRepositoryImpl implements TripRepository {
         TripDTO tripDTO;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            tripDTO = session.get(TripDTO.class, id);
+            Trip trip = session.get(Trip.class, id);
+            if (trip == null){
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+            }
+            tripDTO = ModelsMapper.fromTrip(trip);
             session.getTransaction().commit();
         }
         return tripDTO;
@@ -89,8 +93,9 @@ public class TripRepositoryImpl implements TripRepository {
     public void changeTripStatus(TripDTO tripDTO, TripStatus updatedStatus) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            tripDTO.setTripStatus(updatedStatus);
-            session.update(tripDTO);
+            Trip trip = session.get(Trip.class, tripDTO.getId());
+            trip.setTripStatus(updatedStatus);
+            session.update(trip);
             session.getTransaction().commit();
         }
     }
@@ -100,23 +105,31 @@ public class TripRepositoryImpl implements TripRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            UserDTO fakeUser = session.get(UserDTO.class, commentDTO.getAuthor().getId());
-
-            //Setting fakeUser as author for testing purposes!
-            commentDTO.setAuthor(fakeUser);
+            //Logged user validation!
+            User fakeUser = session.get(User.class, commentDTO.getUserId());
             if (fakeUser == null) {
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+            }
+
+            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassenger(fakeUser);
+            if (!tripDTO.getPassengers().contains(fakePassenger)){
+                throw new IllegalArgumentException("You do not participate in this trip!");
+            }
+
+            if (tripDTO.getTripStatus() != TripStatus.done){
+                throw new IllegalArgumentException("You cannot add comments before trip is finished!!");
             }
 
             session.save(commentDTO);
-            tripDTO.getComments().add(commentDTO);
-            session.update(tripDTO);
+            Trip trip = session.get(Trip.class, tripDTO.getId());
+            trip.getComments().add(commentDTO);
+            session.update(trip);
 
             session.getTransaction().commit();
         }
     }
 
-    @Override
+  /*@Override
     public void apply(TripDTO tripDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -124,13 +137,13 @@ public class TripRepositoryImpl implements TripRepository {
             //For testing purposes! Should be logged user!     //Example
             UserDTO loggedUser = session.get(UserDTO.class, 4);
             if (loggedUser == null){
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
             //For testing purposes! Should be logged user!
             PassengerDTO fakePassenger = ModelsMapper.fromUserToPassanger(loggedUser);
             if (fakePassenger.getUserId() == tripDTO.getDriver().getId()) {
-                throw new IllegalArgumentException(Constants.YOUR_OWN_TRIP);
+                throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
             }
 
             List<PassengerDTO> passengers = tripDTO.getPassengers();
@@ -140,7 +153,7 @@ public class TripRepositoryImpl implements TripRepository {
                     .orElse(null);
 
             if (passengerDTO != null) {
-                throw new IllegalArgumentException(Constants.ALREADY_APPLIED);
+                throw new IllegalArgumentException(Messages.ALREADY_APPLIED);
             }
 
             tripDTO.getPassengers().add(fakePassenger);
@@ -158,17 +171,17 @@ public class TripRepositoryImpl implements TripRepository {
 
             TripDTO tripDTO = getTrip(tripId);
             if (tripDTO == null) {
-                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
 
             // Throws IllegalArgumentException("Passenger not found!")
             PassengerDTO passengerDTO = findPassengerOrThrowNotFound(tripDTO.getPassengers(), passengerId);
 
             try {
-                PassengerStatus passengerStatus = PassengerStatus.valueOf(status);
-                passengerDTO.setPassengerStatus(passengerStatus);
+                PassengerStatusEnum passengerStatus = PassengerStatusEnum.valueOf(status);
+                passengerDTO.setPassengerStatusEnum(passengerStatus);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
+                throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
             }
             session.update(passengerDTO);
 
@@ -184,13 +197,13 @@ public class TripRepositoryImpl implements TripRepository {
 
             TripDTO currentTrip = getTrip(id);
             if (currentTrip == null) {
-                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
 
             //Testing purposes, should be logged user!
             UserDTO loggedUser = session.get(UserDTO.class, driverRatingDTO.getRatingGiverId());
             if (loggedUser == null){
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
             List<DriverRatingDTO> driverRatings = currentTrip.getDriverRatings();
@@ -200,7 +213,7 @@ public class TripRepositoryImpl implements TripRepository {
                     .orElse(null);
 
             if (checkIfUserHasRated != null){
-                throw new IllegalArgumentException(Constants.DRIVER_ALREADY_RATED);
+                throw new IllegalArgumentException(Messages.DRIVER_ALREADY_RATED);
             }
 
             // Add unauthorized and forbidden validations when security is implemented!
@@ -224,6 +237,8 @@ public class TripRepositoryImpl implements TripRepository {
         }
     }
 
+    //Update database!
+    //Change average rating logic!
     // Fix DriverRatingDTO class and generate corresponding tables in database!
     @Override
     public void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO) {
@@ -235,7 +250,7 @@ public class TripRepositoryImpl implements TripRepository {
 
             TripDTO tripDTO = getTrip(tripId);
             if (tripDTO == null) {
-                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
 
             // Add unauthorized and forbidden validations when security is implemented!
@@ -250,7 +265,7 @@ public class TripRepositoryImpl implements TripRepository {
                     .orElse(null);
 
             if (checkIfPassengerIsRated != null){
-                throw new IllegalArgumentException(Constants.PASSENGER_ALREADY_RATED);
+                throw new IllegalArgumentException(Messages.PASSENGER_ALREADY_RATED);
             }
 
 
@@ -286,5 +301,5 @@ public class TripRepositoryImpl implements TripRepository {
         }
 
         return passengerDTO;
-    }
+    }*/
 }

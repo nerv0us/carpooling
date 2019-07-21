@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.UserDTO;
-import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.constants.Messages;
 import com.telerik.carpoolingapplication.repositories.FileRepository;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -37,15 +37,15 @@ public class FileServiceImpl implements FileService {
             throw new IllegalArgumentException("Invalid file format");
         }
         if (userRepository.getById(userId) == null) {
-            throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userId));
+            throw new IllegalArgumentException(String.format(Messages.USER_NOT_FOUND, userId));
         }
         UserDTO user = userRepository.getById(userId);
-        if (!user.getAvatarUri().isEmpty() && !user.getAvatarUri().contains(Constants.DEFAULT_USER_IMAGE_NAME)) {
+        if (!user.getAvatarUri().isEmpty() && !user.getAvatarUri().contains(Messages.DEFAULT_USER_IMAGE_NAME)) {
             Files.delete(Paths.get(user.getAvatarUri()));
         }
 
         String fileName = changeFileName(file);
-        String filePath = Constants.STORAGE_ROUTE + fileName;
+        String filePath = Messages.STORAGE_ROUTE + fileName;
 
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
