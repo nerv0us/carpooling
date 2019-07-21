@@ -1,32 +1,55 @@
 package com.telerik.carpoolingapplication.models;
 
-import com.telerik.carpoolingapplication.models.enums.PassengerStatus;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModelsMapper {
 
-    public static TripDTO fromCreateTripDTO(CreateTripDTO createTripDTO, UserDTO userDTO) {
-        TripDTO tripDTO = new TripDTO();
+    public static List<TripDTO> fromTrip(List<Trip> trips) {
+        List<TripDTO> tripDTOS = new ArrayList<>();
+        for (Trip trip : trips) {
+            TripDTO tripDTO = fromTrip(trip);
+            tripDTOS.add(tripDTO);
+        }
+        return tripDTOS;
+    }
 
-        tripDTO.setDriver(userDTO);
-        tripDTO.setCarModel(createTripDTO.getCarModel());
-        tripDTO.setMessage(createTripDTO.getMessage());
-        tripDTO.setDepartureTime(createTripDTO.getDepartureTime());
-        tripDTO.setOrigin(createTripDTO.getOrigin());
-        tripDTO.setDestination(createTripDTO.getDestination());
-        tripDTO.setAvailablePlaces(createTripDTO.getAvailablePlaces());
-        tripDTO.setSmoking(createTripDTO.smoking());
-        tripDTO.setPets(createTripDTO.pets());
-        tripDTO.setLuggage(createTripDTO.luggage());
-        tripDTO.setPassengers(new ArrayList<>());
-        tripDTO.setTripStatus(TripStatus.available);
-
+    public static TripDTO fromTrip(Trip trip) {
+        List<PassengerDTO> tripDTOPassengers = new ArrayList<>();
+        for (User user : trip.getPassengers()) {
+            PassengerDTO currentPassenger = fromUserToPassenger(user);
+            tripDTOPassengers.add(currentPassenger);
+        }
+        TripDTO tripDTO = new TripDTO(trip.getId(), trip.getDriver(), trip.getCarModel()
+                , trip.getMessage(), trip.getDepartureTime(), trip.getOrigin(), trip.getDestination()
+                , trip.getAvailablePlaces(), trip.getTripStatus(), trip.isSmoking()
+                , trip.isPets(), trip.isLuggage());
+        tripDTO.setPassengers(tripDTOPassengers);
         return tripDTO;
     }
 
-    public static void updateTrip(TripDTO tripToEdit, EditTripDTO editTripDTO) {
+    public static Trip fromCreateTripDTO(CreateTripDTO createTripDTO, User user) {
+        Trip trip = new Trip();
+
+        trip.setDriver(user);
+        trip.setCarModel(createTripDTO.getCarModel());
+        trip.setMessage(createTripDTO.getMessage());
+        trip.setDepartureTime(createTripDTO.getDepartureTime());
+        trip.setOrigin(createTripDTO.getOrigin());
+        trip.setDestination(createTripDTO.getDestination());
+        trip.setAvailablePlaces(createTripDTO.getAvailablePlaces());
+        trip.setSmoking(createTripDTO.smoking());
+        trip.setPets(createTripDTO.pets());
+        trip.setLuggage(createTripDTO.luggage());
+        trip.setPassengers(new ArrayList<>());
+        trip.setTripStatus(TripStatus.available);
+
+        return trip;
+    }
+
+    public static void updateTrip(Trip tripToEdit, EditTripDTO editTripDTO) {
         tripToEdit.setCarModel(editTripDTO.getCarModel());
         tripToEdit.setMessage(editTripDTO.getMessage());
         tripToEdit.setDepartureTime(editTripDTO.getDepartureTime());
@@ -38,18 +61,16 @@ public class ModelsMapper {
         tripToEdit.setLuggage(editTripDTO.luggage());
     }
 
-    public static PassengerDTO fromUserToPassanger(UserDTO userDTO) {
+    public static PassengerDTO fromUserToPassenger(User user) {
         PassengerDTO passengerDTO = new PassengerDTO();
 
-        passengerDTO.setUserId(userDTO.getId());
-        passengerDTO.setUsername(userDTO.getUsername());
-        passengerDTO.setFirstName(userDTO.getFirstName());
-        passengerDTO.setLastName(userDTO.getLastName());
-        passengerDTO.setEmail(userDTO.getEmail());
-        passengerDTO.setPhone(userDTO.getPhone());
-        passengerDTO.setRatingAsPassenger(userDTO.getRatingAsPassenger());
-        passengerDTO.setPassengerStatus(PassengerStatus.pending);
-
+        passengerDTO.setUserId(user.getId());
+        passengerDTO.setUsername(user.getUsername());
+        passengerDTO.setFirstName(user.getFirstName());
+        passengerDTO.setLastName(user.getLastName());
+        passengerDTO.setEmail(user.getEmail());
+        passengerDTO.setPhone(user.getPhone());
+        passengerDTO.setRatingAsPassenger(user.getRatingAsPassenger());
         return passengerDTO;
     }
 

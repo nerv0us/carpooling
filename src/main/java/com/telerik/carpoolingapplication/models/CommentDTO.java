@@ -13,16 +13,15 @@ public class CommentDTO {
     @NotNull
     private String message;
 
-    @ManyToOne
     @NotNull
-    private UserDTO author;
+    private int userId;
 
     public CommentDTO() {
     }
 
-    public CommentDTO(@NotNull String message, @NotNull UserDTO author) {
+    public CommentDTO(@NotNull String message, @NotNull int userId) {
         this.message = message;
-        this.author = author;
+        this.userId = userId;
     }
 
     public int getId() {
@@ -41,11 +40,11 @@ public class CommentDTO {
         this.message = message;
     }
 
-    public UserDTO getAuthor() {
-        return author;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setAuthor(UserDTO author) {
-        this.author = author;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

@@ -1,14 +1,20 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripDTO {
-    @NotNull
+@Entity
+@Table(name = "trips")
+public class Trip {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
@@ -34,26 +40,36 @@ public class TripDTO {
     @NotNull
     private int availablePlaces;
 
-    private List<PassengerDTO> passengers;
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany()
+    @JoinTable(name = "trips_passengers",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "passenger_id")})
+    private List<User> passengers;
 
     @NotNull
     private TripStatus tripStatus;
 
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany
+    @JoinTable(name = "trips_comments",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
     private List<CommentDTO> comments;
 
     private boolean smoking;
     private boolean pets;
     private boolean luggage;
 
-    public TripDTO() {
+    public Trip() {
     }
 
-    public TripDTO(@NotNull int id, @NotNull User driver, @NotNull String carModel
-            , @NotNull String message, @NotNull String departureTime, @NotNull String origin
-            , @NotNull String destination, @NotNull int availablePlaces
-            , @NotNull TripStatus tripStatus, boolean smoking, boolean pets
-            , boolean luggage) {
-        this.id = id;
+    public Trip(@NotNull User driver, @NotNull String carModel, @NotNull String message
+            , @NotNull String departureTime, @NotNull String origin, @NotNull String destination
+            , @NotNull int availablePlaces, @NotNull TripStatus tripStatus
+            , boolean smoking, boolean pets, boolean luggage) {
         this.driver = driver;
         this.carModel = carModel;
         this.message = message;
@@ -133,11 +149,11 @@ public class TripDTO {
         this.availablePlaces = availablePlaces;
     }
 
-    public List<PassengerDTO> getPassengers() {
+    public List<User> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<PassengerDTO> passengers) {
+    public void setPassengers(List<User> passengers) {
         this.passengers = passengers;
     }
 
