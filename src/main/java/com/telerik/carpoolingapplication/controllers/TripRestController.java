@@ -21,6 +21,7 @@ public class TripRestController {
         this.tripService = tripService;
     }
 
+    //Add filtering and sorting!
     @GetMapping
     public List<TripDTO> getTrips() {
         List<TripDTO> trips;
