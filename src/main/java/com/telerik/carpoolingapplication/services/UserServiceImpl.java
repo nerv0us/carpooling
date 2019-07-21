@@ -2,7 +2,7 @@ package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
-import com.telerik.carpoolingapplication.models.constants.Messages;
+import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,25 +27,25 @@ public class UserServiceImpl implements UserService {
     public String editUser(UserDTO userDTO) {
         UserDTO userToEdit = userRepository.getById(userDTO.getId());
         if (userToEdit == null) {
-            throw new IllegalArgumentException(String.format(Messages.USER_NOT_FOUND, userDTO.getId()));
+            throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userDTO.getId()));
         }
         UserDTO user = userRepository.getByUsername(userDTO.getUsername());
         if (user != null) {
-            throw new IllegalArgumentException(String.format(Messages.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
+            throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
         }
         try {
             userRepository.editUser(userDTO);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format(Messages.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+            throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
         }
-        return Messages.USER_UPDATED;
+        return Constants.USER_UPDATED;
     }
 
     @Override
     public UserDTO getByUsername(String username) {
         UserDTO user = userRepository.getByUsername(username);
         if (user == null) {
-            throw new IllegalArgumentException(String.format(Messages.USERNAME_NOT_FOUND, username));
+            throw new IllegalArgumentException(String.format(Constants.USERNAME_NOT_FOUND, username));
         }
         return user;
     }
@@ -59,14 +59,14 @@ public class UserServiceImpl implements UserService {
     public String createUser(CreateUserDTO userDTO) {
         UserDTO user = userRepository.getByUsername(userDTO.getUsername());
         if (user != null) {
-            throw new IllegalArgumentException(String.format(Messages.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
+            throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
         }
         try {
             userRepository.createUser(userDTO);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format(Messages.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+            throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
         }
-        return Messages.USER_CREATED;
+        return Constants.USER_CREATED;
     }
 
     @Override

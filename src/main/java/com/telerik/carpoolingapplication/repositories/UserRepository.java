@@ -13,6 +13,5 @@ public interface UserRepository {
 
     void createUser(CreateUserDTO userDTO);
 
-    void saveImage(int userId, String imageName);
 
 }

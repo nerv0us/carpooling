@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.services.FileService;
 import com.telerik.carpoolingapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,22 +11,24 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.Objects;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
-    private UserService service;
+    private UserService userService;
+    private FileService fileService;
 
     @Autowired
-    public UserRestController(UserService service) {
-        this.service = service;
+    public UserRestController(UserService service, FileService fileService) {
+        this.userService = service;
+        this.fileService = fileService;
     }
 
     @PutMapping("/update")
     public void editUser(@Valid @RequestBody UserDTO userDTO) {
         try {
-            service.editUser(userDTO);
+            userService.editUser(userDTO);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.MULTI_STATUS, e.getMessage());
         }
@@ -35,7 +38,7 @@ public class UserRestController {
     public UserDTO getUser(@PathVariable String username) {
         UserDTO user;
         try {
-            user = service.getByUsername(username);
+            user = userService.getByUsername(username);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -45,32 +48,22 @@ public class UserRestController {
     @PostMapping("/register")
     public CreateUserDTO createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         try {
-            service.createUser(userDTO);
+            userService.createUser(userDTO);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
         return userDTO;
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/avatar")
     public void uploadFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
         if (file == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Filename is invalid");
-        }
-        if (isFileInvalid(file)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid file name");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
         }
         try {
-            service.storeFile(id, file);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+            fileService.storeFile(id, file);
+        } catch (IllegalArgumentException | IOException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
-    }
-
-    private boolean isFileInvalid(MultipartFile file) {
-        return !Objects.equals(file.getContentType(), "image/jpeg") &&
-                !Objects.equals(file.getContentType(), "image/jpg") &&
-                !Objects.equals(file.getContentType(), "image/png") &&
-                !Objects.equals(file.getContentType(), "image/gif");
     }
 }
