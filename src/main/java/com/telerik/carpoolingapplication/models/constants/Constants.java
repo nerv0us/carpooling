@@ -33,4 +33,6 @@ public class Constants {
 
     // Storage constants
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
+    public static final int MAX_FILE_SIZE = 5242880;
+
 }

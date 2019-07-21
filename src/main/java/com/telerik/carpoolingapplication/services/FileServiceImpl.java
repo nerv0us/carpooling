@@ -21,7 +21,6 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService {
     private UserRepository userRepository;
     private FileRepository fileRepository;
-    private Path currentRelativePath;
 
     public FileServiceImpl(UserRepository userRepository, FileRepository fileRepository) {
         this.userRepository = userRepository;
@@ -31,7 +30,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void storeFile(int userId, MultipartFile file) throws IOException {
-        if (file.getSize() > 5242880) {
+        if (file.getSize() > Constants.MAX_FILE_SIZE) {
             throw new IllegalArgumentException("File should be less than 5MB");
         }
         if (isFileFormatInvalid(file)) {
@@ -45,7 +44,7 @@ public class FileServiceImpl implements FileService {
             Files.delete(Paths.get(user.getAvatarUri()));
         }
 
-        currentRelativePath = Paths.get("");
+        Path currentRelativePath = Paths.get("");
         String projectPath = currentRelativePath.normalize().toAbsolutePath().getParent().toString();
         String imageDirectory = getImageDirectory(projectPath);
 
@@ -60,6 +59,13 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    private boolean isFileFormatInvalid(MultipartFile file) {
+        return !Objects.equals(file.getContentType(), "image/jpeg") &&
+                !Objects.equals(file.getContentType(), "image/jpg") &&
+                !Objects.equals(file.getContentType(), "image/png") &&
+                !Objects.equals(file.getContentType(), "image/gif");
+    }
+
     private String getImageDirectory(String projectPath) {
         String imageDirectory = projectPath + Constants.STORAGE_ROUTE;
 
@@ -69,13 +75,6 @@ public class FileServiceImpl implements FileService {
         }
 
         return imageDirectory;
-    }
-
-    private boolean isFileFormatInvalid(MultipartFile file) {
-        return !Objects.equals(file.getContentType(), "image/jpeg") &&
-                !Objects.equals(file.getContentType(), "image/jpg") &&
-                !Objects.equals(file.getContentType(), "image/png") &&
-                !Objects.equals(file.getContentType(), "image/gif");
     }
 
     private String changeFileName(MultipartFile file) {
