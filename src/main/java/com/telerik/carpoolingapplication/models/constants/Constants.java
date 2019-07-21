@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.models.constants;
 
-public class Messages {
+public class Constants {
     // Trip constants
     public static final String NOT_AVAILABLE_TRIPS = "There are no trips available!";
     public static final String TRIP_CREATED = "Trip created!";
@@ -29,4 +29,8 @@ public class Messages {
     public static final String PASSENGER_RATED = "You have successfully rated this passenger!";
     public static final String DRIVER_ALREADY_RATED = "You have already rated this driver!";
     public static final String PASSENGER_ALREADY_RATED = "You have already rated this passenger!";
+    public static final String DEFAULT_USER_IMAGE_NAME = "defaultUserPhoto";
+
+    // Storage constants
+    public static final String STORAGE_ROUTE = "/Users/jiwkojelew/Telerik/Final Project/carpooling-application/src/main/resources/static/images/users/";
 }
