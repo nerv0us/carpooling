@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Messages;
+import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,7 +30,13 @@ public class TripRepositoryImpl implements TripRepository {
         //Think if query should return all trips or only those that are not passed!
         Query<Trip> query = session.createQuery("from Trip", Trip.class);
 
-        List<TripDTO> tripDTOS = ModelsMapper.fromTrip(query.list());
+        Query<PassengerStatus> query1 = session.createQuery("from PassengerStatus ", PassengerStatus.class);
+        List<PassengerStatus> passengerStatuses = query1.list();
+
+        Query<Comment> query2 = session.createQuery("from Comment ", Comment.class);
+        List<Comment> comments = query2.list();
+
+        List<TripDTO> tripDTOS = ModelsMapper.fromTrip(query.list(), passengerStatuses, comments);
 
         return tripDTOS;
     }
@@ -41,6 +48,9 @@ public class TripRepositoryImpl implements TripRepository {
 
             //Fake user for testing purposes that needs to be an authenticated user!
             User fakeDriver = session.get(User.class, 1);
+            if (fakeDriver == null) {
+                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+            }
 
             Trip newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeDriver);
             session.save(newTrip);
@@ -60,11 +70,15 @@ public class TripRepositoryImpl implements TripRepository {
             if (fakeDriver == null) {
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
+            Query<Trip> query = session.createQuery("from  Trip where driver = :driver and id = :id", Trip.class);
+            query.setParameter("driver", fakeDriver);
+            query.setParameter("id", editTripDTO.getId());
 
-            Trip tripToEdit = session.get(Trip.class, editTripDTO.getId());
-            if (tripToEdit == null) {
+            if (query.list().size() == 0) {
                 throw new IllegalArgumentException(Messages.INVALID_ID_SUPPLIED);
             }
+
+            Trip tripToEdit = query.list().get(0);
 
             ModelsMapper.updateTrip(tripToEdit, editTripDTO);
 
@@ -80,10 +94,20 @@ public class TripRepositoryImpl implements TripRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             Trip trip = session.get(Trip.class, id);
-            if (trip == null){
+            if (trip == null) {
                 throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
-            tripDTO = ModelsMapper.fromTrip(trip);
+
+            Query<PassengerStatus> query = session.createQuery("from PassengerStatus where trip.id = :id"
+                    , PassengerStatus.class);
+            query.setParameter("id", id);
+            List<PassengerStatus> passengerStatuses = query.list();
+
+            Query<Comment> query1 = session.createQuery("from Comment where trip.id = :id", Comment.class);
+            query1.setParameter("id", id);
+            List<Comment> comments = query1.list();
+
+            tripDTO = ModelsMapper.fromTrip(trip, passengerStatuses, comments);
             session.getTransaction().commit();
         }
         return tripDTO;
@@ -111,38 +135,53 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
-            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassenger(fakeUser);
-            if (!tripDTO.getPassengers().contains(fakePassenger)){
-                throw new IllegalArgumentException("You do not participate in this trip!");
-            }
+            if (fakeUser.getId() != tripDTO.getDriver().getId()) {
+                Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
+                        "where trip.id = :tripId and user.id = :userId", PassengerStatus.class);
+                query.setParameter("tripId", tripDTO.getId());
+                query.setParameter("userId", fakeUser.getId());
 
-            if (tripDTO.getTripStatus() != TripStatus.done){
-                throw new IllegalArgumentException("You cannot add comments before trip is finished!!");
-            }
+                //Think of concrete passengerStatus necessary to addComment!
+                if (query.list().size() == 0) {
+                    throw new IllegalArgumentException(Messages.YOU_DO_NOT_PARTICIPATE);
+                }
 
-            session.save(commentDTO);
+                if (tripDTO.getTripStatus() != TripStatus.done) {
+                    throw new IllegalArgumentException(Messages.TRIP_NOT_FINISHED);
+                }
+
+            }
             Trip trip = session.get(Trip.class, tripDTO.getId());
-            trip.getComments().add(commentDTO);
-            session.update(trip);
+            Comment comment = ModelsMapper.fromCommentDTO(commentDTO, fakeUser, trip);
 
+            session.save(comment);
             session.getTransaction().commit();
         }
     }
 
-  /*@Override
-    public void apply(TripDTO tripDTO) {
+    @Override
+    public void apply(int id) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
             //For testing purposes! Should be logged user!     //Example
-            UserDTO loggedUser = session.get(UserDTO.class, 4);
-            if (loggedUser == null){
+            User loggedUser = session.get(User.class, 3);
+            if (loggedUser == null) {
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
+            Trip trip = session.get(Trip.class, id);
+            TripDTO tripDTO = getTrip(id);
+            if (tripDTO == null) {
+                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+            }
+
+            PassengerStatus passengerStatus = new PassengerStatus(loggedUser, PassengerStatusEnum.pending
+                    , trip);
+
             //For testing purposes! Should be logged user!
-            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassanger(loggedUser);
-            if (fakePassenger.getUserId() == tripDTO.getDriver().getId()) {
+            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassenger(loggedUser, passengerStatus);
+            if (fakePassenger.getUserId() == trip.getDriver().getId()) {
                 throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
             }
 
@@ -155,10 +194,7 @@ public class TripRepositoryImpl implements TripRepository {
             if (passengerDTO != null) {
                 throw new IllegalArgumentException(Messages.ALREADY_APPLIED);
             }
-
-            tripDTO.getPassengers().add(fakePassenger);
-            session.save(fakePassenger);
-            session.update(tripDTO);
+            session.save(passengerStatus);
 
             session.getTransaction().commit();
         }
@@ -174,16 +210,24 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
 
-            // Throws IllegalArgumentException("Passenger not found!")
-            PassengerDTO passengerDTO = findPassengerOrThrowNotFound(tripDTO.getPassengers(), passengerId);
+            Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
+                    "where trip.id = :tripId and user.id = :passengerId", PassengerStatus.class);
+            query.setParameter("tripId", tripId);
+            query.setParameter("passengerId", passengerId);
+
+            if (query.list().size() == 0) {
+                throw new IllegalArgumentException(Messages.NO_SUCH_PASSENGER);
+            }
+
+            PassengerStatus passengerStatus = query.list().get(0);
 
             try {
-                PassengerStatusEnum passengerStatus = PassengerStatusEnum.valueOf(status);
-                passengerDTO.setPassengerStatusEnum(passengerStatus);
+                PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
+                passengerStatus.setPassengerStatusEnum(passengerStatusEnum);
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
             }
-            session.update(passengerDTO);
+            session.update(passengerStatus);
 
             session.getTransaction().commit();
         }
@@ -191,56 +235,71 @@ public class TripRepositoryImpl implements TripRepository {
 
     //Add additional validations for rate, like if trip is over or what the status of driver/passenger is!
     @Override
-    public void rateDriver(int id, DriverRatingDTO driverRatingDTO) {
+    public void rateDriver(int id, RatingDriverDTO ratingDriverDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            TripDTO currentTrip = getTrip(id);
+            Trip currentTrip = session.get(Trip.class, id);
             if (currentTrip == null) {
                 throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
             }
 
+          //if (currentTrip.getTripStatus() != TripStatus.done) {
+          //    throw new IllegalArgumentException(Messages.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
+          //}
+
             //Testing purposes, should be logged user!
-            UserDTO loggedUser = session.get(UserDTO.class, driverRatingDTO.getRatingGiverId());
-            if (loggedUser == null){
+            User loggedUser = session.get(User.class, 3);
+            if (loggedUser == null) {
                 throw new IllegalArgumentException(Messages.UNAUTHORIZED);
             }
 
-            List<DriverRatingDTO> driverRatings = currentTrip.getDriverRatings();
-            DriverRatingDTO checkIfUserHasRated = driverRatings.stream()
-                    .filter(r -> r.getRatingGiverId() == loggedUser.getId())
-                    .findFirst()
-                    .orElse(null);
+            Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
+                            "where trip.id = :tripId " +
+                            "and user.id = :passengerId " +
+                            "and passengerStatusEnum = :passengerStatusValue"
+                    , PassengerStatus.class);
+            query.setParameter("tripId", id);
+            query.setParameter("passengerId", loggedUser.getId());
+            query.setParameter("passengerStatusValue", PassengerStatusEnum.accepted);
 
-            if (checkIfUserHasRated != null){
-                throw new IllegalArgumentException(Messages.DRIVER_ALREADY_RATED);
+            if (query.list().size() == 0) {
+                throw new IllegalArgumentException(Messages.NO_SUCH_PASSENGER);
             }
 
-            // Add unauthorized and forbidden validations when security is implemented!
+            User driver = currentTrip.getDriver();
 
-            UserDTO driver = currentTrip.getDriver();
+            Query<Rating> query1 = session.createQuery("from Rating " +
+                    "where trip.id = :tripId " +
+                    "and ratingReceiver.id = :ratingReceiverId " +
+                    "and ratingGiver.id = :ratingGiverId", Rating.class);
 
-            // Change default value of rating as driver and rating as passenger in users and passengers!
-            Double currentRating = driver.getRatingAsDriver();
-            if (currentRating == null) {
-                currentRating = 0D;
+            query1.setParameter("tripId", id);
+            query1.setParameter("ratingReceiverId", driver.getId());
+            query1.setParameter("ratingGiverId", loggedUser.getId());
+
+            if (query1.list().size() == 0) {
+                Rating rating = ModelsMapper.fromRatingDriverDTO(ratingDriverDTO, loggedUser, driver, currentTrip);
+                session.save(rating);
+                driver.getRatingsAsDriver().add(rating);
+            } else {
+                Rating rating = query1.list().get(0);
+                rating.setRating(ratingDriverDTO.getRating());
+                session.update(rating);
             }
-            currentRating += driverRatingDTO.getRating();
-            driver.setRatingAsDriver(currentRating);
 
-            currentTrip.getDriverRatings().add(driverRatingDTO);
-            session.save(driverRatingDTO);
-            session.update(driver);
-            session.update(currentTrip);
+            driver.setRatingAsDriver(calculateRating(driver.getRatingsAsDriver()));
+            session.save(driver);
 
             session.getTransaction().commit();
+            //Test this!
         }
     }
 
     //Update database!
     //Change average rating logic!
     // Fix DriverRatingDTO class and generate corresponding tables in database!
-    @Override
+  /*@Override
     public void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -289,17 +348,16 @@ public class TripRepositoryImpl implements TripRepository {
 
             session.getTransaction().commit();
         }
-    }
-
-    private static PassengerDTO findPassengerOrThrowNotFound(List<PassengerDTO> passengers, int passengerId) {
-        PassengerDTO passengerDTO = passengers.stream()
-                .filter(p -> p.getId() == passengerId)
-                .findFirst()
-                .orElse(null);
-        if (passengerDTO == null) {           //Should become constant after merge!
-            throw new IllegalArgumentException("Passenger not found!");
-        }
-
-        return passengerDTO;
     }*/
+
+    private double calculateRating(List<Rating> ratings) {
+        double result = 0;
+
+        for (Rating rating : ratings) {
+            result += rating.getRating();
+        }
+        result /= ratings.size();
+
+        return result;
+    }
 }

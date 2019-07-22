@@ -37,19 +37,27 @@ public class TripRestController {
 
     @PostMapping
     public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO) {
-
-        //Add unauthorized logic and response here!
-        tripService.createTrip(createTripDTO);
+        try {
+            tripService.createTrip(createTripDTO);
+        }catch (IllegalArgumentException e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
 
         return Messages.TRIP_CREATED;
     }
 
     @PutMapping
     public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO) {
-
-        //Add response logic here!
-        tripService.editTrip(editTripDTO);
-
+        try {
+            tripService.editTrip(editTripDTO);
+        }catch (IllegalArgumentException e){
+            if (e.getMessage().equals(Messages.UNAUTHORIZED)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.INVALID_ID_SUPPLIED)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+        }
         return Messages.TRIP_UPDATED;
     }
 
@@ -100,20 +108,21 @@ public class TripRestController {
         return Messages.COMMENT_ADDED;
     }
 
-    /*@PostMapping("/{id}/passengers")
+    @PostMapping("/{id}/passengers")
     public String apply(@PathVariable int id) {
         try {
             tripService.apply(id);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Messages.UNAUTHORIZED_MESSAGE)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-            }
             if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.UNAUTHORIZED_MESSAGE)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
             if (e.getMessage().equals(Messages.YOUR_OWN_TRIP) || e.getMessage().equals(Messages.ALREADY_APPLIED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,e.getMessage());
         }
         return Messages.APPLIED;
     }
@@ -124,8 +133,11 @@ public class TripRestController {
         try {
             tripService.changePassengerStatus(tripId, passengerId, status);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND) || e.getMessage().equals("Passenger not found!")) {
+            if (e.getMessage().equals(Messages.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+            if (e.getMessage().equals(Messages.NO_SUCH_PASSENGER)){
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
             if (e.getMessage().equals(Messages.NO_SUCH_STATUS)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
@@ -136,10 +148,9 @@ public class TripRestController {
     }
 
     @PostMapping("{id}/driver/rate")
-    public String rateDriver(@PathVariable int id, @RequestBody DriverRatingDTO driverRatingDTO) {
-
+    public String rateDriver(@PathVariable int id, @RequestBody RatingDriverDTO ratingDriverDTO) {
         try {
-            tripService.rateDriver(id, driverRatingDTO);
+            tripService.rateDriver(id, ratingDriverDTO);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -148,7 +159,7 @@ public class TripRestController {
     }
 
     //Update and add validations!
-    @PostMapping("{tripId}/passengers/{passengerId}/rate")
+    /*@PostMapping("{tripId}/passengers/{passengerId}/rate")
     public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId
             , @RequestBody PassengerRatingDTO passengerRatingDTO) {
         try {

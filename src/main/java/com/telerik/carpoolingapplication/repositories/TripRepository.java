@@ -18,11 +18,11 @@ public interface TripRepository {
 
     void addComment(TripDTO tripDTO, CommentDTO commentDTO);
 
-   /*void apply(TripDTO tripDTO);
+    void apply(int id);
 
     void changePassengerStatus(int tripId, int passengerId, String status);
 
-    void rateDriver(int id, DriverRatingDTO driverRatingDTO);
+    void rateDriver(int id, RatingDriverDTO ratingDriverDTO);
 
-    void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO);*/
+    /*void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO);*/
 }

@@ -17,11 +17,11 @@ public interface TripService {
 
     void addComment(int id, CommentDTO commentDTO);
 
-    /*void apply(int id);
+    void apply(int id);
 
     void changePassengerStatus(int tripId, int passengerId, String status);
 
-    void rateDriver(int id, DriverRatingDTO driverRatingDTO);
+    void rateDriver(int id, RatingDriverDTO ratingDriverDTO);
 
-    void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO);*/
+    /*void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO);*/
 }

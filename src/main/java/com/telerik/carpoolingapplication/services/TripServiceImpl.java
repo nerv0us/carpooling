@@ -63,12 +63,9 @@ public class TripServiceImpl implements TripService {
         tripRepository.addComment(tripDTO, commentDTO);
     }
 
-  /*@Override
+    @Override
     public void apply(int id) {
-        // Throws IllegalArgumentException(Messages.TRIP_NOT_FOUND);
-        TripDTO tripDTO = getTrip(id);
-
-        tripRepository.apply(tripDTO);
+        tripRepository.apply(id);
     }
 
     @Override
@@ -77,11 +74,11 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void rateDriver(int id, DriverRatingDTO driverRatingDTO) {
-        tripRepository.rateDriver(id, driverRatingDTO);
+    public void rateDriver(int id, RatingDriverDTO ratingDriverDTO) {
+        tripRepository.rateDriver(id, ratingDriverDTO);
     }
 
-    @Override
+    /*@Override
     public void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO) {
         tripRepository.ratePassenger(tripId, passengerId, passengerRatingDTO);
     }*/
