@@ -19,6 +19,7 @@ public class Messages {
     public static final String PASSENGER_STATUS_CHANGED = "Passenger status changed!";
     public static final String YOU_DO_NOT_PARTICIPATE = "You do not participate in this trip!";
     public static final String TRIP_NOT_FINISHED = "You cannot add comments before trip is finished!!";
+    public static final String RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE = "You cannot rate driver before trip is done!";
 
     // User constants
     public static final String USER_NOT_FOUND = "User with ID %d not found!";
@@ -32,6 +33,7 @@ public class Messages {
     public static final String DRIVER_ALREADY_RATED = "You have already rated this driver!";
     public static final String PASSENGER_ALREADY_RATED = "You have already rated this passenger!";
     public static final String DEFAULT_USER_IMAGE_NAME = "defaultUserPhoto";
+    public static final String NO_SUCH_PASSENGER = "Trip does not have such passenger!";
 
     // Storage constants
     public static final String STORAGE_ROUTE = "/Users/jiwkojelew/Telerik/Final Project/carpooling-application/src/main/resources/static/images/users/";

@@ -1,25 +1,53 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import com.telerik.carpoolingapplication.repositories.TripRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Component
 public class ModelsMapper {
 
-    public static List<TripDTO> fromTrip(List<Trip> trips) {
+    public static List<TripDTO> fromTrip(List<Trip> trips, List<PassengerStatus> passengerStatuses, List<Comment> comments) {
         List<TripDTO> tripDTOS = new ArrayList<>();
         for (Trip trip : trips) {
-            TripDTO tripDTO = fromTrip(trip);
+            TripDTO tripDTO = fromTrip(trip, passengerStatuses, comments);
             tripDTOS.add(tripDTO);
         }
         return tripDTOS;
     }
 
-    public static TripDTO fromTrip(Trip trip) {
+    public static TripDTO fromTrip(Trip trip, List<PassengerStatus> passengerStatuses, List<Comment> comments) {
         List<PassengerDTO> tripDTOPassengers = new ArrayList<>();
-        for (User user : trip.getPassengers()) {
-            PassengerDTO currentPassenger = fromUserToPassenger(user);
+        List<User> passengers = new ArrayList<>();
+        List<CommentDTO> commentDTOS = new ArrayList<>();
+
+        List<PassengerStatus> filteredPassengerStatuses = passengerStatuses.stream()
+                .filter(ps -> ps.getTrip().getId() == trip.getId())
+                .collect(Collectors.toList());
+
+        for (PassengerStatus passengerStatus : filteredPassengerStatuses) {
+            passengers.add(passengerStatus.getUser());
+        }
+
+        List<Comment> filteredByTripId = comments.stream()
+                .filter(c -> c.getTrip().getId() == trip.getId())
+                .collect(Collectors.toList());
+        for (Comment comment : filteredByTripId) {
+            CommentDTO commentDTO = fromComment(comment);
+            commentDTOS.add(commentDTO);
+        }
+
+        for (User user : passengers) {
+            PassengerStatus passengerStatus = passengerStatuses.stream()
+                    .filter(p -> p.getUser().getId() == user.getId())
+                    .findFirst()
+                    .orElse(null);
+            PassengerDTO currentPassenger = fromUserToPassenger(user, passengerStatus);
             tripDTOPassengers.add(currentPassenger);
         }
         TripDTO tripDTO = new TripDTO(trip.getId(), trip.getDriver(), trip.getCarModel()
@@ -27,6 +55,7 @@ public class ModelsMapper {
                 , trip.getAvailablePlaces(), trip.getTripStatus(), trip.isSmoking()
                 , trip.isPets(), trip.isLuggage());
         tripDTO.setPassengers(tripDTOPassengers);
+        tripDTO.setComments(commentDTOS);
         return tripDTO;
     }
 
@@ -43,7 +72,6 @@ public class ModelsMapper {
         trip.setSmoking(createTripDTO.smoking());
         trip.setPets(createTripDTO.pets());
         trip.setLuggage(createTripDTO.luggage());
-        trip.setPassengers(new ArrayList<>());
         trip.setTripStatus(TripStatus.available);
 
         return trip;
@@ -61,7 +89,7 @@ public class ModelsMapper {
         tripToEdit.setLuggage(editTripDTO.luggage());
     }
 
-    public static PassengerDTO fromUserToPassenger(User user) {
+    public static PassengerDTO fromUserToPassenger(User user, PassengerStatus passengerStatus) {
         PassengerDTO passengerDTO = new PassengerDTO();
 
         passengerDTO.setUserId(user.getId());
@@ -71,6 +99,7 @@ public class ModelsMapper {
         passengerDTO.setEmail(user.getEmail());
         passengerDTO.setPhone(user.getPhone());
         passengerDTO.setRatingAsPassenger(user.getRatingAsPassenger());
+        passengerDTO.setPassengerStatusEnum(passengerStatus.getPassengerStatusEnum());
         return passengerDTO;
     }
 
@@ -97,5 +126,19 @@ public class ModelsMapper {
         user.setRatingAsDriver(0D);
 
         return user;
+    }
+
+    public static Comment fromCommentDTO(CommentDTO commentDTO, User user, Trip trip) {
+        return new Comment(commentDTO.getMessage(), user, trip);
+    }
+
+    public static CommentDTO fromComment(Comment comment) {
+        return new CommentDTO(comment.getMessage(), comment.getUser().getId());
+    }
+
+    public static Rating fromRatingDriverDTO(RatingDriverDTO ratingDriverDTO, User ratingGiver
+            , User ratingReceiver, Trip trip) {
+        double rating = ratingDriverDTO.getRating();
+        return new Rating(rating, ratingGiver, ratingReceiver, trip);
     }
 }

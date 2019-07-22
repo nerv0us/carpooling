@@ -40,24 +40,8 @@ public class Trip {
     @NotNull
     private int availablePlaces;
 
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany()
-    @JoinTable(name = "trips_passengers",
-            joinColumns = {@JoinColumn(name = "trip_id")},
-            inverseJoinColumns = {@JoinColumn(name = "passenger_id")})
-    private List<User> passengers;
-
     @NotNull
     private TripStatus tripStatus;
-
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany
-    @JoinTable(name = "trips_comments",
-            joinColumns = {@JoinColumn(name = "trip_id")},
-            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
-    private List<CommentDTO> comments;
 
     private boolean smoking;
     private boolean pets;
@@ -77,9 +61,7 @@ public class Trip {
         this.origin = origin;
         this.destination = destination;
         this.availablePlaces = availablePlaces;
-        this.passengers = new ArrayList<>();
         this.tripStatus = tripStatus;
-        this.comments = new ArrayList<>();
         this.smoking = smoking;
         this.pets = pets;
         this.luggage = luggage;
@@ -149,28 +131,12 @@ public class Trip {
         this.availablePlaces = availablePlaces;
     }
 
-    public List<User> getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(List<User> passengers) {
-        this.passengers = passengers;
-    }
-
     public TripStatus getTripStatus() {
         return tripStatus;
     }
 
     public void setTripStatus(TripStatus tripStatus) {
         this.tripStatus = tripStatus;
-    }
-
-    public List<CommentDTO> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<CommentDTO> comments) {
-        this.comments = comments;
     }
 
     public boolean isSmoking() {

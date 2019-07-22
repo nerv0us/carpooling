@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.LazyCollection;
@@ -43,8 +44,7 @@ public class User {
     @ColumnDefault("0")
     private double ratingAsDriver;
 
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "users_ratings_as_driver",
@@ -57,8 +57,7 @@ public class User {
     @ColumnDefault("0")
     private double ratingAsPassenger;
 
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "users_ratings_as_passenger",
