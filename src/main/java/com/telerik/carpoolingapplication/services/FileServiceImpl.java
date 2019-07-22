@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.FileRepository;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
@@ -39,7 +39,7 @@ public class FileServiceImpl implements FileService {
         if (userRepository.getById(userId) == null) {
             throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userId));
         }
-        UserDTO user = userRepository.getById(userId);
+        User user = userRepository.getById(userId);
         if (!user.getAvatarUri().isEmpty() && !user.getAvatarUri().contains(Constants.DEFAULT_USER_IMAGE_NAME)) {
             Files.delete(Paths.get(user.getAvatarUri()));
         }
