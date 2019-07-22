@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.models.constants;
 
-public class Messages {
+public class Constants {
     // Trip constants
     public static final String NOT_AVAILABLE_TRIPS = "There are no trips available!";
     public static final String TRIP_CREATED = "Trip created!";
@@ -32,8 +32,10 @@ public class Messages {
     public static final String DRIVER_ALREADY_RATED = "You have already rated this driver!";
     public static final String PASSENGER_ALREADY_RATED = "You have already rated this passenger!";
     public static final String DEFAULT_USER_IMAGE_NAME = "defaultUserPhoto";
+    public static final String USERNAME_CANNOT_BE_CHANGED_MESSAGE = "Username cannot be changed!";
 
     // Storage constants
+    public static final String FAILED_TO_STORE_FILE_MESSAGE = "Failed to store file";
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
     public static final int MAX_FILE_SIZE = 5242880;
 
