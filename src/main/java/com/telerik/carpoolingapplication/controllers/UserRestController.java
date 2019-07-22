@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
+import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.UserDTO;
 import com.telerik.carpoolingapplication.services.FileService;
 import com.telerik.carpoolingapplication.services.UserService;
@@ -35,8 +36,8 @@ public class UserRestController {
     }
 
     @GetMapping("/{username}")
-    public UserDTO getUser(@PathVariable String username) {
-        UserDTO user;
+    public User getUser(@PathVariable String username) {
+        User user;
         try {
             user = userService.getByUsername(username);
         } catch (IllegalArgumentException e) {
