@@ -3,61 +3,78 @@ package com.telerik.carpoolingapplication.services;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
-import com.telerik.carpoolingapplication.repositories.FilterAndSortHelper;
+import com.telerik.carpoolingapplication.repositories.FilterHelper;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @Service
 public class TripServiceImpl implements TripService {
     private TripRepository tripRepository;
-    private FilterAndSortHelper filterAndSortHelper;
+    private FilterHelper filterHelper;
 
     @Autowired
-    public TripServiceImpl(TripRepository tripRepository, FilterAndSortHelper filterAndSortHelper) {
+    public TripServiceImpl(TripRepository tripRepository, FilterHelper filterHelper) {
         this.tripRepository = tripRepository;
-        this.filterAndSortHelper = filterAndSortHelper;
+        this.filterHelper = filterHelper;
     }
 
     @Override
     public List<TripDTO> getTrips(String type, String parameter, String value) {
         List<TripDTO> trips = new ArrayList<>();
         if (type == null) {
-            trips = filterAndSortHelper.unsortedUnfiltered();
+            trips = filterHelper.unsortedUnfiltered();
         } else if (type.equals("filter")) {
             if (parameter == null) {
-                trips = filterAndSortHelper.unsortedUnfiltered();
+                trips = filterHelper.unsortedUnfiltered();
             } else if (parameter.equals("status")) {
                 if (value == null) {
-                    trips = filterAndSortHelper.unsortedUnfiltered();
+                    trips = filterHelper.unsortedUnfiltered();
                 } else {
                     try {
-                        trips = filterAndSortHelper.filterByStatus(TripStatus.valueOf(value));
+                        trips = filterHelper.filterByStatus(TripStatus.valueOf(value));
                     } catch (IllegalArgumentException e) {
                         throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
                     }
                 }
             } else if (parameter.equals("driver")) {
-                trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
-                        , () -> filterAndSortHelper.filterByDriver(value));
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterByDriver(value));
             } else if (parameter.equals("origin")) {
-                trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
-                        , () -> filterAndSortHelper.filterByOrigin(value));
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterByOrigin(value));
             } else if (parameter.equals("destination")) {
-               trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
-                        , () -> filterAndSortHelper.filterByDestination(value));
-            }else if (parameter.equals("earliestDepartureTime")) {
-                trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
-                        , () -> filterAndSortHelper.filterByEarliestDepartureTime(value));
-            }else if (parameter.equals("latestDepartureTime")) {
-                trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
-                        , () -> filterAndSortHelper.filterBylatestDepartureTime(value));
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterByDestination(value));
+            } else if (parameter.equals("earliestDepartureTime")) {
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterByEarliestDepartureTime(value));
+            } else if (parameter.equals("latestDepartureTime")) {
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterByLatestDepartureTime(value));
+            } else if (parameter.equals("availablePlaces")) {
+                try {
+                    if (value != null) {
+                        int availablePlaces = Integer.parseInt(value);
+                        trips = filterHelper.filterByAvailablePlaces(availablePlaces);
+                    } else {
+                        trips = filterHelper.unsortedUnfiltered();
+                    }
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException(Constants.NOT_A_NUMBER);
+                }
+            } else if (parameter.equals("smoking")) {
+                checkIfValueIsBoolean(value);
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterBySmoking(Boolean.valueOf(value)));
+            }else if (parameter.equals("pets")) {
+                checkIfValueIsBoolean(value);
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterByPets(Boolean.valueOf(value)));
             }
         }
 
@@ -130,6 +147,12 @@ public class TripServiceImpl implements TripService {
             return allTrips.get();
         } else {
             return filteredTrips.get();
+        }
+    }
+
+    private void checkIfValueIsBoolean(String value){
+        if (value != null && !(value.equals("true") || value.equals("false"))) {
+            throw new IllegalArgumentException(Constants.NOT_A_BOOLEAN);
         }
     }
 }

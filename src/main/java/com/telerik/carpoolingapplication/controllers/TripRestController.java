@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 //Go through every method validation and response one more time!
@@ -30,12 +31,12 @@ public class TripRestController {
         integer($int32)
     (query)
     */
+    //Make another helper class for sorting and another service class for filtering and sorting and split filter from sort!
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) String type
             , @RequestParam(required = false) String parameter
             , @RequestParam(required = false) String value) {
         List<TripDTO> trips;
-
         //Add unauthorized logic and response!
         //Edit responses/messages
         try {

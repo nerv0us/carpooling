@@ -13,11 +13,11 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class FilterAndSortHelperImpl implements FilterAndSortHelper {
+public class FilterHelperImpl implements FilterHelper {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public FilterAndSortHelperImpl(SessionFactory sessionFactory) {
+    public FilterHelperImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -69,10 +69,34 @@ public class FilterAndSortHelperImpl implements FilterAndSortHelper {
     }
 
     @Override
-    public List<TripDTO> filterBylatestDepartureTime(String latestDepartureTime) {
+    public List<TripDTO> filterByLatestDepartureTime(String latestDepartureTime) {
         Session session = sessionFactory.getCurrentSession();
         Query<Trip> trips = session.createQuery("from Trip where departureTime <= :latestDepartureTime", Trip.class);
         trips.setParameter("latestDepartureTime", latestDepartureTime);
+        return getPassengerStatusesAndComments(trips, session);
+    }
+
+    @Override
+    public List<TripDTO> filterByAvailablePlaces(int availablePlaces) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips = session.createQuery("from Trip where availablePlaces = :availablePlaces", Trip.class);
+        trips.setParameter("availablePlaces", availablePlaces);
+        return getPassengerStatusesAndComments(trips, session);
+    }
+
+    @Override
+    public List<TripDTO> filterBySmoking(boolean smoking) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips = session.createQuery("from Trip where smoking = :smoking", Trip.class);
+        trips.setParameter("smoking", smoking);
+        return getPassengerStatusesAndComments(trips, session);
+    }
+
+    @Override
+    public List<TripDTO> filterByPets(boolean pets) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips = session.createQuery("from Trip where pets = :pets", Trip.class);
+        trips.setParameter("pets", pets);
         return getPassengerStatusesAndComments(trips, session);
     }
 

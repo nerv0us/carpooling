@@ -5,7 +5,7 @@ import com.telerik.carpoolingapplication.models.enums.TripStatus;
 
 import java.util.List;
 
-public interface FilterAndSortHelper {
+public interface FilterHelper {
     List<TripDTO> unsortedUnfiltered();
 
     List<TripDTO> filterByStatus(TripStatus tripStatus);
@@ -18,5 +18,11 @@ public interface FilterAndSortHelper {
 
     List<TripDTO> filterByEarliestDepartureTime(String earliestDepartureTime);
 
-    List<TripDTO> filterBylatestDepartureTime(String latestDepartureTime);
+    List<TripDTO> filterByLatestDepartureTime(String latestDepartureTime);
+
+    List<TripDTO> filterByAvailablePlaces(int availablePlaces);
+
+    List<TripDTO> filterBySmoking(boolean smoking);
+
+    List<TripDTO> filterByPets(boolean pets);
 }
