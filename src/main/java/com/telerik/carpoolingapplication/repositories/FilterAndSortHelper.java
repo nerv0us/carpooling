@@ -14,5 +14,7 @@ public interface FilterAndSortHelper {
 
     List<TripDTO> filterByOrigin(String origin);
 
-    List<TripDTO> filterByDestination(String value);
+    List<TripDTO> filterByDestination(String destination);
+
+    List<TripDTO> filterByEarliestDepartureTime(String earliestDepartureTime);
 }
