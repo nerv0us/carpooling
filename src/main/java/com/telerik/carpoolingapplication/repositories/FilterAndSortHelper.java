@@ -11,4 +11,6 @@ public interface FilterAndSortHelper {
     List<TripDTO> filterByStatus(TripStatus tripStatus);
 
     List<TripDTO> filterByDriver(String driverUsername);
+
+    List<TripDTO> filterByOrigin(String origin);
 }

@@ -28,17 +28,32 @@ public class TripServiceImpl implements TripService {
         if (type == null) {
             trips = filterAndSortHelper.unsortedUnfiltered();
         } else if (type.equals("filter")) {
-            if (parameter.equals("status")) {
-                try {
-                    trips = filterAndSortHelper.filterByStatus(TripStatus.valueOf(value));
-                } catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
+            if (parameter == null) {
+                trips = filterAndSortHelper.unsortedUnfiltered();
+            } else if (parameter.equals("status")) {
+                if (value == null) {
+                    trips = filterAndSortHelper.unsortedUnfiltered();
+                } else {
+                    try {
+                        trips = filterAndSortHelper.filterByStatus(TripStatus.valueOf(value));
+                    } catch (IllegalArgumentException e) {
+                        throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
+                    }
                 }
             } else if (parameter.equals("driver")) {
-                trips = filterAndSortHelper.filterByDriver(value);
+                if (value == null) {
+                    trips = filterAndSortHelper.unsortedUnfiltered();
+                } else {
+                    trips = filterAndSortHelper.filterByDriver(value);
+                }
+            } else if (parameter.equals("origin")) {
+                if (value == null) {
+                    trips = filterAndSortHelper.unsortedUnfiltered();
+                } else {
+                    trips = filterAndSortHelper.filterByOrigin(value);
+                }
             }
         }
-
 
 
         if (trips == null || trips.isEmpty()) {
