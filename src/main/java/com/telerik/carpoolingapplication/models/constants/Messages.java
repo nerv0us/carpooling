@@ -37,4 +37,5 @@ public class Messages {
 
     // Storage constants
     public static final String STORAGE_ROUTE = "/Users/jiwkojelew/Telerik/Final Project/carpooling-application/src/main/resources/static/images/users/";
+    public static final String RATE_YOURSELF = "You cannot rate yourself!";
 }

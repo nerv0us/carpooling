@@ -21,7 +21,7 @@ public interface TripService {
 
     void changePassengerStatus(int tripId, int passengerId, String status);
 
-    void rateDriver(int id, RatingDriverDTO ratingDriverDTO);
+    void rateDriver(int id, RatingDTO ratingDTO);
 
-    /*void ratePassenger(int tripId, int passengerId, PassengerRatingDTO passengerRatingDTO);*/
+    void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO);
 }
