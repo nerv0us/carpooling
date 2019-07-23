@@ -25,4 +25,6 @@ public interface FilterHelper {
     List<TripDTO> filterBySmoking(boolean smoking);
 
     List<TripDTO> filterByPets(boolean pets);
+
+    List<TripDTO> filterByLuggage(boolean luggage);
 }

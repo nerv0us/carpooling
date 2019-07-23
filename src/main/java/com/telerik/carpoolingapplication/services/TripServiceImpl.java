@@ -71,14 +71,16 @@ public class TripServiceImpl implements TripService {
                 checkIfValueIsBoolean(value);
                 trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
                         , () -> filterHelper.filterBySmoking(Boolean.valueOf(value)));
-            }else if (parameter.equals("pets")) {
+            } else if (parameter.equals("pets")) {
                 checkIfValueIsBoolean(value);
                 trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
                         , () -> filterHelper.filterByPets(Boolean.valueOf(value)));
+            } else if (parameter.equals("luggage")) {
+                checkIfValueIsBoolean(value);
+                trips = checkIfValueIsNull(value, () -> filterHelper.unsortedUnfiltered()
+                        , () -> filterHelper.filterByLuggage(Boolean.valueOf(value)));
             }
         }
-
-
         if (trips == null || trips.isEmpty()) {
             throw new IllegalArgumentException(Constants.NOT_AVAILABLE_TRIPS);
         }
@@ -150,7 +152,7 @@ public class TripServiceImpl implements TripService {
         }
     }
 
-    private void checkIfValueIsBoolean(String value){
+    private void checkIfValueIsBoolean(String value) {
         if (value != null && !(value.equals("true") || value.equals("false"))) {
             throw new IllegalArgumentException(Constants.NOT_A_BOOLEAN);
         }

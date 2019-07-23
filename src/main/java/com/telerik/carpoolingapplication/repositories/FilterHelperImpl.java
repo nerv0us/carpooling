@@ -100,6 +100,14 @@ public class FilterHelperImpl implements FilterHelper {
         return getPassengerStatusesAndComments(trips, session);
     }
 
+    @Override
+    public List<TripDTO> filterByLuggage(boolean luggage) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips = session.createQuery("from Trip where luggage = :luggage", Trip.class);
+        trips.setParameter("luggage", luggage);
+        return getPassengerStatusesAndComments(trips, session);
+    }
+
     private List<TripDTO> getPassengerStatusesAndComments(Query<Trip> trips, Session session) {
         Query<PassengerStatus> statusesQuery = session.createQuery("from PassengerStatus ",
                 PassengerStatus.class);
