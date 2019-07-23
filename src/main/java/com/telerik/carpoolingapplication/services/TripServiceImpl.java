@@ -55,6 +55,9 @@ public class TripServiceImpl implements TripService {
             }else if (parameter.equals("earliestDepartureTime")) {
                 trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
                         , () -> filterAndSortHelper.filterByEarliestDepartureTime(value));
+            }else if (parameter.equals("latestDepartureTime")) {
+                trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
+                        , () -> filterAndSortHelper.filterBylatestDepartureTime(value));
             }
         }
 
