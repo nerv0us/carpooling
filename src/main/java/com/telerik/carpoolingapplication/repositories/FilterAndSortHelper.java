@@ -9,4 +9,6 @@ public interface FilterAndSortHelper {
     List<TripDTO> unsortedUnfiltered();
 
     List<TripDTO> filterByStatus(TripStatus tripStatus);
+
+    List<TripDTO> filterByDriver(String driverUsername);
 }

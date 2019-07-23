@@ -24,19 +24,23 @@ public class FilterAndSortHelperImpl implements FilterAndSortHelper {
     @Override
     public List<TripDTO> unsortedUnfiltered() {
         Session session = sessionFactory.getCurrentSession();
-
         Query<Trip> trips = session.createQuery("from Trip", Trip.class);
-
         return getPassengerStatusesAndComments(trips, session);
     }
 
     @Override
     public List<TripDTO> filterByStatus(TripStatus tripStatus) {
         Session session = sessionFactory.getCurrentSession();
-
         Query<Trip> trips = session.createQuery("from Trip where tripStatus = :tripStatus", Trip.class);
         trips.setParameter("tripStatus", tripStatus);
+        return getPassengerStatusesAndComments(trips, session);
+    }
 
+    @Override
+    public List<TripDTO> filterByDriver(String driverUsername) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips = session.createQuery("from Trip where driver.username = :driverUsername", Trip.class);
+        trips.setParameter("driverUsername", driverUsername);
         return getPassengerStatusesAndComments(trips, session);
     }
 
@@ -44,11 +48,9 @@ public class FilterAndSortHelperImpl implements FilterAndSortHelper {
         Query<PassengerStatus> statusesQuery = session.createQuery("from PassengerStatus ",
                 PassengerStatus.class);
         List<PassengerStatus> passengerStatuses = statusesQuery.list();
-
         Query<Comment> commentsQuery = session.createQuery("from Comment "
                 , Comment.class);
         List<Comment> comments = commentsQuery.list();
-
         return ModelsMapper.fromTrip(trips.list(), passengerStatuses, comments);
     }
 }

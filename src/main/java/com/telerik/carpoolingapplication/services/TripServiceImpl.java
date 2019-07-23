@@ -30,13 +30,17 @@ public class TripServiceImpl implements TripService {
         } else if (type.equals("filter")) {
             if (parameter.equals("status")) {
                 try {
-                    TripStatus tripStatus = TripStatus.valueOf(value);
-                    trips = filterAndSortHelper.filterByStatus(tripStatus);
+                    trips = filterAndSortHelper.filterByStatus(TripStatus.valueOf(value));
                 } catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
                 }
+            } else if (parameter.equals("driver")) {
+                trips = filterAndSortHelper.filterByDriver(value);
             }
         }
+
+
+
         if (trips == null || trips.isEmpty()) {
             throw new IllegalArgumentException(Constants.NOT_AVAILABLE_TRIPS);
         }
