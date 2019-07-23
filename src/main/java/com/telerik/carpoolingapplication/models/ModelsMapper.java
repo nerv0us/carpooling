@@ -1,8 +1,6 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
-import com.telerik.carpoolingapplication.repositories.TripRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -136,9 +134,9 @@ public class ModelsMapper {
         return new CommentDTO(comment.getMessage(), comment.getUser().getId());
     }
 
-    public static Rating fromRatingDriverDTO(RatingDriverDTO ratingDriverDTO, User ratingGiver
+    public static Rating fromRatingDriverDTO(RatingDTO ratingDTO, User ratingGiver
             , User ratingReceiver, Trip trip) {
-        double rating = ratingDriverDTO.getRating();
+        double rating = ratingDTO.getRating();
         return new Rating(rating, ratingGiver, ratingReceiver, trip);
     }
 }

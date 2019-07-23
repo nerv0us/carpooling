@@ -1,12 +1,12 @@
 package com.telerik.carpoolingapplication.models;
 
-public class RatingDriverDTO {
+public class RatingDTO {
     private double rating;
 
-    public RatingDriverDTO() {
+    public RatingDTO() {
     }
 
-    public RatingDriverDTO(double rating) {
+    public RatingDTO(double rating) {
         this.rating = rating;
     }
 
