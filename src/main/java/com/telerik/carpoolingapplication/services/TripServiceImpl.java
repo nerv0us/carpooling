@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @Service
 public class TripServiceImpl implements TripService {
@@ -41,17 +44,14 @@ public class TripServiceImpl implements TripService {
                     }
                 }
             } else if (parameter.equals("driver")) {
-                if (value == null) {
-                    trips = filterAndSortHelper.unsortedUnfiltered();
-                } else {
-                    trips = filterAndSortHelper.filterByDriver(value);
-                }
+                trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
+                        , () -> filterAndSortHelper.filterByDriver(value));
             } else if (parameter.equals("origin")) {
-                if (value == null) {
-                    trips = filterAndSortHelper.unsortedUnfiltered();
-                } else {
-                    trips = filterAndSortHelper.filterByOrigin(value);
-                }
+                trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
+                        , () -> filterAndSortHelper.filterByOrigin(value));
+            } else if (parameter.equals("destination")) {
+               trips = checkIfValueIsNull(value, () -> filterAndSortHelper.unsortedUnfiltered()
+                        , () -> filterAndSortHelper.filterByDestination(value));
             }
         }
 
@@ -116,5 +116,14 @@ public class TripServiceImpl implements TripService {
     @Override
     public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
         tripRepository.ratePassenger(tripId, passengerId, ratingDTO);
+    }
+
+    private List<TripDTO> checkIfValueIsNull(String value
+            , Supplier<List<TripDTO>> allTrips, Supplier<List<TripDTO>> filteredTrips) {
+        if (value == null) {
+            return allTrips.get();
+        } else {
+            return filteredTrips.get();
+        }
     }
 }

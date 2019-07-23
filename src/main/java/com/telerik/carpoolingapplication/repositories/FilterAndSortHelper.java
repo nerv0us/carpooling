@@ -13,4 +13,6 @@ public interface FilterAndSortHelper {
     List<TripDTO> filterByDriver(String driverUsername);
 
     List<TripDTO> filterByOrigin(String origin);
+
+    List<TripDTO> filterByDestination(String value);
 }
