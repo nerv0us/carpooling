@@ -19,6 +19,8 @@ public class Constants {
     public static final String PASSENGER_STATUS_CHANGED = "Passenger status changed!";
     public static final String YOU_DO_NOT_PARTICIPATE = "You do not participate in this trip!";
     public static final String TRIP_NOT_FINISHED = "You cannot add comments before trip is finished!!";
+    public static final String NO_SUCH_PASSENGER = "Passenger does not participate in this trip!";
+    public static final String RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE = "You cannot rate before trip is over!";
 
     // User constants
     public static final String USER_NOT_FOUND = "User with ID %d not found!";
@@ -33,10 +35,10 @@ public class Constants {
     public static final String PASSENGER_ALREADY_RATED = "You have already rated this passenger!";
     public static final String DEFAULT_USER_IMAGE_NAME = "defaultUserPhoto";
     public static final String USERNAME_CANNOT_BE_CHANGED_MESSAGE = "Username cannot be changed!";
+    public static final String RATE_YOURSELF = "You cannot rate yourself!";
 
     // Storage constants
     public static final String FAILED_TO_STORE_FILE_MESSAGE = "Failed to store file";
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
     public static final int MAX_FILE_SIZE = 5242880;
-
 }

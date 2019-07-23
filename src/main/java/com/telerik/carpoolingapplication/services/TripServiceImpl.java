@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.*;
-import com.telerik.carpoolingapplication.models.constants.Messages;
+import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class TripServiceImpl implements TripService {
     public List<TripDTO> getTrips() {
         List<TripDTO> trips = tripRepository.getTrips();
         if (trips == null || trips.isEmpty()) {
-            throw new IllegalArgumentException(Messages.NOT_AVAILABLE_TRIPS);
+            throw new IllegalArgumentException(Constants.NOT_AVAILABLE_TRIPS);
         }
         return trips;
     }
@@ -50,7 +50,7 @@ public class TripServiceImpl implements TripService {
             TripStatus updatedStatus = TripStatus.valueOf(status);
             tripRepository.changeTripStatus(tripDTO, updatedStatus);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
+            throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
         }
     }
 

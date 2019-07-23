@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
-import com.telerik.carpoolingapplication.models.constants.Messages;
+import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
@@ -49,7 +49,7 @@ public class TripRepositoryImpl implements TripRepository {
             //Fake user for testing purposes that needs to be an authenticated user!
             User fakeDriver = session.get(User.class, 1);
             if (fakeDriver == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
 
             Trip newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeDriver);
@@ -68,14 +68,14 @@ public class TripRepositoryImpl implements TripRepository {
             //Ask for equal responses and validations and then catch exceptions!
             User fakeDriver = session.get(User.class, 1);
             if (fakeDriver == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
             Query<Trip> query = session.createQuery("from  Trip where driver = :driver and id = :id", Trip.class);
             query.setParameter("driver", fakeDriver);
             query.setParameter("id", editTripDTO.getId());
 
             if (query.list().size() == 0) {
-                throw new IllegalArgumentException(Messages.INVALID_ID_SUPPLIED);
+                throw new IllegalArgumentException(Constants.INVALID_ID_SUPPLIED);
             }
 
             Trip tripToEdit = query.list().get(0);
@@ -95,7 +95,7 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
             Trip trip = session.get(Trip.class, id);
             if (trip == null) {
-                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
             }
 
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus where trip.id = :id"
@@ -132,7 +132,7 @@ public class TripRepositoryImpl implements TripRepository {
             //Logged user validation!
             User fakeUser = session.get(User.class, commentDTO.getUserId());
             if (fakeUser == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
 
             if (fakeUser.getId() != tripDTO.getDriver().getId()) {
@@ -143,11 +143,11 @@ public class TripRepositoryImpl implements TripRepository {
 
                 //Think of concrete passengerStatus necessary to addComment!
                 if (query.list().size() == 0) {
-                    throw new IllegalArgumentException(Messages.YOU_DO_NOT_PARTICIPATE);
+                    throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
                 }
 
                 if (tripDTO.getTripStatus() != TripStatus.done) {
-                    throw new IllegalArgumentException(Messages.TRIP_NOT_FINISHED);
+                    throw new IllegalArgumentException(Constants.TRIP_NOT_FINISHED);
                 }
 
             }
@@ -167,13 +167,13 @@ public class TripRepositoryImpl implements TripRepository {
             //For testing purposes! Should be logged user!     //Example
             User loggedUser = session.get(User.class, 3);
             if (loggedUser == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
 
             Trip trip = session.get(Trip.class, id);
             TripDTO tripDTO = getTrip(id);
             if (tripDTO == null) {
-                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
             }
 
             PassengerStatus passengerStatus = new PassengerStatus(loggedUser, PassengerStatusEnum.pending
@@ -182,7 +182,7 @@ public class TripRepositoryImpl implements TripRepository {
             //For testing purposes! Should be logged user!
             PassengerDTO fakePassenger = ModelsMapper.fromUserToPassenger(loggedUser, passengerStatus);
             if (fakePassenger.getUserId() == trip.getDriver().getId()) {
-                throw new IllegalArgumentException(Messages.YOUR_OWN_TRIP);
+                throw new IllegalArgumentException(Constants.YOUR_OWN_TRIP);
             }
 
             List<PassengerDTO> passengers = tripDTO.getPassengers();
@@ -192,7 +192,7 @@ public class TripRepositoryImpl implements TripRepository {
                     .orElse(null);
 
             if (passengerDTO != null) {
-                throw new IllegalArgumentException(Messages.ALREADY_APPLIED);
+                throw new IllegalArgumentException(Constants.ALREADY_APPLIED);
             }
             session.save(passengerStatus);
 
@@ -207,7 +207,7 @@ public class TripRepositoryImpl implements TripRepository {
 
             TripDTO tripDTO = getTrip(tripId);
             if (tripDTO == null) {
-                throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
             }
 
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
@@ -216,7 +216,7 @@ public class TripRepositoryImpl implements TripRepository {
             query.setParameter("passengerId", passengerId);
 
             if (query.list().size() == 0) {
-                throw new IllegalArgumentException(Messages.NO_SUCH_PASSENGER);
+                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
 
             PassengerStatus passengerStatus = query.list().get(0);
@@ -225,7 +225,7 @@ public class TripRepositoryImpl implements TripRepository {
                 PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
                 passengerStatus.setPassengerStatusEnum(passengerStatusEnum);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(Messages.NO_SUCH_STATUS);
+                throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
             }
             session.update(passengerStatus);
 
@@ -245,7 +245,7 @@ public class TripRepositoryImpl implements TripRepository {
             //Testing purposes, should be logged user!
             User loggedUser = session.get(User.class, 3);
             if (loggedUser == null) {
-                throw new IllegalArgumentException(Messages.UNAUTHORIZED);
+                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
 
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
@@ -257,7 +257,7 @@ public class TripRepositoryImpl implements TripRepository {
             query.setParameter("passengerStatusValue", PassengerStatusEnum.accepted);
 
             if (query.list().size() == 0) {
-                throw new IllegalArgumentException(Messages.NO_SUCH_PASSENGER);
+                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
 
             User driver = currentTrip.getDriver();
@@ -301,12 +301,12 @@ public class TripRepositoryImpl implements TripRepository {
             /*    throw new IllegalArgumentException("You cannot rate trip passenger if you are not trip driver!");*/
             /*}*/
             if (driver.getId() == passengerId){
-                throw new IllegalArgumentException(Messages.RATE_YOURSELF);
+                throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
 
             User passenger = session.get(User.class, passengerId);
             if (passenger == null) {
-                throw new IllegalArgumentException(Messages.NO_SUCH_PASSENGER);
+                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
 
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
@@ -318,7 +318,7 @@ public class TripRepositoryImpl implements TripRepository {
             query.setParameter("status", PassengerStatusEnum.accepted);
 
             if (query.list().size() == 0) {
-                throw new IllegalArgumentException(Messages.NO_SUCH_PASSENGER);
+                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
 
             Query<Rating> query1 = session.createQuery("from Rating " +
@@ -348,11 +348,11 @@ public class TripRepositoryImpl implements TripRepository {
 
     private void tripNotFoundAndTripNotOverValidation(Trip trip) {
         if (trip == null) {
-            throw new IllegalArgumentException(Messages.TRIP_NOT_FOUND);
+            throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
         }
 
         if (trip.getTripStatus() != TripStatus.done) {
-            throw new IllegalArgumentException(Messages.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
+            throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
     }
 
