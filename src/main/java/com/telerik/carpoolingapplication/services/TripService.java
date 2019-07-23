@@ -5,7 +5,7 @@ import com.telerik.carpoolingapplication.models.*;
 import java.util.List;
 
 public interface TripService {
-    List<TripDTO> getTrips();
+    List<TripDTO> getTrips(String type, String parameter, String value);
 
     void createTrip(CreateTripDTO createTripDTO);
 

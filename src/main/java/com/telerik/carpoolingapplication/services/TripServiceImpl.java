@@ -3,24 +3,40 @@ package com.telerik.carpoolingapplication.services;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import com.telerik.carpoolingapplication.repositories.FilterAndSortHelper;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TripServiceImpl implements TripService {
     private TripRepository tripRepository;
+    private FilterAndSortHelper filterAndSortHelper;
 
     @Autowired
-    public TripServiceImpl(TripRepository tripRepository) {
+    public TripServiceImpl(TripRepository tripRepository, FilterAndSortHelper filterAndSortHelper) {
         this.tripRepository = tripRepository;
+        this.filterAndSortHelper = filterAndSortHelper;
     }
 
     @Override
-    public List<TripDTO> getTrips() {
-        List<TripDTO> trips = tripRepository.getTrips();
+    public List<TripDTO> getTrips(String type, String parameter, String value) {
+        List<TripDTO> trips = new ArrayList<>();
+        if (type == null) {
+            trips = filterAndSortHelper.unsortedUnfiltered();
+        } else if (type.equals("filter")) {
+            if (parameter.equals("status")) {
+                try {
+                    TripStatus tripStatus = TripStatus.valueOf(value);
+                    trips = filterAndSortHelper.filterByStatus(tripStatus);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
+                }
+            }
+        }
         if (trips == null || trips.isEmpty()) {
             throw new IllegalArgumentException(Constants.NOT_AVAILABLE_TRIPS);
         }

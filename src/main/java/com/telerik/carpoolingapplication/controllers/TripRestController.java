@@ -22,14 +22,24 @@ public class TripRestController {
         this.tripService = tripService;
     }
 
-    //Add filtering and sorting!
+    /* Paging for getTrips()?
+        _end
+        integer($int32)
+    (query)
+        _start
+        integer($int32)
+    (query)
+    */
     @GetMapping
-    public List<TripDTO> getTrips() {
+    public List<TripDTO> getTrips(@RequestParam(required = false) String type
+            , @RequestParam(required = false) String parameter
+            , @RequestParam(required = false) String value) {
         List<TripDTO> trips;
 
         //Add unauthorized logic and response!
+        //Edit responses/messages
         try {
-            trips = tripService.getTrips();
+            trips = tripService.getTrips(type, parameter, value);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -40,7 +50,7 @@ public class TripRestController {
     public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO) {
         try {
             tripService.createTrip(createTripDTO);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
 
@@ -51,7 +61,7 @@ public class TripRestController {
     public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO) {
         try {
             tripService.editTrip(editTripDTO);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Constants.UNAUTHORIZED)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
@@ -123,7 +133,7 @@ public class TripRestController {
             if (e.getMessage().equals(Constants.YOUR_OWN_TRIP) || e.getMessage().equals(Constants.ALREADY_APPLIED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,e.getMessage());
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
         }
         return Constants.APPLIED;
     }
@@ -137,7 +147,7 @@ public class TripRestController {
             if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.NO_SUCH_PASSENGER)){
+            if (e.getMessage().equals(Constants.NO_SUCH_PASSENGER)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
             if (e.getMessage().equals(Constants.NO_SUCH_STATUS)) {
