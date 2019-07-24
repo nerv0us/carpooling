@@ -52,7 +52,11 @@ public class SortRepositoryImpl implements SortRepository {
 
     @Override
     public List<TripDTO> sortByDestination(String value) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips;
+        trips = session.createQuery("from Trip order by destination " + ascendingOrDescending(value)
+                , Trip.class);
+        return filterRepository.getPassengerStatusesAndComments(trips, session);
     }
 
     @Override
