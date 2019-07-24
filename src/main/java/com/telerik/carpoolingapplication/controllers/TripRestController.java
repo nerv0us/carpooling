@@ -2,6 +2,8 @@ package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.services.FilterService;
+import com.telerik.carpoolingapplication.services.SortService;
 import com.telerik.carpoolingapplication.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,31 +19,42 @@ import java.util.List;
 @RequestMapping("/api/trips")
 public class TripRestController {
     private TripService tripService;
+    private FilterService filterService;
+    private SortService sortService;
 
     @Autowired
-    public TripRestController(TripService tripService) {
+    public TripRestController(TripService tripService, FilterService filterService, SortService sortService) {
         this.tripService = tripService;
+        this.filterService = filterService;
+        this.sortService = sortService;
     }
-
-    /* Paging for getTrips()?
-        _end
-        integer($int32)
-    (query)
-        _start
-        integer($int32)
-    (query)
-    */
+    /* Paging for getTripsFiltered()?
+            _end
+            integer($int32)
+        (query)
+            _start
+            integer($int32)
+        (query)
+        */
     //Make another helper class for sorting and another service class for filtering and sorting and split filter from sort!
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) String type
             , @RequestParam(required = false) String parameter
             , @RequestParam(required = false) String value) {
-        List<TripDTO> trips;
+        List<TripDTO> trips = new ArrayList<>();
         //Add unauthorized logic and response!
         //Edit responses/messages
         try {
-            trips = tripService.getTrips(type, parameter, value);
-        } catch (IllegalArgumentException e) {
+            if (type == null || parameter == null || value == null) {
+                trips = filterService.getTripsUnsortedUnfiltered();
+            } else if (type.equals("filter")) {
+                trips = filterService.getTripsFiltered(parameter, value);
+            } else if (type.equals("sort")) {
+
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return trips;
