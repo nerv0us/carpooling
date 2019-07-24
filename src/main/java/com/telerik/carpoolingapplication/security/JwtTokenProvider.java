@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.security;
 
 import com.telerik.carpoolingapplication.exception.CustomException;
+import com.telerik.carpoolingapplication.models.JWTToken;
 import com.telerik.carpoolingapplication.models.enums.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -44,7 +45,7 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String username, List<Role> roles) {
+    public JWTToken createToken(String username, List<Role> roles) {
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
@@ -52,12 +53,12 @@ public class JwtTokenProvider {
         claims.put("user_username", user.getUsername());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-        return Jwts.builder()//
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secretKey)//
-                .compact();
+        return new JWTToken(Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact());
     }
 
     public Authentication getAuthentication(String token) {
