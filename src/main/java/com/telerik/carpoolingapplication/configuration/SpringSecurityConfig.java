@@ -29,8 +29,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/api/users/register").permitAll()
-                .antMatchers("/api/users/signin").permitAll()
+                .antMatchers("/api/users/authenticate").permitAll()
                 .anyRequest().authenticated();
+
         http.exceptionHandling().accessDeniedPage("/login");
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
     }
