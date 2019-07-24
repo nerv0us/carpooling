@@ -71,6 +71,8 @@ public class FilterServiceImpl implements FilterService {
                 checkIfValueIsBoolean(value);
                 trips = filterRepository.filterByLuggage(Boolean.valueOf(value));
                 break;
+            default:
+                throw new IllegalArgumentException(Constants.BAD_REQUEST);
         }
 
         if (trips == null || trips.isEmpty()) {

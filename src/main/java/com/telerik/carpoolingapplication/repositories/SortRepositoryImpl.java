@@ -27,13 +27,8 @@ public class SortRepositoryImpl implements SortRepository {
     public List<TripDTO> sortByStatus(String value) {
         Session session = sessionFactory.getCurrentSession();
         Query<Trip> trips;
-        if (!(value.equals("descending") || value.equals("ascending"))) {
-            throw new IllegalArgumentException(Constants.ILLEGAL_VALUE);
-        } else if (value.equals("descending")) {
-            trips = session.createQuery("from Trip order by tripStatus desc ", Trip.class);
-        } else {
-            trips = session.createQuery("from Trip order by tripStatus asc ", Trip.class);
-        }
+        trips = session.createQuery("from Trip order by tripStatus " + ascendingOrDescending(value)
+                , Trip.class);
         return filterRepository.getPassengerStatusesAndComments(trips, session);
     }
 
@@ -41,19 +36,18 @@ public class SortRepositoryImpl implements SortRepository {
     public List<TripDTO> sortByDriver(String value) {
         Session session = sessionFactory.getCurrentSession();
         Query<Trip> trips;
-        if (!(value.equals("descending") || value.equals("ascending"))) {
-            throw new IllegalArgumentException(Constants.ILLEGAL_VALUE);
-        } else if (value.equals("descending")) {
-            trips = session.createQuery("from Trip order by driver.username desc ", Trip.class);
-        } else {
-            trips = session.createQuery("from Trip order by driver.username asc ", Trip.class);
-        }
+        trips = session.createQuery("from Trip order by driver.username " + ascendingOrDescending(value)
+                , Trip.class);
         return filterRepository.getPassengerStatusesAndComments(trips, session);
     }
 
     @Override
     public List<TripDTO> sortByOrigin(String value) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips;
+        trips = session.createQuery("from Trip order by origin " + ascendingOrDescending(value)
+                , Trip.class);
+        return filterRepository.getPassengerStatusesAndComments(trips, session);
     }
 
     @Override
@@ -74,5 +68,15 @@ public class SortRepositoryImpl implements SortRepository {
     @Override
     public List<TripDTO> sortByAvailablePlaces(String value) {
         return null;
+    }
+
+    private String ascendingOrDescending(String value) {
+        if (!(value.equals("descending") || value.equals("ascending"))) {
+            throw new IllegalArgumentException(Constants.ILLEGAL_VALUE);
+        } else if (value.equals("descending")) {
+            return "desc";
+        } else {
+            return "asc";
+        }
     }
 }

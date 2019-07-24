@@ -4,6 +4,7 @@ import com.telerik.carpoolingapplication.models.TripDTO;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.SortRepository;
+import org.omg.CORBA.BAD_PARAM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,8 @@ public class SortServiceImpl implements SortService {
             case "availablePlaces":
                 trips = sortRepository.sortByAvailablePlaces(value);
                 break;
+            default:
+                throw new IllegalArgumentException(Constants.BAD_REQUEST);
         }
 
         if (trips == null || trips.isEmpty()) {

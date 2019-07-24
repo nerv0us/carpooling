@@ -23,6 +23,7 @@ public class Constants {
     public static final String NOT_A_NUMBER = "Value is not a number!";
     public static final String NOT_A_BOOLEAN = "Value is not a boolean";
     public static final String ILLEGAL_VALUE = "Illegal sorting value!";
+    public static final String BAD_REQUEST = "Bad request";
 
     // User constants
     public static final String USER_NOT_FOUND = "User with ID %d not found!";
