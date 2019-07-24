@@ -1,14 +1,13 @@
 package com.telerik.carpoolingapplication.repositories;
 
-import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.ModelsMapper;
 import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.UserDTO;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,13 +21,12 @@ public class UserRepositoryImpl implements UserRepository {
         this.sessionFactory = sessionFactory;
     }
 
-
     @Override
     public void editUser(UserDTO userDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             User userToEdit = session.get(User.class, userDTO.getId());
-            if (!isEmailExist(userDTO.getEmail()).isEmpty() &&
+            if (isEmailExist(userDTO.getEmail()) &&
                     !userToEdit.getEmail().equals(userDTO.getEmail())) {
                 throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
             }
@@ -60,22 +58,21 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void createUser(CreateUserDTO userDTO) {
+    public void createUser(User user) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            if (!isEmailExist(userDTO.getEmail()).isEmpty()) {
-                throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+            if (isEmailExist(user.getEmail())) {
+                throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, user.getEmail()));
             }
-            User user = ModelsMapper.createUser(userDTO);
             session.save(user);
             session.getTransaction().commit();
         }
     }
 
-    private List<User> isEmailExist(String email) {
+    private boolean isEmailExist(String email) {
         Session session = sessionFactory.getCurrentSession();
         Query<User> query = session.createQuery("from User where email = :email", User.class);
         query.setParameter("email", email);
-        return query.list();
+        return !query.list().isEmpty();
     }
 }
