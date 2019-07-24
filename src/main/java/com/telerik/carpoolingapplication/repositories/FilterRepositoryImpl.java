@@ -13,16 +13,16 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class FilterHelperImpl implements FilterHelper {
+public class FilterRepositoryImpl implements FilterRepository {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public FilterHelperImpl(SessionFactory sessionFactory) {
+    public FilterRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public List<TripDTO> unsortedUnfiltered() {
+    public List<TripDTO> getTripsUnsortedUnfiltered() {
         Session session = sessionFactory.getCurrentSession();
         Query<Trip> trips = session.createQuery("from Trip", Trip.class);
         return getPassengerStatusesAndComments(trips, session);

@@ -5,8 +5,8 @@ import com.telerik.carpoolingapplication.models.enums.TripStatus;
 
 import java.util.List;
 
-public interface FilterHelper {
-    List<TripDTO> unsortedUnfiltered();
+public interface FilterRepository {
+    List<TripDTO> getTripsUnsortedUnfiltered();
 
     List<TripDTO> filterByStatus(TripStatus tripStatus);
 
