@@ -39,7 +39,16 @@ public class SortRepositoryImpl implements SortRepository {
 
     @Override
     public List<TripDTO> sortByDriver(String value) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips;
+        if (!(value.equals("descending") || value.equals("ascending"))) {
+            throw new IllegalArgumentException(Constants.ILLEGAL_VALUE);
+        } else if (value.equals("descending")) {
+            trips = session.createQuery("from Trip order by driver.username desc ", Trip.class);
+        } else {
+            trips = session.createQuery("from Trip order by driver.username asc ", Trip.class);
+        }
+        return filterRepository.getPassengerStatusesAndComments(trips, session);
     }
 
     @Override
