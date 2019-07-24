@@ -1,8 +1,11 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.telerik.carpoolingapplication.models.enums.Role;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 public class CreateUserDTO {
     @NotNull
@@ -28,6 +31,8 @@ public class CreateUserDTO {
     @NotNull
     @Size(min = 4, max = 35, message = "Phone number should be between 4 and 35 characters.")
     private String phone;
+
+    List<Role> roles;
 
     public CreateUserDTO() {
     }
@@ -87,5 +92,13 @@ public class CreateUserDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
