@@ -27,11 +27,12 @@ public class FilterServiceImpl implements FilterService {
 
     @Override
     public List<TripDTO> getTripsFiltered(String parameter, String value) {
-        List<TripDTO> trips = new ArrayList<>();
+        List<TripDTO> trips;
         switch (parameter) {
             case "status":
                 try {
-                    trips = filterRepository.filterByStatus(TripStatus.valueOf(value));
+                    TripStatus tripStatus = TripStatus.valueOf(value);
+                    trips = filterRepository.filterByStatus(tripStatus);
                 } catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
                 }

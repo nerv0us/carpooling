@@ -31,5 +31,5 @@ public interface FilterRepository {
 
     List<TripDTO> filterByLuggage(boolean luggage);
 
-    List<TripDTO> getPassengerStatusesAndComments(Query<Trip> trips, Session session);
+    List<TripDTO> getPassengersStatusesAndComments(List<Trip> trips, Session session);
 }

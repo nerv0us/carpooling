@@ -22,7 +22,7 @@ public class SortServiceImpl implements SortService {
 
     @Override
     public List<TripDTO> getTripsSorted(String parameter, String value) {
-        List<TripDTO> trips = new ArrayList<>();
+        List<TripDTO> trips;
         switch (parameter) {
             case "status":
                 trips = sortRepository.sortByStatus(value);

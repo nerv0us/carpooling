@@ -25,57 +25,44 @@ public class SortRepositoryImpl implements SortRepository {
 
     @Override
     public List<TripDTO> sortByStatus(String value) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Trip> trips;
-        trips = session.createQuery("from Trip order by tripStatus " + ascendingOrDescending(value)
-                , Trip.class);
-        return filterRepository.getPassengerStatusesAndComments(trips, session);
+        return sortedTrips("from Trip order by tripStatus " + ascendingOrDescending(value));
     }
 
     @Override
     public List<TripDTO> sortByDriver(String value) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Trip> trips;
-        trips = session.createQuery("from Trip order by driver.username " + ascendingOrDescending(value)
-                , Trip.class);
-        return filterRepository.getPassengerStatusesAndComments(trips, session);
+        return sortedTrips("from Trip order by driver.username " + ascendingOrDescending(value));
     }
 
     @Override
     public List<TripDTO> sortByOrigin(String value) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Trip> trips;
-        trips = session.createQuery("from Trip order by origin " + ascendingOrDescending(value)
-                , Trip.class);
-        return filterRepository.getPassengerStatusesAndComments(trips, session);
+        return sortedTrips("from Trip order by origin " + ascendingOrDescending(value));
     }
 
     @Override
     public List<TripDTO> sortByDestination(String value) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Trip> trips;
-        trips = session.createQuery("from Trip order by destination " + ascendingOrDescending(value)
-                , Trip.class);
-        return filterRepository.getPassengerStatusesAndComments(trips, session);
+        return sortedTrips("from Trip order by destination " + ascendingOrDescending(value));
     }
 
     @Override
     public List<TripDTO> sortByDepartureTime(String value) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Trip> trips;
-        trips = session.createQuery("from Trip order by departureTime " + ascendingOrDescending(value)
-                , Trip.class);
-        return filterRepository.getPassengerStatusesAndComments(trips, session);
+        return sortedTrips("from Trip order by departureTime " + ascendingOrDescending(value));
     }
 
     @Override
     public List<TripDTO> sortByAvailablePlaces(String value) {
-        return null;
+        return sortedTrips("from Trip order by availablePlaces " + ascendingOrDescending(value));
+    }
+
+    private List<TripDTO> sortedTrips(String string) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> query = session.createQuery(string, Trip.class);
+        List<Trip> trips = query.list();
+        return filterRepository.getPassengersStatusesAndComments(trips, session);
     }
 
     private String ascendingOrDescending(String value) {
         if (!(value.equals("descending") || value.equals("ascending"))) {
-            throw new IllegalArgumentException(Constants.ILLEGAL_VALUE);
+            throw new IllegalArgumentException(Constants.BAD_REQUEST);
         } else if (value.equals("descending")) {
             return "desc";
         } else {
