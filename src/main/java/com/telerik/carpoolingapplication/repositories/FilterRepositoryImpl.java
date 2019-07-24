@@ -108,7 +108,7 @@ public class FilterRepositoryImpl implements FilterRepository {
         return getPassengerStatusesAndComments(trips, session);
     }
 
-    private List<TripDTO> getPassengerStatusesAndComments(Query<Trip> trips, Session session) {
+    public List<TripDTO> getPassengerStatusesAndComments(Query<Trip> trips, Session session) {
         Query<PassengerStatus> statusesQuery = session.createQuery("from PassengerStatus ",
                 PassengerStatus.class);
         List<PassengerStatus> passengerStatuses = statusesQuery.list();

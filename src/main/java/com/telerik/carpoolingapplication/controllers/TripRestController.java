@@ -28,6 +28,7 @@ public class TripRestController {
         this.filterService = filterService;
         this.sortService = sortService;
     }
+
     /* Paging for getTripsFiltered()?
             _end
             integer($int32)
@@ -37,6 +38,7 @@ public class TripRestController {
         (query)
         */
     //Make another helper class for sorting and another service class for filtering and sorting and split filter from sort!
+    //Think of filter and sort simultaneously!
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) String type
             , @RequestParam(required = false) String parameter
@@ -50,11 +52,11 @@ public class TripRestController {
             } else if (type.equals("filter")) {
                 trips = filterService.getTripsFiltered(parameter, value);
             } else if (type.equals("sort")) {
-
+                trips = sortService.getTripsSorted(parameter, value);
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return trips;

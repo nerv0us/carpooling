@@ -22,6 +22,7 @@ public class Constants {
     public static final String RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE = "You cannot rate before trip is over!";
     public static final String NOT_A_NUMBER = "Value is not a number!";
     public static final String NOT_A_BOOLEAN = "Value is not a boolean";
+    public static final String ILLEGAL_VALUE = "Illegal sorting value!";
 
     // User constants
     public static final String USER_NOT_FOUND = "User with ID %d not found!";
