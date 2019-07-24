@@ -111,20 +111,6 @@ public class ModelsMapper {
         userToEdit.setRatingAsPassenger(userDTO.getRatingAsPassenger());
     }
 
-    public static User createUser(CreateUserDTO userDTO) {
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhone(userDTO.getPhone());
-        user.setAvatarUri("images/users/defaultUserPhoto.jpg");
-        user.setRatingAsPassenger(0D);
-        user.setRatingAsDriver(0D);
-
-        return user;
-    }
-
     public static Comment fromCommentDTO(CommentDTO commentDTO, User user, Trip trip) {
         return new Comment(commentDTO.getMessage(), user, trip);
     }
