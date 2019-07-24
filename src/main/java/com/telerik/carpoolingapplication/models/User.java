@@ -1,21 +1,22 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.telerik.carpoolingapplication.models.enums.Role;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -68,24 +69,54 @@ public class User {
 
     private String avatarUri;
 
+    @NotNull
+    @JsonIgnore
+    @Column(name = "password")
+    private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Role> roles;
+
+    @NotNull
+    @JsonIgnore
+    @Column(name = "enabled")
+    private boolean enabled = true;
+
     public User() {
     }
 
-    public User(@NotNull @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.") String username
-            , @NotNull @Size(min = 3, max = 25, message = "First name should be between 3 and 25 characters.") String firstName
-            , @NotNull @Size(min = 3, max = 25, message = "Last name should be between 3 and 25 characters.") String lastName
-            , @NotNull @Email String email, @NotNull @Size(min = 4, max = 25, message = "Phone number should be between 4 and 25 characters.") String phone
-            , @NotNull double ratingAsDriver, @NotNull double ratingAsPassenger, String avatarUri) {
+    public User(String username,
+                String firstName,
+                String lastName,
+                String email,
+                String phone,
+                String password,
+                double ratingAsDriver,
+                double ratingAsPassenger,
+                String avatarUri) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.password = password;
         this.ratingAsDriver = ratingAsDriver;
         this.ratingsAsDriver = new ArrayList<>();
         this.ratingAsPassenger = ratingAsPassenger;
         this.ratingsAsPassenger = new ArrayList<>();
         this.avatarUri = avatarUri;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> userRoles) {
+        this.roles = userRoles;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public int getId() {
@@ -94,6 +125,40 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public String getUsername() {
