@@ -31,10 +31,10 @@ public class FileServiceImpl implements FileService {
     @Override
     public void storeFile(int userId, MultipartFile file) throws IOException {
         if (file.getSize() > Constants.MAX_FILE_SIZE) {
-            throw new IllegalArgumentException("File should be less than 5MB");
+            throw new IllegalArgumentException(Constants.FILE_SHOULD_BE_SMALLER_MESSAGE);
         }
         if (isFileFormatInvalid(file)) {
-            throw new IllegalArgumentException("Invalid file format");
+            throw new IllegalArgumentException(Constants.INVALID_FILE_FORMAT_MESSAGE);
         }
         if (userRepository.getById(userId) == null) {
             throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userId));
@@ -55,7 +55,7 @@ public class FileServiceImpl implements FileService {
             Files.copy(inputStream, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
             fileRepository.saveImage(userId, filePath);
         } catch (IOException e) {
-            throw new IOException("Failed to store file " + fileName, e);
+            throw new IOException(Constants.FAILED_TO_STORE_FILE_MESSAGE + fileName, e);
         }
     }
 
