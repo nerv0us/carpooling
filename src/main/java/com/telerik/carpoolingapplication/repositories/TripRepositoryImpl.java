@@ -24,24 +24,6 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<TripDTO> getTrips() {
-        Session session = sessionFactory.getCurrentSession();
-
-        //Think if query should return all trips or only those that are not passed!
-        Query<Trip> query = session.createQuery("from Trip", Trip.class);
-
-        Query<PassengerStatus> query1 = session.createQuery("from PassengerStatus ", PassengerStatus.class);
-        List<PassengerStatus> passengerStatuses = query1.list();
-
-        Query<Comment> query2 = session.createQuery("from Comment ", Comment.class);
-        List<Comment> comments = query2.list();
-
-        List<TripDTO> tripDTOS = ModelsMapper.fromTrip(query.list(), passengerStatuses, comments);
-
-        return tripDTOS;
-    }
-
-    @Override
     public void createTrip(CreateTripDTO createTripDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();

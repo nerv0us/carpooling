@@ -2,6 +2,8 @@ package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.services.FilterService;
+import com.telerik.carpoolingapplication.services.SortService;
 import com.telerik.carpoolingapplication.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 //Go through every method validation and response one more time!
@@ -16,20 +19,43 @@ import java.util.List;
 @RequestMapping("/api/trips")
 public class TripRestController {
     private TripService tripService;
+    private FilterService filterService;
+    private SortService sortService;
 
     @Autowired
-    public TripRestController(TripService tripService) {
+    public TripRestController(TripService tripService, FilterService filterService, SortService sortService) {
         this.tripService = tripService;
+        this.filterService = filterService;
+        this.sortService = sortService;
     }
 
-    //Add filtering and sorting!
+    /* Paging for getTripsFiltered()?
+            _end
+            integer($int32)
+        (query)
+            _start
+            integer($int32)
+        (query)
+        */
+    //Make another helper class for sorting and another service class for filtering and sorting and split filter from sort!
+    //Think of filter and sort simultaneously!
     @GetMapping
-    public List<TripDTO> getTrips() {
-        List<TripDTO> trips;
-
+    public List<TripDTO> getTrips(@RequestParam(required = false) String type
+            , @RequestParam(required = false) String parameter
+            , @RequestParam(required = false) String value) {
+        List<TripDTO> trips = new ArrayList<>();
         //Add unauthorized logic and response!
+        //Edit responses/messages
         try {
-            trips = tripService.getTrips();
+            if (type == null || parameter == null || value == null) {
+                trips = filterService.getTripsUnsortedUnfiltered();
+            } else if (type.equals("filter")) {
+                trips = filterService.getTripsFiltered(parameter, value);
+            } else if (type.equals("sort")) {
+                trips = sortService.getTripsSorted(parameter, value);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -40,7 +66,7 @@ public class TripRestController {
     public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO) {
         try {
             tripService.createTrip(createTripDTO);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
 
@@ -51,7 +77,7 @@ public class TripRestController {
     public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO) {
         try {
             tripService.editTrip(editTripDTO);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Constants.UNAUTHORIZED)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
@@ -123,7 +149,7 @@ public class TripRestController {
             if (e.getMessage().equals(Constants.YOUR_OWN_TRIP) || e.getMessage().equals(Constants.ALREADY_APPLIED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,e.getMessage());
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
         }
         return Constants.APPLIED;
     }
@@ -137,7 +163,7 @@ public class TripRestController {
             if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.NO_SUCH_PASSENGER)){
+            if (e.getMessage().equals(Constants.NO_SUCH_PASSENGER)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
             if (e.getMessage().equals(Constants.NO_SUCH_STATUS)) {
