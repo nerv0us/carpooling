@@ -13,9 +13,7 @@ public interface SortRepository {
 
     List<TripDTO> sortByDestination(String value);
 
-    List<TripDTO> sortByEarliestDepartureTime(String value);
-
-    List<TripDTO> sortByLatestDepartureTime(String value);
+    List<TripDTO> sortByDepartureTime(String value);
 
     List<TripDTO> sortByAvailablePlaces(String value);
 }

@@ -36,11 +36,8 @@ public class SortServiceImpl implements SortService {
             case "destination":
                 trips = sortRepository.sortByDestination(value);
                 break;
-            case "earliestDepartureTime":
-                trips = sortRepository.sortByEarliestDepartureTime(value);
-                break;
-            case "latestDepartureTime":
-                trips = sortRepository.sortByLatestDepartureTime(value);
+            case "departureTime":
+                trips = sortRepository.sortByDepartureTime(value);
                 break;
             case "availablePlaces":
                 trips = sortRepository.sortByAvailablePlaces(value);

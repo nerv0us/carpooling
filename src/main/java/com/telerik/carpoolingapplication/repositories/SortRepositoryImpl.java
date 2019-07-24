@@ -60,13 +60,12 @@ public class SortRepositoryImpl implements SortRepository {
     }
 
     @Override
-    public List<TripDTO> sortByEarliestDepartureTime(String value) {
-        return null;
-    }
-
-    @Override
-    public List<TripDTO> sortByLatestDepartureTime(String value) {
-        return null;
+    public List<TripDTO> sortByDepartureTime(String value) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> trips;
+        trips = session.createQuery("from Trip order by departureTime " + ascendingOrDescending(value)
+                , Trip.class);
+        return filterRepository.getPassengerStatusesAndComments(trips, session);
     }
 
     @Override
