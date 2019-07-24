@@ -38,7 +38,10 @@ public class Constants {
     public static final String RATE_YOURSELF = "You cannot rate yourself!";
 
     // Storage constants
-    public static final String FAILED_TO_STORE_FILE_MESSAGE = "Failed to store file";
+    public static final String FILE_SHOULD_BE_SMALLER_MESSAGE = "File should be less than 5MB";
+    public static final String INVALID_FILE_FORMAT_MESSAGE = "Invalid file format";
+    public static final String FAILED_TO_STORE_FILE_MESSAGE = "Failed to store file: %s";
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
+    public static final String DEFAULT_USER_AVATAR_ROUTE = "images/users/defaultUserPhoto.jpg";
     public static final int MAX_FILE_SIZE = 5242880;
 }
