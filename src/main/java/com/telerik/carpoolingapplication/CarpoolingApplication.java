@@ -1,7 +1,9 @@
 package com.telerik.carpoolingapplication;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class CarpoolingApplication {
@@ -10,4 +12,8 @@ public class CarpoolingApplication {
         SpringApplication.run(CarpoolingApplication.class, args);
     }
 
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 }
