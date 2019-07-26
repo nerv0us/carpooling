@@ -29,11 +29,11 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public void storeFile(int userId, MultipartFile file) throws IOException {
-        if (file.getSize() > Constants.MAX_FILE_SIZE) {
+    public void storeFile(int userId, MultipartFile image) throws IOException {
+        if (image.getSize() > Constants.MAX_FILE_SIZE) {
             throw new IllegalArgumentException(Constants.FILE_SHOULD_BE_SMALLER_MESSAGE);
         }
-        if (isFileFormatInvalid(file)) {
+        if (isFileFormatInvalid(image)) {
             throw new IllegalArgumentException(Constants.INVALID_FILE_FORMAT_MESSAGE);
         }
         if (userRepository.getById(userId) == null) {
@@ -48,10 +48,10 @@ public class FileServiceImpl implements FileService {
         String projectPath = currentRelativePath.normalize().toAbsolutePath().getParent().toString();
         String imageDirectory = getImageDirectory(projectPath);
 
-        String fileName = changeFileName(file);
+        String fileName = changeFileName(image);
         String filePath = imageDirectory + fileName;
 
-        try (InputStream inputStream = file.getInputStream()) {
+        try (InputStream inputStream = image.getInputStream()) {
             Files.copy(inputStream, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
             fileRepository.saveImage(userId, filePath);
         } catch (IOException e) {
