@@ -45,27 +45,9 @@ public class User implements UserDetails {
     @ColumnDefault("0")
     private double ratingAsDriver;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "users_ratings_as_driver",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "rating_id")}
-    )
-    private List<Rating> ratingsAsDriver;
-
     @NotNull
     @ColumnDefault("0")
     private double ratingAsPassenger;
-
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "users_ratings_as_passenger",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "rating_id")}
-    )
-    private List<Rating> ratingsAsPassenger;
 
     private String avatarUri;
 
@@ -101,9 +83,7 @@ public class User implements UserDetails {
         this.phone = phone;
         this.password = password;
         this.ratingAsDriver = ratingAsDriver;
-        this.ratingsAsDriver = new ArrayList<>();
         this.ratingAsPassenger = ratingAsPassenger;
-        this.ratingsAsPassenger = new ArrayList<>();
         this.avatarUri = avatarUri;
     }
 
@@ -209,28 +189,12 @@ public class User implements UserDetails {
         this.ratingAsDriver = ratingAsDriver;
     }
 
-    public List<Rating> getRatingsAsDriver() {
-        return ratingsAsDriver;
-    }
-
-    public void setRatingsAsDriver(List<Rating> ratingsAsDriver) {
-        this.ratingsAsDriver = ratingsAsDriver;
-    }
-
     public double getRatingAsPassenger() {
         return ratingAsPassenger;
     }
 
     public void setRatingAsPassenger(double ratingAsPassenger) {
         this.ratingAsPassenger = ratingAsPassenger;
-    }
-
-    public List<Rating> getRatingsAsPassenger() {
-        return ratingsAsPassenger;
-    }
-
-    public void setRatingsAsPassenger(List<Rating> ratingsAsPassenger) {
-        this.ratingsAsPassenger = ratingsAsPassenger;
     }
 
     public String getAvatarUri() {

@@ -108,9 +108,9 @@ public class ModelsMapper {
         return new CommentDTO(comment.getMessage(), comment.getUser().getId());
     }
 
-    public static Rating fromRatingDriverDTO(RatingDTO ratingDTO, User ratingGiver
+    /*public static Rating fromRatingDriverDTO(RatingDTO ratingDTO, User ratingGiver
             , User ratingReceiver, Trip trip) {
         double rating = ratingDTO.getRating();
         return new Rating(rating, ratingGiver, ratingReceiver, trip);
-    }
+    }*/
 }

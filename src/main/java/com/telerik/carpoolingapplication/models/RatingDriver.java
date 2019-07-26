@@ -1,13 +1,11 @@
 package com.telerik.carpoolingapplication.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "ratings")
-public class Rating {
+@Table(name = "ratings_drivers")
+public class RatingDriver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -27,10 +25,10 @@ public class Rating {
     @ManyToOne
     private Trip trip;
 
-    public Rating() {
+    public RatingDriver() {
     }
 
-    public Rating(@NotNull double rating, @NotNull User ratingGiver, @NotNull User ratingReceiver
+    public RatingDriver(@NotNull double rating, @NotNull User ratingGiver, @NotNull User ratingReceiver
             , Trip trip) {
         this.rating = rating;
         this.ratingGiver = ratingGiver;

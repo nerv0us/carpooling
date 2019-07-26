@@ -216,7 +216,7 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     //Add additional validations for rate, like if trip is over or what the status of driver/passenger is!
-    @Override
+    /*@Override
     public void rateDriver(int id, RatingDTO ratingDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -279,9 +279,9 @@ public class TripRepositoryImpl implements TripRepository {
 
             User driver = currentTrip.getDriver();
             // Add unauthorized and forbidden validations when security is implemented!
-            /*if (driver.getId() != loggedUser.GetId){*/
-            /*    throw new IllegalArgumentException("You cannot rate trip passenger if you are not trip driver!");*/
-            /*}*/
+            *//*if (driver.getId() != loggedUser.GetId){*//*
+            *//*    throw new IllegalArgumentException("You cannot rate trip passenger if you are not trip driver!");*//*
+            *//*}*//*
             if (driver.getId() == passengerId){
                 throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
@@ -326,7 +326,7 @@ public class TripRepositoryImpl implements TripRepository {
 
             session.getTransaction().commit();
         }
-    }
+    }*/
 
     private void tripNotFoundAndTripNotOverValidation(Trip trip) {
         if (trip == null) {
@@ -338,7 +338,7 @@ public class TripRepositoryImpl implements TripRepository {
         }
     }
 
-    private double calculateRating(List<Rating> ratings) {
+    /*private double calculateRating(List<Rating> ratings) {
         double result = 0;
 
         for (Rating rating : ratings) {
@@ -347,5 +347,5 @@ public class TripRepositoryImpl implements TripRepository {
         result /= ratings.size();
 
         return result;
-    }
+    }*/
 }

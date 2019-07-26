@@ -174,7 +174,7 @@ public class TripRestController {
         return Constants.PASSENGER_STATUS_CHANGED;
     }
 
-    @PostMapping("{id}/driver/rate")
+    /*@PostMapping("{id}/driver/rate")
     public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO) {
         try {
             tripService.rateDriver(id, ratingDTO);
@@ -195,5 +195,5 @@ public class TripRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return Constants.PASSENGER_RATED;
-    }
+    }*/
 }
