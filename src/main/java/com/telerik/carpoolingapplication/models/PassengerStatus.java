@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "passengers_statuses")
+@Table(name = "statuses")
 public class PassengerStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class PassengerStatus {
     private User user;
 
     @NotNull
-    private PassengerStatusEnum passengerStatusEnum;
+    private PassengerStatusEnum status;
 
     @NotNull
     @OneToOne
@@ -26,10 +26,10 @@ public class PassengerStatus {
     public PassengerStatus() {
     }
 
-    public PassengerStatus(@NotNull User user, @NotNull PassengerStatusEnum passengerStatusEnum
+    public PassengerStatus(@NotNull User user, @NotNull PassengerStatusEnum status
             , @NotNull Trip trip) {
         this.user = user;
-        this.passengerStatusEnum = passengerStatusEnum;
+        this.status = status;
         this.trip = trip;
     }
 
@@ -49,12 +49,12 @@ public class PassengerStatus {
         this.user = user;
     }
 
-    public PassengerStatusEnum getPassengerStatusEnum() {
-        return passengerStatusEnum;
+    public PassengerStatusEnum getStatus() {
+        return status;
     }
 
-    public void setPassengerStatusEnum(PassengerStatusEnum passengerStatusEnum) {
-        this.passengerStatusEnum = passengerStatusEnum;
+    public void setStatus(PassengerStatusEnum passengerStatusEnum) {
+        this.status = passengerStatusEnum;
     }
 
     public Trip getTrip() {

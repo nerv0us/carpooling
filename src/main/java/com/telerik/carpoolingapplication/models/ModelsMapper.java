@@ -58,21 +58,10 @@ public class ModelsMapper {
     }
 
     public static Trip fromCreateTripDTO(CreateTripDTO createTripDTO, User user) {
-        Trip trip = new Trip();
-
-        trip.setDriver(user);
-        trip.setCarModel(createTripDTO.getCarModel());
-        trip.setMessage(createTripDTO.getMessage());
-        trip.setDepartureTime(createTripDTO.getDepartureTime());
-        trip.setOrigin(createTripDTO.getOrigin());
-        trip.setDestination(createTripDTO.getDestination());
-        trip.setAvailablePlaces(createTripDTO.getAvailablePlaces());
-        trip.setSmoking(createTripDTO.smoking());
-        trip.setPets(createTripDTO.pets());
-        trip.setLuggage(createTripDTO.luggage());
-        trip.setTripStatus(TripStatus.available);
-
-        return trip;
+        return new Trip(user, createTripDTO.getCarModel(), createTripDTO.getMessage()
+                , createTripDTO.getDepartureTime(), createTripDTO.getOrigin(), createTripDTO.getDestination()
+                , createTripDTO.getAvailablePlaces(), TripStatus.available, createTripDTO.smoking()
+                , createTripDTO.pets(), createTripDTO.luggage());
     }
 
     public static void updateTrip(Trip tripToEdit, EditTripDTO editTripDTO) {
@@ -97,7 +86,7 @@ public class ModelsMapper {
         passengerDTO.setEmail(user.getEmail());
         passengerDTO.setPhone(user.getPhone());
         passengerDTO.setRatingAsPassenger(user.getRatingAsPassenger());
-        passengerDTO.setPassengerStatusEnum(passengerStatus.getPassengerStatusEnum());
+        passengerDTO.setPassengerStatusEnum(passengerStatus.getStatus());
         return passengerDTO;
     }
 

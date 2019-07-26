@@ -205,7 +205,7 @@ public class TripRepositoryImpl implements TripRepository {
 
             try {
                 PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
-                passengerStatus.setPassengerStatusEnum(passengerStatusEnum);
+                passengerStatus.setStatus(passengerStatusEnum);
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
             }
@@ -233,7 +233,7 @@ public class TripRepositoryImpl implements TripRepository {
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
                             "where trip.id = :tripId " +
                             "and user.id = :passengerId " +
-                            "and passengerStatusEnum = :passengerStatusValue", PassengerStatus.class);
+                            "and status = :passengerStatusValue", PassengerStatus.class);
             query.setParameter("tripId", id);
             query.setParameter("passengerId", loggedUser.getId());
             query.setParameter("passengerStatusValue", PassengerStatusEnum.accepted);
@@ -294,7 +294,7 @@ public class TripRepositoryImpl implements TripRepository {
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
                             "where trip.id = :tripId " +
                             "and user.id = :passengerId " +
-                            "and passengerStatusEnum = :status", PassengerStatus.class);
+                            "and status = :status", PassengerStatus.class);
             query.setParameter("tripId", tripId);
             query.setParameter("passengerId", passengerId);
             query.setParameter("status", PassengerStatusEnum.accepted);
