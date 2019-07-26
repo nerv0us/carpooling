@@ -1,0 +1,728 @@
+swagger: '2.0'
+info:
+  description: |
+    Carpooling system
+  version: 1.0.0
+  title: Carpool
+  contact:
+    email: ivaylo@ship.cars
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: trip
+    description: Trip Controller
+paths:
+  /users:
+    put:
+      tags:
+      - user-resource
+      summary: editUser
+      operationId: editUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: UserDTO
+        required: true
+        schema:
+          $ref: '#/definitions/UserDTO'
+      responses:
+        '200':
+          description: Updated
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not found
+        '405':
+          description: Validation exception
+    
+  '/users/{username}':
+    get:
+      tags:
+        - user-resource
+      summary: getUser
+      operationId: getUser
+      produces:
+        - application/json
+      parameters:
+        - name: username
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /users/authenticate:
+    post:
+      tags:
+        - user-resource
+      summary: authorize
+      operationId: authorize
+      security: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: loginVM
+          description: loginVM
+          required: true
+          schema:
+            $ref: '#/definitions/LoginDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/JWTToken'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /users/register:
+    post:
+      tags:
+        - user-resource
+      summary: createUser
+      operationId: createUser
+      security: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: userDTO
+          description: userDTO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUserDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/users/{id}/avatar':
+    post:
+      tags:
+        - user-resource
+      summary: Uploads a file.
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: formData
+          name: upfile
+          type: file
+          description: The file to upload.
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    get:
+      tags:
+        - user-resource
+      summary: Uploads a file.
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      produces:
+        - image/png
+        - image/gif
+        - image/jpeg
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /trips:
+    get:
+      tags:
+        - trip
+      summary: getTrips
+      operationId: getTrips
+      produces:
+        - application/json
+      parameters:
+        - name: _end
+          in: query
+          type: integer
+          format: int32
+        - name: _start
+          in: query
+          type: integer
+          format: int32
+        - name: status
+          in: query
+          type: string 
+          enum:
+           - available
+           - booked
+           - ongoing
+           - done
+           - canceled
+        - name: driver
+          in: query
+          type: string
+        - name: origin
+          in: query
+          type: string
+        - name: destination
+          in: query
+          type: string
+        - name: earliestDepartureTime
+          in: query
+          type: string
+        - name: latestDepartureTime
+          in: query
+          type: string
+        - name: availablePlaces
+          in: query
+          type: string
+        - name: smoking
+          in: query
+          type: string
+        - name: pets
+          in: query
+          type: string
+        - name: luggage
+          in: query
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TripDTO'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - trip
+      summary: createTrip
+      operationId: createTrip
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: createTripDTO
+          description: createTripDTO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateTripDTO'
+      responses:
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+      deprecated: false
+    put:
+      tags:
+      - trip
+      summary: editTrip
+      operationId: editTrip
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: editTripDTO
+        required: true
+        schema:
+          $ref: '#/definitions/EditTripDTO'
+      responses:
+        '200':
+          description: Updated
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not found
+        '405':
+          description: Validation exception
+  '/trips/{id}':
+    get:
+      tags:
+        - trip
+      summary: getTrip
+      operationId: getTrip
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TripDTO'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      deprecated: false
+    patch:
+      tags:
+        - trip
+      summary: changeTripStatus
+      operationId: changeTripStatus
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - in: query
+          name: status
+          required: true
+          type: string
+          enum:
+            - available
+            - booked
+            - ongoing
+            - done
+            - canceled
+      responses:
+        '200':
+          description: Updated
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not Found
+      deprecated: false
+      
+  '/trips/{id}/comments':
+    post:
+      tags:
+        - trip
+      summary: addComment
+      operationId: addComment
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: comment
+          description: comment
+          required: true
+          schema:
+            $ref: '#/definitions/CreateCommentDTO'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/trips/{id}/passengers':
+    post:
+      tags:
+        - trip
+      summary: apply
+      operationId: apply
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/trips/{id}/driver/rate':
+    post:
+      tags:
+        - trip
+      summary: rateDriver
+      operationId: rateDriver
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: rating
+          description: rating
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/trips/{tripId}/passengers/{passengerId}/rate':
+    post:
+      tags:
+        - trip
+      summary: ratePassenger
+      operationId: ratePassenger
+      produces:
+        - application/json
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          type: string
+        - name: passengerId
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: rating
+          description: rating
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/trips/{tripId}/passengers/{passengerId}':
+    patch:
+      tags:
+        - trip
+      summary: changePassengerStatus
+      operationId: changePassengerStatus
+      produces:
+        - application/json
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          type: string
+        - in: path
+          name: passengerId
+          required: true
+          type: string
+        - in: query
+          name: status
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Updated
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbiden
+        '404':
+          description: Not Found
+      deprecated: false
+definitions:
+  CreateTripDTO:
+    type: object
+    properties:
+      carModel: 
+        type: string
+      message:
+        type: string
+      departureTime:
+        type: string
+        format: date-time
+      origin:
+        type: string
+      destination:
+        type: string
+      availablePlaces:
+        type: integer
+        format: int32
+      smoking:
+        type: boolean
+      pets:
+        type: boolean
+      luggage:
+        type: boolean
+    required: 
+    - departureTime
+    - origin
+    - destination
+    - availablePlaces
+    title: CreateTripDTO
+    
+  EditTripDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      carModel: 
+        type: string
+      message:
+        type: string
+      departureTime:
+        type: string
+        format: date-time
+      origin:
+        type: string
+      destination:
+        type: string
+      availablePlaces:
+        type: integer
+        format: int32
+      smoking:
+        type: boolean
+      pets:
+        type: boolean
+      luggage:
+        type: boolean
+    title: EditTripDTO
+    
+  TripDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      driver:
+        $ref: '#/definitions/UserDTO'
+      carModel: 
+        type: string
+      message:
+        type: string
+      departureTime:
+        type: string
+        format: date-time
+      origin:
+        type: string
+      destination:
+        type: string
+      availablePlaces:
+        type: integer
+        format: int32
+      passengers:
+        type: array
+        items:
+          $ref: '#/definitions/PassengerDTO'
+      status:
+        type: string
+        enum:
+          - available
+          - booked
+          - ongoing
+          - done
+          - canceled
+      comments:
+        type: array
+        items:
+          $ref: '#/definitions/CommentDTO'
+      smoking:
+        type: boolean
+      pets:
+        type: boolean
+      luggage:
+        type: boolean
+    title: TripDTO
+    
+  CreateCommentDTO:
+    type: object
+    properties:
+      message:
+        type: string
+      author:
+        $ref: '#/definitions/UserDTO'
+    title: CreateCommentDTO
+    
+  CommentDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      message:
+        type: string
+      author: 
+        $ref: '#/definitions/UserDTO'
+    title: CommentDTO
+    
+  CreateUserDTO:
+    type: object
+    properties:
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+        format: password
+        minLength: 4
+      phone:
+        type: string
+    title: CreateUserDTO
+    
+  UserDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+        format: email
+      phone:
+        type: string
+      ratingAsDriver:
+        type: number
+        format: double
+      ratingAsPassenger:
+        type: number
+        format: double
+      avatarUri:
+        type: string
+    title: UserDTO
+    
+  PassengerDTO:
+    type: object
+    properties:
+      userId:
+        type: integer
+        format: int64
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+        format: email
+      phone:
+        type: string
+      ratingAsPassenger:
+        type: number
+        format: double
+      status:
+        type: string
+        enum:
+          - pending
+          - accepted
+          - rejected
+          - canceled
+          - absent
+    title: PassengerDTO
+    
+  LoginDTO:
+    type: object
+    properties:
+      password:
+        type: string
+      rememberMe:
+        type: boolean
+      username:
+        type: string
+    title: LoginDTO
+    
+  JWTToken:
+    type: object
+    properties:
+      id_token:
+        type: string
+    title: JWTToken
+    
+schemes:
+  - https
+  - http
