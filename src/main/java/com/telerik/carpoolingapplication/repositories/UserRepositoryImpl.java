@@ -26,9 +26,16 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             User userToEdit = session.get(User.class, userDTO.getId());
-            if (isEmailExist(userDTO.getEmail()) &&
-                    !userToEdit.getEmail().equals(userDTO.getEmail())) {
+            if (isEmailExist(userDTO.getEmail())
+                    && !userToEdit.getEmail().equals(userDTO.getEmail())) {
                 throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+            }
+            if (isUsernameExist(userDTO.getUsername())
+                    && !userToEdit.getUsername().equals(userDTO.getUsername())) {
+                throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getEmail()));
+            }
+            if (userDTO.getAvatarUri() != null) {
+                userToEdit.setAvatarUri(userDTO.getAvatarUri());
             }
             ModelsMapper.editUser(userToEdit, userDTO);
             session.getTransaction().commit();
@@ -62,7 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             if (isEmailExist(user.getEmail())) {
-                throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, user.getEmail()));
+                throw new IllegalArgumentException(Constants.EMAIL_ALREADY_EXIST);
             }
             session.save(user);
             session.getTransaction().commit();
@@ -73,6 +80,13 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = sessionFactory.getCurrentSession();
         Query<User> query = session.createQuery("from User where email = :email", User.class);
         query.setParameter("email", email);
+        return !query.list().isEmpty();
+    }
+
+    private boolean isUsernameExist(String username) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<User> query = session.createQuery("from User where username = :username", User.class);
+        query.setParameter("username", username);
         return !query.list().isEmpty();
     }
 }
