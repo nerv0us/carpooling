@@ -65,7 +65,7 @@ public class TripServiceImpl implements TripService {
         tripRepository.changePassengerStatus(tripId, passengerId, status);
     }
 
-    /*@Override
+   /* @Override
     public void rateDriver(int id, RatingDTO ratingDTO) {
         tripRepository.rateDriver(id, ratingDTO);
     }

@@ -173,8 +173,8 @@ public class TripRestController {
         }
         return Constants.PASSENGER_STATUS_CHANGED;
     }
-
-    /*@PostMapping("{id}/driver/rate")
+/*
+    @PostMapping("{id}/driver/rate")
     public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO) {
         try {
             tripService.rateDriver(id, ratingDTO);

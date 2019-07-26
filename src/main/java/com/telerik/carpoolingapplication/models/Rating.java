@@ -4,8 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "ratings_drivers")
-public class RatingDriver {
+@Table(name = "ratings")
+public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -22,17 +22,21 @@ public class RatingDriver {
     private User ratingReceiver;
 
     @NotNull
+    private boolean isReceiverDriver;
+
+    @NotNull
     @ManyToOne
     private Trip trip;
 
-    public RatingDriver() {
+    public Rating() {
     }
 
-    public RatingDriver(@NotNull double rating, @NotNull User ratingGiver, @NotNull User ratingReceiver
-            , Trip trip) {
+    public Rating(@NotNull double rating, @NotNull User ratingGiver, @NotNull User ratingReceiver
+            , @NotNull boolean isReceiverDriver, @NotNull Trip trip) {
         this.rating = rating;
         this.ratingGiver = ratingGiver;
         this.ratingReceiver = ratingReceiver;
+        this.isReceiverDriver = isReceiverDriver;
         this.trip = trip;
     }
 
@@ -66,6 +70,14 @@ public class RatingDriver {
 
     public void setRatingReceiver(User ratingReceiver) {
         this.ratingReceiver = ratingReceiver;
+    }
+
+    public boolean isReceiverDriver() {
+        return isReceiverDriver;
+    }
+
+    public void setReceiverDriver(boolean receiverDriver) {
+        isReceiverDriver = receiverDriver;
     }
 
     public Trip getTrip() {

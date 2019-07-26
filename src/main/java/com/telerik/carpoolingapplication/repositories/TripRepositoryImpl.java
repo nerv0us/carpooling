@@ -215,8 +215,8 @@ public class TripRepositoryImpl implements TripRepository {
         }
     }
 
-    //Add additional validations for rate, like if trip is over or what the status of driver/passenger is!
-    /*@Override
+    /*//Add additional validations for rate, like if trip is over or what the status of driver/passenger is!
+    @Override
     public void rateDriver(int id, RatingDTO ratingDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -230,39 +230,40 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
 
-            Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
-                            "where trip.id = :tripId " +
-                            "and user.id = :passengerId " +
-                            "and status = :passengerStatusValue", PassengerStatus.class);
-            query.setParameter("tripId", id);
-            query.setParameter("passengerId", loggedUser.getId());
-            query.setParameter("passengerStatusValue", PassengerStatusEnum.accepted);
+            Query<PassengerStatus> passengerStatusQuery = session.createQuery("from PassengerStatus " +
+                    "where trip.id = :tripId " +
+                    "and user.id = :passengerId " +
+                    "and status = :passengerStatusValue", PassengerStatus.class);
+            passengerStatusQuery.setParameter("tripId", id);
+            passengerStatusQuery.setParameter("passengerId", loggedUser.getId());
+            passengerStatusQuery.setParameter("passengerStatusValue", PassengerStatusEnum.accepted);
 
-            if (query.list().size() == 0) {
+            if (passengerStatusQuery.list().size() == 0) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
 
             User driver = currentTrip.getDriver();
 
-            Query<Rating> query1 = session.createQuery("from Rating " +
-                            "where trip.id = :tripId " +
-                            "and ratingReceiver.id = :ratingReceiverId " +
-                            "and ratingGiver.id = :ratingGiverId", Rating.class);
-            query1.setParameter("tripId", id);
-            query1.setParameter("ratingReceiverId", driver.getId());
-            query1.setParameter("ratingGiverId", loggedUser.getId());
+            Query<Rating> ratingDriverQuery = session.createQuery("from Rating " +
+                    "where trip.id = :tripId " +
+                    "and ratingReceiver.id = :ratingReceiverId " +
+                    "and ratingGiver.id = :ratingGiverId", Rating.class);
+            ratingDriverQuery.setParameter("tripId", id);
+            ratingDriverQuery.setParameter("ratingReceiverId", driver.getId());
+            ratingDriverQuery.setParameter("ratingGiverId", loggedUser.getId());
 
-            if (query1.list().size() == 0) {
-                Rating rating = ModelsMapper.fromRatingDriverDTO(ratingDTO, loggedUser, driver, currentTrip);
-                session.save(rating);
-                driver.getRatingsAsDriver().add(rating);
+            if (ratingDriverQuery.list().size() == 0) {
+                Rating ratingDriver = new Rating(ratingDTO.getRating(), loggedUser, driver, currentTrip);
+                session.save(ratingDriver);
             } else {
-                Rating rating = query1.list().get(0);
-                rating.setRating(ratingDTO.getRating());
-                session.update(rating);
+                Rating ratingDriver = ratingDriverQuery.list().get(0);
+                ratingDriver.setRating(ratingDTO.getRating());
+                session.update(ratingDriver);
             }
+            Double averageDriverRating = (Double) session.createQuery("SELECT avg(rating) from Rating where ratingReceiver.id = :driverId")
+                    .getSingleResult();
 
-            driver.setRatingAsDriver(calculateRating(driver.getRatingsAsDriver()));
+            driver.setRatingAsDriver(averageDriverRating);
             session.update(driver);
 
             session.getTransaction().commit();
@@ -278,23 +279,20 @@ public class TripRepositoryImpl implements TripRepository {
             tripNotFoundAndTripNotOverValidation(currentTrip);
 
             User driver = currentTrip.getDriver();
+            //Testing purposes! Should be logged user!
+            User loggedUser = session.get(User.class, 1);
             // Add unauthorized and forbidden validations when security is implemented!
-            *//*if (driver.getId() != loggedUser.GetId){*//*
-            *//*    throw new IllegalArgumentException("You cannot rate trip passenger if you are not trip driver!");*//*
-            *//*}*//*
-            if (driver.getId() == passengerId){
+            if (driver.getId() != loggedUser.getId()) {
+                throw new IllegalArgumentException("You cannot rate trip passenger if you are not trip driver!");
+            }
+            if (driver.getId() == passengerId) {
                 throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
 
-            User passenger = session.get(User.class, passengerId);
-            if (passenger == null) {
-                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
-            }
-
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
-                            "where trip.id = :tripId " +
-                            "and user.id = :passengerId " +
-                            "and status = :status", PassengerStatus.class);
+                    "where trip.id = :tripId " +
+                    "and user.id = :passengerId " +
+                    "and status = :status", PassengerStatus.class);
             query.setParameter("tripId", tripId);
             query.setParameter("passengerId", passengerId);
             query.setParameter("status", PassengerStatusEnum.accepted);
@@ -303,25 +301,27 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
 
-            Query<Rating> query1 = session.createQuery("from Rating " +
-                            "where trip.id = :tripId " +
-                            "and ratingReceiver.id = :ratingReceiverId " +
-                            "and ratingGiver.id = :ratingGiverId", Rating.class);
-            query1.setParameter("tripId", tripId);
-            query1.setParameter("ratingReceiverId", passengerId);
-            query1.setParameter("ratingGiverId", currentTrip.getDriver().getId());
+            Query<RatingPassenger> ratingPassengerQuery = session.createQuery("from RatingPassenger " +
+                    "where trip.id = :tripId " +
+                    "and ratingReceiver.id = :ratingReceiverId " +
+                    "and ratingGiver.id = :ratingGiverId", RatingPassenger.class);
+            ratingPassengerQuery.setParameter("tripId", tripId);
+            ratingPassengerQuery.setParameter("ratingReceiverId", passengerId);
+            ratingPassengerQuery.setParameter("ratingGiverId", currentTrip.getDriver().getId());
 
-            if (query1.list().size() == 0) {
-                Rating rating = ModelsMapper.fromRatingDriverDTO(ratingDTO, driver, passenger, currentTrip);
-                session.save(rating);
-                passenger.getRatingsAsPassenger().add(rating);
+            User passenger = session.get(User.class, passengerId);
+
+            if (ratingPassengerQuery.list().size() == 0) {
+                RatingPassenger ratingPassenger = new RatingPassenger(ratingDTO.getRating(), driver, passenger, currentTrip);
+                session.save(ratingPassenger);
             } else {
-                Rating rating = query1.list().get(0);
-                rating.setRating(ratingDTO.getRating());
-                session.update(rating);
+                RatingPassenger ratingPassenger = ratingPassengerQuery.list().get(0);
+                ratingPassenger.setRating(ratingDTO.getRating());
+                session.update(ratingPassenger);
             }
-
-            passenger.setRatingAsPassenger(calculateRating(passenger.getRatingsAsPassenger()));
+            Double averagePassengerRating = (Double) session.createQuery("SELECT avg(rating) from RatingPassenger " +
+                    "where ratingReceiver = passenger.getId")
+                    .getSingleResult();
             session.update(passenger);
 
             session.getTransaction().commit();
@@ -337,15 +337,4 @@ public class TripRepositoryImpl implements TripRepository {
             throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
     }
-
-    /*private double calculateRating(List<Rating> ratings) {
-        double result = 0;
-
-        for (Rating rating : ratings) {
-            result += rating.getRating();
-        }
-        result /= ratings.size();
-
-        return result;
-    }*/
 }
