@@ -1,10 +1,9 @@
 package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.exception.CustomException;
-import com.telerik.carpoolingapplication.models.JWTToken;
-import com.telerik.carpoolingapplication.models.User;
-import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.enums.Role;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
 import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Transactional
 @Service
@@ -36,16 +38,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO getByUsername(String username) {
+        User user = userRepository.getByUsername(username);
+        if (isUserInvalid(username)) {
+            throw new IllegalArgumentException(String.format(Constants.USERNAME_NOT_FOUND, username));
+        }
+        return ModelsMapper.getUser(user);
+    }
+
+    @Override
     public UserDTO editUser(UserDTO userDTO) {
-        User userToEdit = userRepository.getById(userDTO.getId());
-        if (userToEdit == null) {
+
+        if (isUserInvalid(userDTO.getUsername())) {
             throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userDTO.getId()));
-        }
-        if (!userToEdit.getUsername().equals(userDTO.getUsername())) {
-            throw new IllegalArgumentException(Constants.USERNAME_CANNOT_BE_CHANGED_MESSAGE);
-        }
-        if (userDTO.getAvatarUri() != null) {
-            userToEdit.setAvatarUri(userDTO.getAvatarUri());
         }
         try {
             userRepository.editUser(userDTO);
@@ -56,33 +61,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByUsername(String username) {
-        User user = userRepository.getByUsername(username);
-        if (user == null) {
-            throw new IllegalArgumentException(String.format(Constants.USERNAME_NOT_FOUND, username));
+    public JWTToken createUser(CreateUserDTO userDTO) {
+        if (isUserInvalid(userDTO.getUsername())) {
+            throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
         }
-        return user;
-    }
 
-    @Override
-    public User getById(int id) {
-        return userRepository.getById(id);
-    }
+        User user = ModelsMapper.createUser(userDTO);
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_USER);
+        user.setRoles(roles);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-    @Override
-    public JWTToken createUser(User user) {
-        User existingUser = userRepository.getByUsername(user.getUsername());
-        if (existingUser != null) {
-            throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, user.getUsername()));
-        }
         try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setAvatarUri(Constants.DEFAULT_USER_AVATAR_ROUTE);
             userRepository.createUser(user);
             return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
-
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, user.getEmail()));
+            throw new CustomException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getUsername()),
+                    HttpStatus.CONFLICT);
         }
     }
 
@@ -94,5 +89,10 @@ public class UserServiceImpl implements UserService {
         } catch (AuthenticationException e) {
             throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
         }
+    }
+
+    private boolean isUserInvalid(String username) {
+        User user = userRepository.getByUsername(username);
+        return user == null || !user.isEnabled();
     }
 }
