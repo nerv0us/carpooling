@@ -8,6 +8,8 @@ import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TripServiceImpl implements TripService {
     private TripRepository tripRepository;
@@ -17,6 +19,24 @@ public class TripServiceImpl implements TripService {
     public TripServiceImpl(TripRepository tripRepository, FilterRepository filterRepository) {
         this.tripRepository = tripRepository;
         this.filterRepository = filterRepository;
+    }
+
+    @Override
+    public List<TripDTO> getTrips(String tripStatus, String driverUsername
+            , String origin, String destination, String latestDepartureTime
+            , String earliestDepartureTime, String availablePlaces
+            , String smoking, String pets, String luggage, String sortParameter, String descendingOrAscending) {
+        TripStatus status = tripStatusParser(tripStatus);
+        int places = integerParser(availablePlaces);
+        boolean cigarettes = booleanParser(smoking);
+        boolean animals = booleanParser(pets);
+        boolean baggage = booleanParser(luggage);
+        List<TripDTO> trips = tripRepository.getFilteredTrips(status, driverUsername, origin, destination, latestDepartureTime
+                , earliestDepartureTime, places, cigarettes, animals, baggage);
+
+        //TODO: Sort trips!
+
+        return trips;
     }
 
     @Override
@@ -73,5 +93,38 @@ public class TripServiceImpl implements TripService {
     @Override
     public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
         tripRepository.ratePassenger(tripId, passengerId, ratingDTO);
+    }
+
+    private TripStatus tripStatusParser(String tripStatus) {
+        if (tripStatus != null) {
+            try {
+                return TripStatus.valueOf(tripStatus);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
+            }
+        }
+        return null;
+    }
+
+    private Integer integerParser(String availablePlaces) {
+        if (availablePlaces != null) {
+            try {
+                return Integer.parseInt(availablePlaces);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(Constants.NOT_A_NUMBER);
+            }
+        }
+        return null;
+    }
+
+    private Boolean booleanParser(String smoking) {
+        if (smoking != null) {
+            try {
+                return Boolean.parseBoolean(smoking);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(Constants.NOT_A_BOOLEAN);
+            }
+        }
+        return null;
     }
 }

@@ -4,7 +4,6 @@ import com.telerik.carpoolingapplication.models.Trip;
 import com.telerik.carpoolingapplication.models.TripDTO;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 import java.util.List;
 

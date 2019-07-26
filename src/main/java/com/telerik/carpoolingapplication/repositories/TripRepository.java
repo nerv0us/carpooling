@@ -6,6 +6,9 @@ import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import java.util.List;
 
 public interface TripRepository {
+    List<TripDTO> getFilteredTrips(TripStatus status, String driverUsername, String origin, String destination
+            , String latestDepartureTime, String earliestDepartureTime
+            , int places, boolean cigarettes, boolean animals, boolean baggage);
 
     void createTrip(CreateTripDTO createTripDTO);
 
@@ -24,4 +27,5 @@ public interface TripRepository {
     void rateDriver(int id, RatingDTO ratingDTO);
 
     void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO);
+
 }

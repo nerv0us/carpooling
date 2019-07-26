@@ -24,6 +24,13 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
+    public List<TripDTO> getFilteredTrips(TripStatus status, String driverUsername, String origin, String destination
+            , String latestDepartureTime, String earliestDepartureTime, int places, boolean cigarettes
+            , boolean animals, boolean baggage) {
+        return null;
+    }
+
+    @Override
     public void createTrip(CreateTripDTO createTripDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -117,7 +124,7 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
             if (commentDTO.getUserId() != tripDTO.getDriver().getId()) {
-                List<PassengerStatus> passengers = passengerStatuses(session, tripDTO.getId(), fakeUser.getId()
+                List<PassengerStatus> passengers = passengers(session, tripDTO.getId(), fakeUser.getId()
                         , PassengerStatusEnum.accepted);
                 if (passengers.size() == 0) {
                     throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
@@ -138,7 +145,7 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
 
             //For testing purposes! Should be logged user!     //Example
-            User loggedUser = session.get(User.class, 3);
+            User loggedUser = session.get(User.class, 2);
             if (loggedUser == null) {
                 throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
@@ -183,7 +190,7 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
             }
 
-            List<PassengerStatus> passenger = passengerStatuses(session, tripId, passengerId, null);
+            List<PassengerStatus> passenger = passengers(session, tripId, passengerId, null);
             if (passenger.size() == 0) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
@@ -211,14 +218,14 @@ public class TripRepositoryImpl implements TripRepository {
             tripNotFoundAndTripNotOverValidation(currentTrip);
 
             //Testing purposes, should be logged user!
-            User loggedUser = session.get(User.class, 3);
+            User loggedUser = session.get(User.class, 2);
             if (loggedUser == null) {
                 throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
             if (loggedUser.getId() == currentTrip.getDriver().getId()) {
                 throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
-            List<PassengerStatus> passengers = passengerStatuses(session, currentTrip.getId(), loggedUser.getId()
+            List<PassengerStatus> passengers = passengers(session, currentTrip.getId(), loggedUser.getId()
                     , PassengerStatusEnum.accepted);
             if (passengers.size() == 0) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
@@ -257,10 +264,10 @@ public class TripRepositoryImpl implements TripRepository {
             if (passengerId == loggedUser.getId()) {
                 throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
-            if (passengerStatuses(session, tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
+            if (passengers(session, tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
-            if (passengerStatuses(session, tripId, loggedUser.getId(), PassengerStatusEnum.accepted).size() == 0) {
+            if (passengers(session, tripId, loggedUser.getId(), PassengerStatusEnum.accepted).size() == 0) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
 
@@ -293,15 +300,24 @@ public class TripRepositoryImpl implements TripRepository {
         }
     }
 
-    private List<PassengerStatus> passengerStatuses(Session session, int tripId, int userId
+    private List<PassengerStatus> passengers(Session session, int tripId, int userId
             , PassengerStatusEnum passengerStatusEnum) {
-        Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
-                "where trip.id = :tripId " +
-                "and user.id = :userId " +
-                "and status = :status", PassengerStatus.class);
-        query.setParameter("tripId", tripId);
-        query.setParameter("userId", userId);
-        query.setParameter("status", passengerStatusEnum);
+        Query<PassengerStatus> query;
+        if (passengerStatusEnum != null) {
+            query = session.createQuery("from PassengerStatus " +
+                    "where trip.id = :tripId " +
+                    "and user.id = :userId " +
+                    "and status = :status", PassengerStatus.class);
+            query.setParameter("tripId", tripId);
+            query.setParameter("userId", userId);
+            query.setParameter("status", passengerStatusEnum);
+        } else {
+            query = session.createQuery("from PassengerStatus " +
+                    "where trip.id = :tripId " +
+                    "and user.id = :userId ", PassengerStatus.class);
+            query.setParameter("tripId", tripId);
+            query.setParameter("userId", userId);
+        }
         return query.list();
     }
 
@@ -319,10 +335,10 @@ public class TripRepositoryImpl implements TripRepository {
         return ratingQuery.list();
     }
 
-    private double calculateAverageRating(Session session, int userId, boolean isReceiverDriver){
+    private double calculateAverageRating(Session session, int userId, boolean isReceiverDriver) {
         Query calculated = session.createQuery("select avg(rating) from Rating " +
                 "where ratingReceiver.id = :userId " +
-                "and isReceiverDriver = :isReceiverDriver ", Rating.class);
+                "and isReceiverDriver = :isReceiverDriver ");
         calculated.setParameter("userId", userId);
         calculated.setParameter("isReceiverDriver", isReceiverDriver);
         return (double) calculated.list().get(0);

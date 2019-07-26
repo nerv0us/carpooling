@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ public class ModelsMapper {
 
         List<PassengerStatus> filteredPassengerStatuses = passengerStatuses.stream()
                 .filter(ps -> ps.getTrip().getId() == trip.getId())
+                .filter(ps ->ps.getStatus() == PassengerStatusEnum.accepted)
                 .collect(Collectors.toList());
 
         for (PassengerStatus passengerStatus : filteredPassengerStatuses) {

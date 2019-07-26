@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-//Go through every method validation and response one more time!
+//TODO: Extract login in services, change testUsers with authenticated!
 @RestController
 @RequestMapping("/api/trips")
 public class TripRestController {
@@ -40,13 +40,24 @@ public class TripRestController {
     //Make another helper class for sorting and another service class for filtering and sorting and split filter from sort!
     //Think of filter and sort simultaneously!
     @GetMapping
-    public List<TripDTO> getTrips(@RequestParam(required = false) String type
-            , @RequestParam(required = false) String parameter
-            , @RequestParam(required = false) String value) {
-        List<TripDTO> trips = new ArrayList<>();
+    public List<TripDTO> getTrips(@RequestParam(required = false) String tripStatus
+            , @RequestParam(required = false) String driverUsername
+            , @RequestParam(required = false) String origin
+            , @RequestParam(required = false) String destination
+            , @RequestParam(required = false) String earliestDepartureTime
+            , @RequestParam(required = false) String latestDepartureTime
+            , @RequestParam(required = false) String availablePlaces
+            , @RequestParam(required = false) String smoking
+            , @RequestParam(required = false) String pets
+            , @RequestParam(required = false) String luggage
+            , @RequestParam(required = false) String sortParameter
+            , @RequestParam(required = false) String descendingOrAscending) {
+        List<TripDTO> trips;
+        trips = tripService.getTrips(tripStatus, driverUsername, origin, destination, earliestDepartureTime
+                , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, descendingOrAscending);
         //Add unauthorized logic and response!
         //Edit responses/messages
-        try {
+        /*try {
             if (type == null || parameter == null || value == null) {
                 trips = filterService.getTripsUnsortedUnfiltered();
             } else if (type.equals("filter")) {
@@ -58,7 +69,7 @@ public class TripRestController {
             }
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        }*/
         return trips;
     }
 
