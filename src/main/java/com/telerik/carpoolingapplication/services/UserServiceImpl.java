@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getByUsername(String username) {
         User user = userRepository.getByUsername(username);
-        if (isUserInvalid(username)) {
+        if (user == null) {
             throw new IllegalArgumentException(String.format(Constants.USERNAME_NOT_FOUND, username));
         }
         return ModelsMapper.getUser(user);
@@ -93,6 +93,6 @@ public class UserServiceImpl implements UserService {
 
     private boolean isUserInvalid(String username) {
         User user = userRepository.getByUsername(username);
-        return user == null || !user.isEnabled();
+        return user != null;
     }
 }
