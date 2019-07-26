@@ -107,18 +107,6 @@ public class User implements UserDetails {
         this.avatarUri = avatarUri;
     }
 
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> userRoles) {
-        this.roles = userRoles;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public int getId() {
         return id;
     }
@@ -154,6 +142,10 @@ public class User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
@@ -239,5 +231,13 @@ public class User implements UserDetails {
 
     public void setAvatarUri(String avatarUri) {
         this.avatarUri = avatarUri;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> userRoles) {
+        this.roles = userRoles;
     }
 }
