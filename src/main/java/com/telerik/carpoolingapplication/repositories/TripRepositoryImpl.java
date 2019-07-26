@@ -116,23 +116,14 @@ public class TripRepositoryImpl implements TripRepository {
             if (fakeUser == null) {
                 throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
-
-            if (fakeUser.getId() != tripDTO.getDriver().getId()) {
-                Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
-                        "where trip.id = :tripId and user.id = :userId", PassengerStatus.class);
-                query.setParameter("tripId", tripDTO.getId());
-                query.setParameter("userId", fakeUser.getId());
-
-                //Think of concrete passengerStatus necessary to addComment!
-                if (query.list().size() == 0) {
+            if (commentDTO.getUserId() != tripDTO.getDriver().getId()) {
+                List<PassengerStatus> passengers = passengerStatuses(session, tripDTO.getId(), fakeUser.getId()
+                        , PassengerStatusEnum.accepted);
+                if (passengers.size() == 0) {
                     throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
                 }
-
-                if (tripDTO.getTripStatus() != TripStatus.done) {
-                    throw new IllegalArgumentException(Constants.TRIP_NOT_FINISHED);
-                }
-
             }
+
             Trip trip = session.get(Trip.class, tripDTO.getId());
             Comment comment = ModelsMapper.fromCommentDTO(commentDTO, fakeUser, trip);
 
@@ -192,25 +183,20 @@ public class TripRepositoryImpl implements TripRepository {
                 throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
             }
 
-            Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
-                    "where trip.id = :tripId and user.id = :passengerId", PassengerStatus.class);
-            query.setParameter("tripId", tripId);
-            query.setParameter("passengerId", passengerId);
-
-            if (query.list().size() == 0) {
+            List<PassengerStatus> passenger = passengerStatuses(session, tripId, passengerId, null);
+            if (passenger.size() == 0) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
 
-            PassengerStatus passengerStatus = query.list().get(0);
-
+            PassengerStatus passengerStatus = passenger.get(0);
             try {
                 PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
                 passengerStatus.setStatus(passengerStatusEnum);
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
             }
-            session.update(passengerStatus);
 
+            session.update(passengerStatus);
             session.getTransaction().commit();
         }
     }
@@ -229,44 +215,26 @@ public class TripRepositoryImpl implements TripRepository {
             if (loggedUser == null) {
                 throw new IllegalArgumentException(Constants.UNAUTHORIZED);
             }
-
-            Query<PassengerStatus> passengerStatusQuery = session.createQuery("from PassengerStatus " +
-                    "where trip.id = :tripId " +
-                    "and user.id = :passengerId " +
-                    "and status = :passengerStatusValue", PassengerStatus.class);
-            passengerStatusQuery.setParameter("tripId", id);
-            passengerStatusQuery.setParameter("passengerId", loggedUser.getId());
-            passengerStatusQuery.setParameter("passengerStatusValue", PassengerStatusEnum.accepted);
-
-            if (passengerStatusQuery.list().size() == 0) {
-                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
+            if (loggedUser.getId() == currentTrip.getDriver().getId()) {
+                throw new IllegalArgumentException(Constants.RATE_YOURSELF);
+            }
+            List<PassengerStatus> passengers = passengerStatuses(session, currentTrip.getId(), loggedUser.getId()
+                    , PassengerStatusEnum.accepted);
+            if (passengers.size() == 0) {
+                throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
 
             User driver = currentTrip.getDriver();
-
-            Query<Rating> ratingQuery = session.createQuery("from Rating " +
-                    "where trip.id = :tripId " +
-                    "and ratingReceiver.id = :driverId " +
-                    "and ratingGiver.id = :passengerId " +
-                    "and isReceiverDriver = true ", Rating.class);
-            ratingQuery.setParameter("tripId", id);
-            ratingQuery.setParameter("driverId", driver.getId());
-            ratingQuery.setParameter("passengerId", loggedUser.getId());
-
-            if (ratingQuery.list().size() == 0) {
+            List<Rating> ratings = ratings(session, id, driver.getId(), loggedUser.getId(), true);
+            if (ratings.size() == 0) {
                 Rating rating = new Rating(ratingDTO.getRating(), loggedUser, driver, true, currentTrip);
                 session.save(rating);
             } else {
-                Rating ratingDriver = ratingQuery.list().get(0);
+                Rating ratingDriver = ratings.get(0);
                 ratingDriver.setRating(ratingDTO.getRating());
                 session.update(ratingDriver);
             }
-
-            Query calculated = session.createQuery("select avg(rating) from Rating " +
-                    "where ratingReceiver.id = :driverId and isReceiverDriver = true ", Rating.class);
-            calculated.setParameter("driverId", driver.getId());
-            double averageRating = (double) calculated.list().get(0);
-
+            double averageRating = calculateAverageRating(session, driver.getId(), true);
             driver.setRatingAsDriver(averageRating);
             session.update(driver);
 
@@ -286,58 +254,28 @@ public class TripRepositoryImpl implements TripRepository {
             //Testing purposes! Should be logged user!
             User loggedUser = session.get(User.class, 2);
             // Add unauthorized and forbidden validations when security is implemented!
-            if (passengerId == loggedUser.getId() || passengerId == driver.getId()) {
+            if (passengerId == loggedUser.getId()) {
                 throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
-
-            Query<PassengerStatus> passengerQuery = session.createQuery("from PassengerStatus " +
-                    "where trip.id = :tripId " +
-                    "and user.id = :passengerId " +
-                    "and status = :status", PassengerStatus.class);
-            passengerQuery.setParameter("tripId", tripId);
-            passengerQuery.setParameter("passengerId", passengerId);
-            passengerQuery.setParameter("status", PassengerStatusEnum.accepted);
-            if (passengerQuery.list().size() == 0) {
+            if (passengerStatuses(session, tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
-
-            Query<PassengerStatus> loggedUserQuery = session.createQuery("from PassengerStatus " +
-                    "where trip.id = :tripId " +
-                    "and user.id = :loggedUserId " +
-                    "and status = :status", PassengerStatus.class);
-            loggedUserQuery.setParameter("tripId", tripId);
-            loggedUserQuery.setParameter("loggedUserId", loggedUser.getId());
-            loggedUserQuery.setParameter("status", PassengerStatusEnum.accepted);
-            if (loggedUserQuery.list().size() == 0) {
+            if (passengerStatuses(session, tripId, loggedUser.getId(), PassengerStatusEnum.accepted).size() == 0) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
 
-
-            Query<Rating> ratingQuery = session.createQuery("from Rating " +
-                    "where trip.id = :tripId " +
-                    "and ratingReceiver.id = :loggedUserId " +
-                    "and ratingGiver.id = :passengerId " +
-                    "and isReceiverDriver = false ", Rating.class);
-            ratingQuery.setParameter("tripId", tripId);
-            ratingQuery.setParameter("loggedUserId", loggedUser.getId());
-            ratingQuery.setParameter("passengerId", passengerId);
-
             User passenger = session.get(User.class, passengerId);
-
-            if (ratingQuery.list().size() == 0) {
+            List<Rating> ratings = ratings(session, tripId, passengerId, loggedUser.getId(), false);
+            if (ratings.size() == 0) {
                 Rating rating = new Rating(ratingDTO.getRating(), loggedUser, passenger, false, currentTrip);
                 session.save(rating);
             } else {
-                Rating rating = ratingQuery.list().get(0);
+                Rating rating = ratings.get(0);
                 rating.setRating(ratingDTO.getRating());
                 session.update(rating);
             }
-            Query calculated = session.createQuery("select avg(rating) from Rating " +
-                    "where ratingReceiver.id = :passengerId " +
-                    "and isReceiverDriver = false ", Rating.class);
-            calculated.setParameter("passengerId", passengerId);
-            double averageRating = (double) calculated.list().get(0);
 
+            double averageRating = calculateAverageRating(session, passengerId, false);
             passenger.setRatingAsPassenger(averageRating);
             session.update(passenger);
 
@@ -353,5 +291,40 @@ public class TripRepositoryImpl implements TripRepository {
         if (trip.getTripStatus() != TripStatus.done) {
             throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
+    }
+
+    private List<PassengerStatus> passengerStatuses(Session session, int tripId, int userId
+            , PassengerStatusEnum passengerStatusEnum) {
+        Query<PassengerStatus> query = session.createQuery("from PassengerStatus " +
+                "where trip.id = :tripId " +
+                "and user.id = :userId " +
+                "and status = :status", PassengerStatus.class);
+        query.setParameter("tripId", tripId);
+        query.setParameter("userId", userId);
+        query.setParameter("status", passengerStatusEnum);
+        return query.list();
+    }
+
+    private List<Rating> ratings(Session session, int tripId, int ratingReceiverId, int ratingGiverId
+            , boolean isReceiverDriver) {
+        Query<Rating> ratingQuery = session.createQuery("from Rating " +
+                "where trip.id = :tripId " +
+                "and ratingReceiver.id = :ratingReceiverId " +
+                "and ratingGiver.id = :ratingGiverId " +
+                "and isReceiverDriver = :isReceiverDriver ", Rating.class);
+        ratingQuery.setParameter("tripId", tripId);
+        ratingQuery.setParameter("ratingReceiverId", ratingReceiverId);
+        ratingQuery.setParameter("ratingGiverId", ratingGiverId);
+        ratingQuery.setParameter("isReceiverDriver", isReceiverDriver);
+        return ratingQuery.list();
+    }
+
+    private double calculateAverageRating(Session session, int userId, boolean isReceiverDriver){
+        Query calculated = session.createQuery("select avg(rating) from Rating " +
+                "where ratingReceiver.id = :userId " +
+                "and isReceiverDriver = :isReceiverDriver ", Rating.class);
+        calculated.setParameter("userId", userId);
+        calculated.setParameter("isReceiverDriver", isReceiverDriver);
+        return (double) calculated.list().get(0);
     }
 }
