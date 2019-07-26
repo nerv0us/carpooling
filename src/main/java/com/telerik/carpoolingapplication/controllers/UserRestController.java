@@ -5,7 +5,6 @@ import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import com.telerik.carpoolingapplication.services.FileService;
 import com.telerik.carpoolingapplication.services.UserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,21 +21,19 @@ import java.io.IOException;
 public class UserRestController {
     private UserService userService;
     private FileService fileService;
-    private ModelMapper modelMapper;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserRestController(UserService service, FileService fileService, ModelMapper modelMapper, JwtTokenProvider jwtTokenProvider) {
+    public UserRestController(UserService service, FileService fileService, JwtTokenProvider jwtTokenProvider) {
         this.userService = service;
         this.fileService = fileService;
-        this.modelMapper = modelMapper;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping("/{username}")
     public UserDTO getUser(@PathVariable String username) {
         try {
-            return modelMapper.map(userService.getByUsername(username), UserDTO.class);
+            return userService.getByUsername(username);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -46,9 +43,12 @@ public class UserRestController {
     @PutMapping("/update")
     public void editUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
-        User user = userService.getByUsername(jwtTokenProvider.getUsername(token));
+        UserDTO user = userService.getByUsername(jwtTokenProvider.getUsername(token));
         if (user == null) {
-            throw new  ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        if (!user.getUsername().equals(jwtTokenProvider.getUsername(token))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
         try {
             userService.editUser(userDTO);
@@ -60,8 +60,8 @@ public class UserRestController {
     @PostMapping("/register")
     public JWTToken createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         try {
-            return userService.createUser(modelMapper.map(userDTO, User.class));
-        } catch (IllegalArgumentException e) {
+            return userService.createUser(userDTO);
+        } catch (CustomException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
@@ -76,12 +76,9 @@ public class UserRestController {
     }
 
     @PostMapping("/{id}/avatar")
-    public void uploadFile(@PathVariable int id, @RequestParam(value = "file") MultipartFile file) {
-        if (file == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
-        }
+    public void uploadFile(@PathVariable int id, @RequestParam(value = "file") MultipartFile image) {
         try {
-            fileService.storeFile(id, file);
+            fileService.storeFile(id, image);
         } catch (IllegalArgumentException | IOException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }

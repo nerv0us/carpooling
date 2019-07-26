@@ -104,19 +104,19 @@ public class UserDTO {
         this.phone = phone;
     }
 
-    public Double getRatingAsDriver() {
+    public double getRatingAsDriver() {
         return ratingAsDriver;
     }
 
-    public void setRatingAsDriver(Double ratingAsDriver) {
+    public void setRatingAsDriver(double ratingAsDriver) {
         this.ratingAsDriver = ratingAsDriver;
     }
 
-    public Double getRatingAsPassenger() {
+    public double getRatingAsPassenger() {
         return ratingAsPassenger;
     }
 
-    public void setRatingAsPassenger(Double ratingAsPassenger) {
+    public void setRatingAsPassenger(double ratingAsPassenger) {
         this.ratingAsPassenger = ratingAsPassenger;
     }
 
@@ -126,13 +126,5 @@ public class UserDTO {
 
     public void setAvatarUri(String avatarUri) {
         this.avatarUri = avatarUri;
-    }
-
-    public void setRatingAsDriver(double ratingAsDriver) {
-        this.ratingAsDriver = ratingAsDriver;
-    }
-
-    public void setRatingAsPassenger(double ratingAsPassenger) {
-        this.ratingAsPassenger = ratingAsPassenger;
     }
 }

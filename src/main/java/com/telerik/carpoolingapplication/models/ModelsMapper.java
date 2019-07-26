@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.springframework.stereotype.Component;
 
@@ -90,6 +91,20 @@ public class ModelsMapper {
         return passengerDTO;
     }
 
+    public static UserDTO getUser(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPhone(user.getPhone());
+        userDTO.setRatingAsDriver(user.getRatingAsDriver());
+        userDTO.setRatingAsDriver(user.getRatingAsDriver());
+        userDTO.setAvatarUri(user.getAvatarUri());
+        return userDTO;
+    }
+
     public static void editUser(User userToEdit, UserDTO userDTO) {
         userToEdit.setUsername(userDTO.getUsername());
         userToEdit.setFirstName(userDTO.getFirstName());
@@ -98,6 +113,20 @@ public class ModelsMapper {
         userToEdit.setPhone(userDTO.getPhone());
         userToEdit.setRatingAsDriver(userDTO.getRatingAsDriver());
         userToEdit.setRatingAsPassenger(userDTO.getRatingAsPassenger());
+    }
+
+    public static User createUser(CreateUserDTO userDTO) {
+        User user = new User();
+
+        user.setUsername(userDTO.getUsername());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone());
+        user.setAvatarUri(Constants.DEFAULT_USER_AVATAR_ROUTE);
+
+
+        return user;
     }
 
     public static Comment fromCommentDTO(CommentDTO commentDTO, User user, Trip trip) {
