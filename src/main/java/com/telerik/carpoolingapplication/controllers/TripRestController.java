@@ -2,8 +2,6 @@ package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
-import com.telerik.carpoolingapplication.services.FilterService;
-import com.telerik.carpoolingapplication.services.SortService;
 import com.telerik.carpoolingapplication.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,22 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
-//TODO: Extract login in services, change testUsers with authenticated!
+//TODO: Extract logic in services, change testUsers with authenticated!
 @RestController
 @RequestMapping("/api/trips")
 public class TripRestController {
     private TripService tripService;
-    private FilterService filterService;
-    private SortService sortService;
 
     @Autowired
-    public TripRestController(TripService tripService, FilterService filterService, SortService sortService) {
+    public TripRestController(TripService tripService) {
         this.tripService = tripService;
-        this.filterService = filterService;
-        this.sortService = sortService;
     }
 
     /* Paging for getTripsFiltered()?

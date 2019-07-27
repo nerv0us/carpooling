@@ -3,7 +3,6 @@ package com.telerik.carpoolingapplication.services;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
-import com.telerik.carpoolingapplication.repositories.FilterRepository;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +12,10 @@ import java.util.List;
 @Service
 public class TripServiceImpl implements TripService {
     private TripRepository tripRepository;
-    private FilterRepository filterRepository;
 
     @Autowired
-    public TripServiceImpl(TripRepository tripRepository, FilterRepository filterRepository) {
+    public TripServiceImpl(TripRepository tripRepository) {
         this.tripRepository = tripRepository;
-        this.filterRepository = filterRepository;
     }
 
     @Override
