@@ -29,6 +29,4 @@ public interface FilterRepository {
     List<TripDTO> filterByPets(boolean pets);
 
     List<TripDTO> filterByLuggage(boolean luggage);
-
-    List<TripDTO> getPassengersStatusesAndComments(List<Trip> trips, Session session);
 }

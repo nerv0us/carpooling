@@ -57,7 +57,7 @@ public class SortRepositoryImpl implements SortRepository {
         Session session = sessionFactory.getCurrentSession();
         Query<Trip> query = session.createQuery(string, Trip.class);
         List<Trip> trips = query.list();
-        return filterRepository.getPassengersStatusesAndComments(trips, session);
+        return null;
     }
 
     private String ascendingOrDescending(String value) {

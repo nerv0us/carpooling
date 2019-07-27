@@ -108,17 +108,6 @@ public class FilterRepositoryImpl implements FilterRepository {
             }
         }
         List<Trip> trips = query.list();
-        return getPassengersStatusesAndComments(trips, session);
-    }
-
-    @Override
-    public List<TripDTO> getPassengersStatusesAndComments(List<Trip> trips, Session session) {
-        Query<PassengerStatus> statusesQuery = session.createQuery("from PassengerStatus ",
-                PassengerStatus.class);
-        List<PassengerStatus> passengerStatuses = statusesQuery.list();
-        Query<Comment> commentsQuery = session.createQuery("from Comment "
-                , Comment.class);
-        List<Comment> comments = commentsQuery.list();
-        return ModelsMapper.fromTrip(trips, passengerStatuses, comments);
+        return null;
     }
 }

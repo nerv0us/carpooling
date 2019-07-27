@@ -8,7 +8,7 @@ import java.util.List;
 public interface TripRepository {
     List<TripDTO> getFilteredTrips(TripStatus status, String driverUsername, String origin, String destination
             , String latestDepartureTime, String earliestDepartureTime
-            , int places, boolean cigarettes, boolean animals, boolean baggage);
+            , Integer places, Boolean cigarettes, Boolean animals, Boolean baggage);
 
     void createTrip(CreateTripDTO createTripDTO);
 

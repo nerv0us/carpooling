@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -25,9 +26,12 @@ public class TripRepositoryImpl implements TripRepository {
 
     @Override
     public List<TripDTO> getFilteredTrips(TripStatus status, String driverUsername, String origin, String destination
-            , String latestDepartureTime, String earliestDepartureTime, int places, boolean cigarettes
-            , boolean animals, boolean baggage) {
-        return null;
+            , String latestDepartureTime, String earliestDepartureTime, Integer places, Boolean cigarettes
+            , Boolean animals, Boolean baggage) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Trip> tripQuery = queryBuilder(session, status, driverUsername, origin, destination, latestDepartureTime
+                , earliestDepartureTime, places, cigarettes, animals, baggage);
+        return getPassengersStatusesAndComments(tripQuery.list(), session);
     }
 
     @Override
@@ -342,5 +346,161 @@ public class TripRepositoryImpl implements TripRepository {
         calculated.setParameter("userId", userId);
         calculated.setParameter("isReceiverDriver", isReceiverDriver);
         return (double) calculated.list().get(0);
+    }
+
+    private List<TripDTO> getPassengersStatusesAndComments(List<Trip> trips, Session session) {
+        Query<PassengerStatus> statusesQuery = session.createQuery("from PassengerStatus ",
+                PassengerStatus.class);
+        List<PassengerStatus> passengerStatuses = statusesQuery.list();
+        Query<Comment> commentsQuery = session.createQuery("from Comment "
+                , Comment.class);
+        List<Comment> comments = commentsQuery.list();
+        return ModelsMapper.fromTrip(trips, passengerStatuses, comments);
+    }
+
+    private Query<Trip> queryBuilder(Session session, TripStatus status, String driverUsername, String origin, String destination
+            , String latestDepartureTime, String earliestDepartureTime, Integer places, Boolean cigarettes
+            , Boolean animals, Boolean baggage) {
+        String queryText = "from Trip ";
+        List<String> parameters = new ArrayList<>();
+        if (status != null) {
+            queryText += "where tripStatus = :status ";
+            parameters.add("status");
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (driverUsername != null) {
+                queryText += "where driver.username = :driverUsername ";
+                parameters.add("driverUsername");
+            }
+        } else {
+            if (driverUsername != null) {
+                queryText += "and driver.username = :driverUsername ";
+                parameters.add("driverUsername");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (origin != null) {
+                queryText += "where origin = :origin ";
+                parameters.add("origin");
+            }
+        } else {
+            if (origin != null) {
+                queryText += "and origin = :origin ";
+                parameters.add("origin");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (destination != null) {
+                queryText += "where destination = :destination ";
+                parameters.add("destination");
+            }
+        } else {
+            if (destination != null) {
+                queryText += "and destination = :destination ";
+                parameters.add("destination");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (latestDepartureTime != null) {
+                queryText += "where departureTime >= :latestDepartureTime ";
+                parameters.add("latestDepartureTime");
+            }
+        } else {
+            if (latestDepartureTime != null) {
+                queryText += "and departureTime >= :latestDepartureTime ";
+                parameters.add("latestDepartureTime");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (earliestDepartureTime != null) {
+                queryText += "where departureTime <= :earliestDepartureTime ";
+                parameters.add("earliestDepartureTime");
+            }
+        } else {
+            if (earliestDepartureTime != null) {
+                queryText += "and departureTime <= :earliestDepartureTime ";
+                parameters.add("earliestDepartureTime");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (places != null) {
+                queryText += "where availablePlaces = :places ";
+                parameters.add("places");
+            }
+        } else {
+            if (places != null) {
+                queryText += "and availablePlaces = :places ";
+                parameters.add("places");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (cigarettes != null) {
+                queryText += "where smoking = :cigarettes ";
+                parameters.add("cigarettes");
+            }
+        } else {
+            if (cigarettes != null) {
+                queryText += "and smoking = :cigarettes ";
+                parameters.add("cigarettes");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (animals != null) {
+                queryText += "where pets = :animals ";
+                parameters.add("animals");
+            }
+        } else {
+            if (animals != null) {
+                queryText += "and pets = :animals ";
+                parameters.add("animals");
+            }
+        }
+        if (queryText.endsWith("Trip ")) {
+            if (baggage != null) {
+                queryText += "where luggage = :baggage ";
+                parameters.add("baggage");
+            }
+        } else {
+            if (baggage != null) {
+                queryText += "and luggage = :baggage ";
+                parameters.add("baggage");
+            }
+        }
+        Query<Trip> tripQuery = session.createQuery(queryText, Trip.class);
+        for (String parameter : parameters) {
+            switch (parameter) {
+                case "status":
+                    tripQuery.setParameter(parameter, status);
+                    break;
+                case "driverUsername":
+                    tripQuery.setParameter(parameter, driverUsername);
+                    break;
+                case "origin":
+                    tripQuery.setParameter(parameter, origin);
+                    break;
+                case "destination":
+                    tripQuery.setParameter(parameter, destination);
+                    break;
+                case "latestDepartureTime":
+                    tripQuery.setParameter(parameter, latestDepartureTime);
+                    break;
+                case "earliestDepartureTime":
+                    tripQuery.setParameter(parameter, earliestDepartureTime);
+                    break;
+                case "places":
+                    tripQuery.setParameter(parameter, places);
+                    break;
+                case "cigarettes":
+                    tripQuery.setParameter(parameter, cigarettes);
+                    break;
+                case "animals":
+                    tripQuery.setParameter(parameter, animals);
+                    break;
+                case "baggage":
+                    tripQuery.setParameter(parameter, baggage);
+                    break;
+            }
+        }
+        return tripQuery;
     }
 }

@@ -27,10 +27,10 @@ public class TripServiceImpl implements TripService {
             , String earliestDepartureTime, String availablePlaces
             , String smoking, String pets, String luggage, String sortParameter, String descendingOrAscending) {
         TripStatus status = tripStatusParser(tripStatus);
-        int places = integerParser(availablePlaces);
-        boolean cigarettes = booleanParser(smoking);
-        boolean animals = booleanParser(pets);
-        boolean baggage = booleanParser(luggage);
+        Integer places = integerParser(availablePlaces);
+        Boolean cigarettes = booleanParser(smoking);
+        Boolean animals = booleanParser(pets);
+        Boolean baggage = booleanParser(luggage);
         List<TripDTO> trips = tripRepository.getFilteredTrips(status, driverUsername, origin, destination, latestDepartureTime
                 , earliestDepartureTime, places, cigarettes, animals, baggage);
 
