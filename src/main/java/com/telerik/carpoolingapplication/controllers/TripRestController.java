@@ -44,10 +44,10 @@ public class TripRestController {
             , @RequestParam(required = false) String pets
             , @RequestParam(required = false) String luggage
             , @RequestParam(required = false) String sortParameter
-            , @RequestParam(required = false) String descendingOrAscending) {
+            , @RequestParam(required = false) String ascending) {
         List<TripDTO> trips;
         trips = tripService.getTrips(tripStatus, driverUsername, origin, destination, earliestDepartureTime
-                , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, descendingOrAscending);
+                , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
         //Add unauthorized logic and response!
         //Edit responses/messages
         /*try {

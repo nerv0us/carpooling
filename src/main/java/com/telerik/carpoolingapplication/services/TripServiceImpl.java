@@ -7,6 +7,8 @@ import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -22,16 +24,20 @@ public class TripServiceImpl implements TripService {
     public List<TripDTO> getTrips(String tripStatus, String driverUsername
             , String origin, String destination, String latestDepartureTime
             , String earliestDepartureTime, String availablePlaces
-            , String smoking, String pets, String luggage, String sortParameter, String descendingOrAscending) {
+            , String smoking, String pets, String luggage, String sortParameter, String ascending) {
+
         TripStatus status = tripStatusParser(tripStatus);
         Integer places = integerParser(availablePlaces);
         Boolean cigarettes = booleanParser(smoking);
         Boolean animals = booleanParser(pets);
         Boolean baggage = booleanParser(luggage);
+
         List<TripDTO> trips = tripRepository.getFilteredTrips(status, driverUsername, origin, destination, latestDepartureTime
                 , earliestDepartureTime, places, cigarettes, animals, baggage);
 
-        //TODO: Sort trips!
+        if (sortParameter != null) {
+            tripSorter(trips, sortParameter, ascending);
+        }
 
         return trips;
     }
@@ -123,5 +129,58 @@ public class TripServiceImpl implements TripService {
             }
         }
         return null;
+    }
+
+    private void tripSorter(List<TripDTO> trips, String sortParameter, String ascending) {
+        Comparator<TripDTO> comparator;
+        if (ascending == null) {
+            ascending = ".";
+        }
+        switch (sortParameter) {
+            case "driverRating":
+                if (ascending.equals("true")) {
+                    comparator = (o1, o2) -> {
+                        if (o1.getDriver().getRatingAsDriver() > o2.getDriver().getRatingAsDriver()) {
+                            return 1;
+                        }
+                        return -1;
+                    };
+                } else {
+                    comparator = (o1, o2) -> {
+                        if (o1.getDriver().getRatingAsDriver() < o2.getDriver().getRatingAsDriver()) {
+                            return 1;
+                        }
+                        return -1;
+                    };
+                }
+                trips.sort(comparator);
+                break;
+            case "departureTime":
+                if (ascending.equals("true")) {
+                    comparator = Comparator.comparing(TripDTO::getDepartureTime);
+                } else {
+                    comparator = Comparator.comparing(TripDTO::getDepartureTime).reversed();
+                }
+                trips.sort(comparator);
+                break;
+            case "availablePlaces":
+                if (ascending.equals("true")) {
+                    comparator = (o1, o2) -> {
+                        if (o1.getAvailablePlaces() > o2.getAvailablePlaces()) {
+                            return 1;
+                        }
+                        return -1;
+                    };
+                } else {
+                    comparator = (o1, o2) -> {
+                        if (o1.getAvailablePlaces() < o2.getAvailablePlaces()) {
+                            return 1;
+                        }
+                        return -1;
+                    };
+                }
+                trips.sort(comparator);
+                break;
+        }
     }
 }
