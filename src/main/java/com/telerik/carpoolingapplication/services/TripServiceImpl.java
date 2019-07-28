@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 public class TripServiceImpl implements TripService {
-    private TripRepository tripRepository;
+    private final TripRepository tripRepository;
 
     @Autowired
     public TripServiceImpl(TripRepository tripRepository) {
@@ -50,39 +50,52 @@ public class TripServiceImpl implements TripService {
     @Override
     public void createTrip(CreateTripDTO createTripDTO, UserDTO user) {
         if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
         }
         tripRepository.createTrip(createTripDTO, user.getId());
     }
 
     @Override
-    public void editTrip(EditTripDTO editTripDTO) {
-        tripRepository.editTrip(editTripDTO);
+    public void editTrip(EditTripDTO editTripDTO, UserDTO user) {
+        TripDTO trip = getTrip(editTripDTO.getId(), user);
+        if (user == null) {
+            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
+        }
+        if (!(trip.getDriver().getId() == user.getId())) {
+            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+        }
+        tripRepository.editTrip(editTripDTO, user.getId());
     }
 
     @Override
-    public TripDTO getTrip(int id) {
-        return tripRepository.getTrip(id);
+    public TripDTO getTrip(int id, UserDTO user) {
+        TripDTO trip = tripRepository.getTrip(id);
+        if (user == null) {
+            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
+        }
+        return trip;
     }
 
     @Override
-    public void changeTripStatus(int id, String status) {
-        // Throws IllegalArgumentException(Messages.TRIP_NOT_FOUND);
-        TripDTO tripDTO = getTrip(id);
+    public void changeTripStatus(int id, UserDTO user, String status) {
+        TripDTO trip = getTrip(id, user);
+        if (!(trip.getDriver().getId() == user.getId())) {
+            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+        }
         try {
             TripStatus updatedStatus = TripStatus.valueOf(status);
-            tripRepository.changeTripStatus(tripDTO, updatedStatus);
+            tripRepository.changeTripStatus(trip, updatedStatus);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
         }
     }
 
     @Override
-    public void addComment(int id, CommentDTO commentDTO) {
-        // Throws IllegalArgumentException(Messages.TRIP_NOT_FOUND);
-        TripDTO tripDTO = getTrip(id);
-
-        // Throws IllegalArgumentException(Messages.UNAUTHORIZED);
+    public void addComment(int tripId, UserDTO user, CommentDTO commentDTO) {
+        TripDTO tripDTO = getTrip(tripId, user);
+        if (user.getId() != commentDTO.getUserId()) {
+            throw new IllegalArgumentException();
+        }
         tripRepository.addComment(tripDTO, commentDTO);
     }
 

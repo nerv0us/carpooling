@@ -13,13 +13,13 @@ public interface TripService {
 
     void createTrip(CreateTripDTO createTripDTO, UserDTO user);
 
-    void editTrip(EditTripDTO editTripDTO);
+    void editTrip(EditTripDTO editTripDTO, UserDTO user);
 
-    TripDTO getTrip(int id);
+    TripDTO getTrip(int tripId, UserDTO user);
 
-    void changeTripStatus(int id, String status);
+    void changeTripStatus(int tripId, UserDTO user, String status);
 
-    void addComment(int id, CommentDTO commentDTO);
+    void addComment(int tripId, UserDTO user, CommentDTO commentDTO);
 
     void apply(int id);
 

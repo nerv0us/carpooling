@@ -22,11 +22,9 @@ public class Constants {
     public static final String RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE = "You cannot rate before trip is over!";
     public static final String NOT_A_NUMBER = "Value is not a number!";
     public static final String NOT_A_BOOLEAN = "Value is not a boolean";
-    public static final String ILLEGAL_VALUE = "Illegal sorting value!";
-    public static final String BAD_REQUEST = "Bad request";
-
+    public static final String NOT_A_DRIVER = "You are not the driver of the trip!";
     // User constants
-    public static final String USER_NOT_FOUND = "User with ID %d not found!";
+    public static final String USER_NOT_FOUND = "User not found!";
     public static final String USERNAME_NOT_FOUND = "User with username %s not found!";
     public static final String USERNAME_ALREADY_EXIST = "User with username %s already exist!";
     public static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
@@ -45,4 +43,5 @@ public class Constants {
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
     public static final String DEFAULT_USER_AVATAR_ROUTE = "images/users/defaultUserPhoto.jpg";
     public static final int MAX_FILE_SIZE = 5242880;
+
 }

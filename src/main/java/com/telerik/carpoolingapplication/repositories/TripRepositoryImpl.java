@@ -35,10 +35,10 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void createTrip(CreateTripDTO createTripDTO, int id) {
+    public void createTrip(CreateTripDTO createTripDTO, int userId) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            User driver = session.get(User.class, id);
+            User driver = session.get(User.class, userId);
             Trip newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, driver);
             session.save(newTrip);
             session.getTransaction().commit();
@@ -46,54 +46,36 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void editTrip(EditTripDTO editTripDTO) {
+    public void editTrip(EditTripDTO editTripDTO, int userId) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-
-            //Fake user for testing purposes that needs to be an authenticated user!
-
-            //Ask for equal responses and validations and then catch exceptions!
-            User fakeDriver = session.get(User.class, 1);
-            if (fakeDriver == null) {
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
-            }
+            User driver = session.get(User.class, userId);
             Query<Trip> query = session.createQuery("from  Trip where driver = :driver and id = :id", Trip.class);
-            query.setParameter("driver", fakeDriver);
+            query.setParameter("driver", driver);
             query.setParameter("id", editTripDTO.getId());
-
-            if (query.list().size() == 0) {
-                throw new IllegalArgumentException(Constants.INVALID_ID_SUPPLIED);
-            }
-
             Trip tripToEdit = query.list().get(0);
-
             ModelsMapper.updateTrip(tripToEdit, editTripDTO);
-
             session.update(tripToEdit);
-
             session.getTransaction().commit();
         }
     }
 
     @Override
-    public TripDTO getTrip(int id) {
+    public TripDTO getTrip(int tripId) {
         TripDTO tripDTO;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            Trip trip = session.get(Trip.class, id);
+            Trip trip = session.get(Trip.class, tripId);
             if (trip == null) {
                 throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
             }
-
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus where trip.id = :id"
                     , PassengerStatus.class);
-            query.setParameter("id", id);
+            query.setParameter("id", tripId);
             List<PassengerStatus> passengerStatuses = query.list();
-
             Query<Comment> query1 = session.createQuery("from Comment where trip.id = :id", Comment.class);
-            query1.setParameter("id", id);
+            query1.setParameter("id", tripId);
             List<Comment> comments = query1.list();
-
             tripDTO = ModelsMapper.fromTrip(trip, passengerStatuses, comments);
             session.getTransaction().commit();
         }
@@ -115,23 +97,14 @@ public class TripRepositoryImpl implements TripRepository {
     public void addComment(TripDTO tripDTO, CommentDTO commentDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-
-            //Logged user validation!
-            User fakeUser = session.get(User.class, commentDTO.getUserId());
-            if (fakeUser == null) {
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
+            User user = session.get(User.class, commentDTO.getUserId());
+            List<PassengerStatus> passengers = passengers(session, tripDTO.getId(), commentDTO.getUserId()
+                    , PassengerStatusEnum.accepted);
+            if (passengers.size() == 0) {
+                throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
-            if (commentDTO.getUserId() != tripDTO.getDriver().getId()) {
-                List<PassengerStatus> passengers = passengers(session, tripDTO.getId(), fakeUser.getId()
-                        , PassengerStatusEnum.accepted);
-                if (passengers.size() == 0) {
-                    throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
-                }
-            }
-
             Trip trip = session.get(Trip.class, tripDTO.getId());
-            Comment comment = ModelsMapper.fromCommentDTO(commentDTO, fakeUser, trip);
-
+            Comment comment = ModelsMapper.fromCommentDTO(commentDTO, user, trip);
             session.save(comment);
             session.getTransaction().commit();
         }

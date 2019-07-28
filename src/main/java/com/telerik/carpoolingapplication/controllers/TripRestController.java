@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
-//TODO: Extract logic in services, change testUsers with authenticated!
 @RestController
 @RequestMapping("/api/trips")
 public class TripRestController {
@@ -73,8 +72,7 @@ public class TripRestController {
 
     @PostMapping
     public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO, HttpServletRequest request) {
-        String token = jwtTokenProvider.resolveToken(request);
-        UserDTO user = userService.getByUsername(jwtTokenProvider.getUsername(token));
+        UserDTO user = getAuthorizedUser(request);
         try {
             tripService.createTrip(createTripDTO, user);
         } catch (IllegalArgumentException e) {
@@ -85,14 +83,18 @@ public class TripRestController {
     }
 
     @PutMapping
-    public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO) {
+    public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         try {
-            tripService.editTrip(editTripDTO);
+            tripService.editTrip(editTripDTO, user);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.UNAUTHORIZED)) {
+            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.INVALID_ID_SUPPLIED)) {
+            if (e.getMessage().equals(Constants.NOT_A_DRIVER)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            }
+            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
         }
@@ -100,20 +102,25 @@ public class TripRestController {
     }
 
     @GetMapping("/{id}")
-    public TripDTO getTrip(@PathVariable int id) {
-        //Add unauthorized logic and response!
+    public TripDTO getTrip(@PathVariable int id, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         try {
-            return tripService.getTrip(id);
+            return tripService.getTrip(id, user);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            }
         }
     }
 
     @PatchMapping("/{id}")
-    public String changeTripStatus(@PathVariable int id, @RequestParam String status) {
+    public String changeTripStatus(@PathVariable int id, @RequestParam String status, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         //Add unauthorized and forbidden logic and response!
         try {
-            tripService.changeTripStatus(id, status);
+            tripService.changeTripStatus(id, user, status);
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -121,31 +128,31 @@ public class TripRestController {
             if (e.getMessage().equals(Constants.NO_SUCH_STATUS)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
+            if (e.getMessage().equals(Constants.NOT_A_DRIVER)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            }
         }
         return Constants.TRIP_STATUS_CHANGED;
     }
 
     @PostMapping("/{id}/comments")
-    public String addComment(@PathVariable int id, @RequestBody CommentDTO commentDTO) {
+    public String addComment(@PathVariable int id, @RequestBody CommentDTO commentDTO, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         try {
-            tripService.addComment(id, commentDTO);
+            tripService.addComment(id, user, commentDTO);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.UNAUTHORIZED)) {
+            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
             if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.YOU_DO_NOT_PARTICIPATE)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.TRIP_NOT_FINISHED)) {
+            } else {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
         }
         return Constants.COMMENT_ADDED;
     }
-
+    //TODO: Rest of the methods!
     @PostMapping("/{id}/passengers")
     public String apply(@PathVariable int id) {
         try {
@@ -206,5 +213,10 @@ public class TripRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return Constants.PASSENGER_RATED;
+    }
+
+    private UserDTO getAuthorizedUser(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+        return userService.getByUsername(jwtTokenProvider.getUsername(token));
     }
 }
