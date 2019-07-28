@@ -132,31 +132,16 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void rateDriver(int id, RatingDTO ratingDTO) {
+    public void rateDriver(TripDTO tripDTO, UserDTO userDTO, RatingDTO ratingDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-
-            Trip currentTrip = session.get(Trip.class, id);
-            tripNotFoundAndTripNotOverValidation(currentTrip);
-
-            //Testing purposes, should be logged user!
-            User loggedUser = session.get(User.class, 2);
-            if (loggedUser == null) {
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
-            }
-            if (loggedUser.getId() == currentTrip.getDriver().getId()) {
-                throw new IllegalArgumentException(Constants.RATE_YOURSELF);
-            }
-            List<PassengerStatus> passengers = passengers(currentTrip.getId(), loggedUser.getId()
-                    , PassengerStatusEnum.accepted);
-            if (passengers.size() == 0) {
-                throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
-            }
-
-            User driver = currentTrip.getDriver();
-            List<Rating> ratings = ratings(session, id, driver.getId(), loggedUser.getId(), true);
+            User user = session.get(User.class, userDTO.getId());
+            User driver = session.get(User.class, tripDTO.getDriver().getId());
+            Trip trip = session.get(Trip.class, tripDTO.getId());
+            List<Rating> ratings = ratings(session, tripDTO.getId(), driver.getId()
+                    , user.getId(), true);
             if (ratings.size() == 0) {
-                Rating rating = new Rating(ratingDTO.getRating(), loggedUser, driver, true, currentTrip);
+                Rating rating = new Rating(ratingDTO.getRating(), user, driver, true, trip);
                 session.save(rating);
             } else {
                 Rating ratingDriver = ratings.get(0);
@@ -166,7 +151,6 @@ public class TripRepositoryImpl implements TripRepository {
             double averageRating = calculateAverageRating(session, driver.getId(), true);
             driver.setRatingAsDriver(averageRating);
             session.update(driver);
-
             session.getTransaction().commit();
         }
     }
@@ -177,7 +161,6 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
 
             Trip currentTrip = session.get(Trip.class, tripId);
-            tripNotFoundAndTripNotOverValidation(currentTrip);
 
             User driver = currentTrip.getDriver();
             //Testing purposes! Should be logged user!
@@ -209,16 +192,6 @@ public class TripRepositoryImpl implements TripRepository {
             session.update(passenger);
 
             session.getTransaction().commit();
-        }
-    }
-
-    private void tripNotFoundAndTripNotOverValidation(Trip trip) {
-        if (trip == null) {
-            throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
-        }
-
-        if (trip.getTripStatus() != TripStatus.done) {
-            throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
     }
 

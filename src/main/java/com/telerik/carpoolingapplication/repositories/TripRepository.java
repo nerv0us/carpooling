@@ -26,7 +26,7 @@ public interface TripRepository {
 
     void changePassengerStatus(PassengerStatus passengerStatus);
 
-    void rateDriver(int id, RatingDTO ratingDTO);
+    void rateDriver(TripDTO tripDTO, UserDTO user, RatingDTO ratingDTO);
 
     void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO);
 

@@ -139,8 +139,20 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void rateDriver(int id, RatingDTO ratingDTO) {
-        tripRepository.rateDriver(id, ratingDTO);
+    public void rateDriver(int tripId, UserDTO user, RatingDTO ratingDTO) {
+        TripDTO tripDTO = getTrip(tripId, user);
+        if (tripDTO.getDriver().getId() == user.getId()) {
+            throw new IllegalArgumentException(Constants.RATE_YOURSELF);
+        }
+        if (tripDTO.getTripStatus() != TripStatus.done) {
+            throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
+        }
+        List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, user.getId()
+                , PassengerStatusEnum.accepted);
+        if (passengerStatuses.size() == 0) {
+            throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
+        }
+        tripRepository.rateDriver(tripDTO, user, ratingDTO);
     }
 
     @Override

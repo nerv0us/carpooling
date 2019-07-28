@@ -52,21 +52,6 @@ public class TripRestController {
         List<TripDTO> trips;
         trips = tripService.getTrips(tripStatus, driverUsername, origin, destination, earliestDepartureTime
                 , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
-        //Add unauthorized logic and response!
-        //Edit responses/messages
-        /*try {
-            if (type == null || parameter == null || value == null) {
-                trips = filterService.getTripsUnsortedUnfiltered();
-            } else if (type.equals("filter")) {
-                trips = filterService.getTripsFiltered(parameter, value);
-            } else if (type.equals("sort")) {
-                trips = sortService.getTripsSorted(parameter, value);
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }*/
         return trips;
     }
 
@@ -118,7 +103,6 @@ public class TripRestController {
     @PatchMapping("/{id}")
     public String changeTripStatus(@PathVariable int id, @RequestParam String status, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
-        //Add unauthorized and forbidden logic and response!
         try {
             tripService.changeTripStatus(id, user, status);
         } catch (IllegalArgumentException e) {
@@ -200,13 +184,23 @@ public class TripRestController {
     }
 
     @PostMapping("{id}/driver/rate")
-    public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO) {
+    public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         try {
-            tripService.rateDriver(id, ratingDTO);
+            tripService.rateDriver(id, user, ratingDTO);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            }
+            if (e.getMessage().equals(Constants.RATE_YOURSELF)
+                    || e.getMessage().equals(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE)
+                    || e.getMessage().equals(Constants.YOU_DO_NOT_PARTICIPATE)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            }
         }
-
         return Constants.DRIVER_RATED;
     }
 
