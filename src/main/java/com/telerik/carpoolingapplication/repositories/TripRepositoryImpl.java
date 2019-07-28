@@ -156,41 +156,24 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO) {
+    public void ratePassenger(int tripId, int passengerId, UserDTO userDTO, RatingDTO ratingDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-
-            Trip currentTrip = session.get(Trip.class, tripId);
-
-            User driver = currentTrip.getDriver();
-            //Testing purposes! Should be logged user!
-            User loggedUser = session.get(User.class, 2);
-            // Add unauthorized and forbidden validations when security is implemented!
-            if (passengerId == loggedUser.getId()) {
-                throw new IllegalArgumentException(Constants.RATE_YOURSELF);
-            }
-            if (passengers(tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
-                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
-            }
-            if (passengers(tripId, loggedUser.getId(), PassengerStatusEnum.accepted).size() == 0) {
-                throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
-            }
-
+            Trip trip = session.get(Trip.class, tripId);
+            User user = session.get(User.class, userDTO.getId());
             User passenger = session.get(User.class, passengerId);
-            List<Rating> ratings = ratings(session, tripId, passengerId, loggedUser.getId(), false);
+            List<Rating> ratings = ratings(session, tripId, passengerId, user.getId(), false);
             if (ratings.size() == 0) {
-                Rating rating = new Rating(ratingDTO.getRating(), loggedUser, passenger, false, currentTrip);
+                Rating rating = new Rating(ratingDTO.getRating(), user, passenger, false, trip);
                 session.save(rating);
             } else {
                 Rating rating = ratings.get(0);
                 rating.setRating(ratingDTO.getRating());
                 session.update(rating);
             }
-
             double averageRating = calculateAverageRating(session, passengerId, false);
             passenger.setRatingAsPassenger(averageRating);
             session.update(passenger);
-
             session.getTransaction().commit();
         }
     }

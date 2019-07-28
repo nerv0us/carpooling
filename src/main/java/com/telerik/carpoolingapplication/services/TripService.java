@@ -27,5 +27,5 @@ public interface TripService {
 
     void rateDriver(int tripId, UserDTO user, RatingDTO ratingDTO);
 
-    void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO);
+    void ratePassenger(int tripId, int passengerId, UserDTO user, RatingDTO ratingDTO);
 }

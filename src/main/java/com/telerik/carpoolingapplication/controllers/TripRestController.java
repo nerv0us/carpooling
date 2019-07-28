@@ -189,31 +189,38 @@ public class TripRestController {
         try {
             tripService.rateDriver(id, user, ratingDTO);
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.RATE_YOURSELF)
-                    || e.getMessage().equals(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE)
-                    || e.getMessage().equals(Constants.YOU_DO_NOT_PARTICIPATE)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-            }
+            responseStatusMessageValidator(e.getMessage());
         }
         return Constants.DRIVER_RATED;
     }
 
-    //Update and add validations!
     @PostMapping("{tripId}/passengers/{passengerId}/rate")
     public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId
-            , @RequestBody RatingDTO ratingDTO) {
+            , @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         try {
-            tripService.ratePassenger(tripId, passengerId, ratingDTO);
+            tripService.ratePassenger(tripId, passengerId, user, ratingDTO);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            responseStatusMessageValidator(e.getMessage());
+            if (e.getMessage().equals(Constants.NO_SUCH_PASSENGER)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
         }
         return Constants.PASSENGER_RATED;
+    }
+
+    private void responseStatusMessageValidator(String message) {
+        if (message.equals(Constants.TRIP_NOT_FOUND)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);
+        }
+        if (message.equals(Constants.USER_NOT_FOUND)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, message);
+        }
+        if (message.equals(Constants.RATE_YOURSELF)
+                || message.equals(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE)
+                || message.equals(Constants.YOU_DO_NOT_PARTICIPATE)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, message);
+        }
     }
 
     private UserDTO getAuthorizedUser(HttpServletRequest request) {
