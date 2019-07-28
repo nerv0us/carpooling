@@ -98,7 +98,7 @@ public class TripRepositoryImpl implements TripRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             User user = session.get(User.class, commentDTO.getUserId());
-            List<PassengerStatus> passengers = passengers(session, tripDTO.getId(), commentDTO.getUserId()
+            List<PassengerStatus> passengers = passengers(tripDTO.getId(), commentDTO.getUserId()
                     , PassengerStatusEnum.accepted);
             if (passengers.size() == 0) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
@@ -123,34 +123,14 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void changePassengerStatus(int tripId, int passengerId, String status) {
+    public void changePassengerStatus(PassengerStatus passengerStatus) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-
-            TripDTO tripDTO = getTrip(tripId);
-            if (tripDTO == null) {
-                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
-            }
-
-            List<PassengerStatus> passenger = passengers(session, tripId, passengerId, null);
-            if (passenger.size() == 0) {
-                throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
-            }
-
-            PassengerStatus passengerStatus = passenger.get(0);
-            try {
-                PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
-                passengerStatus.setStatus(passengerStatusEnum);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
-            }
-
             session.update(passengerStatus);
             session.getTransaction().commit();
         }
     }
 
-    //Add additional validations for rate, like if trip is over or what the status of driver/passenger is!
     @Override
     public void rateDriver(int id, RatingDTO ratingDTO) {
         try (Session session = sessionFactory.openSession()) {
@@ -167,7 +147,7 @@ public class TripRepositoryImpl implements TripRepository {
             if (loggedUser.getId() == currentTrip.getDriver().getId()) {
                 throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
-            List<PassengerStatus> passengers = passengers(session, currentTrip.getId(), loggedUser.getId()
+            List<PassengerStatus> passengers = passengers(currentTrip.getId(), loggedUser.getId()
                     , PassengerStatusEnum.accepted);
             if (passengers.size() == 0) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
@@ -206,10 +186,10 @@ public class TripRepositoryImpl implements TripRepository {
             if (passengerId == loggedUser.getId()) {
                 throw new IllegalArgumentException(Constants.RATE_YOURSELF);
             }
-            if (passengers(session, tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
+            if (passengers(tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
                 throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
             }
-            if (passengers(session, tripId, loggedUser.getId(), PassengerStatusEnum.accepted).size() == 0) {
+            if (passengers(tripId, loggedUser.getId(), PassengerStatusEnum.accepted).size() == 0) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
 
@@ -242,25 +222,31 @@ public class TripRepositoryImpl implements TripRepository {
         }
     }
 
-    private List<PassengerStatus> passengers(Session session, int tripId, int userId
+    public List<PassengerStatus> passengers(int tripId, int userId
             , PassengerStatusEnum passengerStatusEnum) {
-        Query<PassengerStatus> query;
-        if (passengerStatusEnum != null) {
-            query = session.createQuery("from PassengerStatus " +
-                    "where trip.id = :tripId " +
-                    "and user.id = :userId " +
-                    "and status = :status", PassengerStatus.class);
-            query.setParameter("tripId", tripId);
-            query.setParameter("userId", userId);
-            query.setParameter("status", passengerStatusEnum);
-        } else {
-            query = session.createQuery("from PassengerStatus " +
-                    "where trip.id = :tripId " +
-                    "and user.id = :userId ", PassengerStatus.class);
-            query.setParameter("tripId", tripId);
-            query.setParameter("userId", userId);
+        List<PassengerStatus> passengerStatuses;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Query<PassengerStatus> query;
+            if (passengerStatusEnum != null) {
+                query = session.createQuery("from PassengerStatus " +
+                        "where trip.id = :tripId " +
+                        "and user.id = :userId " +
+                        "and status = :status", PassengerStatus.class);
+                query.setParameter("tripId", tripId);
+                query.setParameter("userId", userId);
+                query.setParameter("status", passengerStatusEnum);
+            } else {
+                query = session.createQuery("from PassengerStatus " +
+                        "where trip.id = :tripId " +
+                        "and user.id = :userId ", PassengerStatus.class);
+                query.setParameter("tripId", tripId);
+                query.setParameter("userId", userId);
+            }
+            passengerStatuses = query.list();
+            session.getTransaction().commit();
         }
-        return query.list();
+        return passengerStatuses;
     }
 
     private List<Rating> ratings(Session session, int tripId, int ratingReceiverId, int ratingGiverId

@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import com.telerik.carpoolingapplication.security.CustomUserDetailsService;
@@ -79,7 +80,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public void changeTripStatus(int id, UserDTO user, String status) {
         TripDTO trip = getTrip(id, user);
-        if (!(trip.getDriver().getId() == user.getId())) {
+        if (trip.getDriver().getId() != user.getId()) {
             throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
         }
         try {
@@ -118,8 +119,23 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void changePassengerStatus(int tripId, int passengerId, String status) {
-        tripRepository.changePassengerStatus(tripId, passengerId, status);
+    public void changePassengerStatus(int tripId, int passengerId, UserDTO user, String status) {
+        TripDTO tripDTO = getTrip(tripId, user);
+        if (tripDTO.getDriver().getId() != user.getId()) {
+            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+        }
+        List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, passengerId, null);
+        if (passengerStatuses.size() == 0) {
+            throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
+        }
+        PassengerStatus passengerStatus = passengerStatuses.get(0);
+        try {
+            PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
+            passengerStatus.setStatus(passengerStatusEnum);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
+        }
+        tripRepository.changePassengerStatus(passengerStatus);
     }
 
     @Override

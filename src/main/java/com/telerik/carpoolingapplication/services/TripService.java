@@ -23,7 +23,7 @@ public interface TripService {
 
     void apply(int tripId, UserDTO user);
 
-    void changePassengerStatus(int tripId, int passengerId, String status);
+    void changePassengerStatus(int tripId, int passengerId, UserDTO user, String status);
 
     void rateDriver(int id, RatingDTO ratingDTO);
 

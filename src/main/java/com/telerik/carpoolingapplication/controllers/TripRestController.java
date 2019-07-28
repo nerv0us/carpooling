@@ -174,12 +174,19 @@ public class TripRestController {
 
     @PatchMapping("{tripId}/passengers/{passengerId}")
     public String changePassengerStatus(@PathVariable int tripId, @PathVariable int passengerId
-            , @RequestParam String status) {
+            , @RequestParam String status, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         try {
-            tripService.changePassengerStatus(tripId, passengerId, status);
+            tripService.changePassengerStatus(tripId, passengerId, user, status);
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            }
+            if (e.getMessage().equals(Constants.NOT_A_DRIVER)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
             if (e.getMessage().equals(Constants.NO_SUCH_PASSENGER)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
