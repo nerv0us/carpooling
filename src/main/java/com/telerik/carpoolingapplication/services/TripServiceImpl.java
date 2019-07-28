@@ -4,8 +4,13 @@ import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
+import com.telerik.carpoolingapplication.security.CustomUserDetailsService;
+import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,8 +48,11 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void createTrip(CreateTripDTO createTripDTO) {
-        tripRepository.createTrip(createTripDTO);
+    public void createTrip(CreateTripDTO createTripDTO, UserDTO user) {
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        tripRepository.createTrip(createTripDTO, user.getId());
     }
 
     @Override

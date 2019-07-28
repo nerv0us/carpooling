@@ -11,7 +11,7 @@ public interface TripService {
             , String earliestDepartureTime, String availablePlaces
             , String smoking, String pets, String luggage, String sortParameter, String ascending);
 
-    void createTrip(CreateTripDTO createTripDTO);
+    void createTrip(CreateTripDTO createTripDTO, UserDTO user);
 
     void editTrip(EditTripDTO editTripDTO);
 

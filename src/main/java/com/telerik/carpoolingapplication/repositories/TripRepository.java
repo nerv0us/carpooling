@@ -10,7 +10,7 @@ public interface TripRepository {
             , String latestDepartureTime, String earliestDepartureTime
             , Integer places, Boolean cigarettes, Boolean animals, Boolean baggage);
 
-    void createTrip(CreateTripDTO createTripDTO);
+    void createTrip(CreateTripDTO createTripDTO, int id);
 
     void editTrip(EditTripDTO editTripDTO);
 

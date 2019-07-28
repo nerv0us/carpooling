@@ -2,12 +2,15 @@ package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import com.telerik.carpoolingapplication.services.TripService;
+import com.telerik.carpoolingapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -15,23 +18,25 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/trips")
 public class TripRestController {
-    private TripService tripService;
+    private final TripService tripService;
+    private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public TripRestController(TripService tripService) {
+    public TripRestController(TripService tripService, UserService userService, JwtTokenProvider jwtTokenProvider) {
         this.tripService = tripService;
+        this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     /* Paging for getTripsFiltered()?
-            _end
-            integer($int32)
-        (query)
-            _start
-            integer($int32)
-        (query)
-        */
-    //Make another helper class for sorting and another service class for filtering and sorting and split filter from sort!
-    //Think of filter and sort simultaneously!
+                _end
+                integer($int32)
+            (query)
+                _start
+                integer($int32)
+            (query)
+            */
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) String tripStatus
             , @RequestParam(required = false) String driverUsername
@@ -67,9 +72,11 @@ public class TripRestController {
     }
 
     @PostMapping
-    public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO) {
+    public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+        UserDTO user = userService.getByUsername(jwtTokenProvider.getUsername(token));
         try {
-            tripService.createTrip(createTripDTO);
+            tripService.createTrip(createTripDTO, user);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }

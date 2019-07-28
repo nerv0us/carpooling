@@ -35,17 +35,11 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void createTrip(CreateTripDTO createTripDTO) {
+    public void createTrip(CreateTripDTO createTripDTO, int id) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-
-            //Fake user for testing purposes that needs to be an authenticated user!
-            User fakeDriver = session.get(User.class, 1);
-            if (fakeDriver == null) {
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
-            }
-
-            Trip newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, fakeDriver);
+            User driver = session.get(User.class, id);
+            Trip newTrip = ModelsMapper.fromCreateTripDTO(createTripDTO, driver);
             session.save(newTrip);
             session.getTransaction().commit();
         }
