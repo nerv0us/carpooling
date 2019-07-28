@@ -111,42 +111,13 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void apply(int id) {
+    public void apply(int id, UserDTO userDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-
-            //For testing purposes! Should be logged user!     //Example
-            User loggedUser = session.get(User.class, 2);
-            if (loggedUser == null) {
-                throw new IllegalArgumentException(Constants.UNAUTHORIZED);
-            }
-
             Trip trip = session.get(Trip.class, id);
-            TripDTO tripDTO = getTrip(id);
-            if (tripDTO == null) {
-                throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
-            }
-
-            PassengerStatus passengerStatus = new PassengerStatus(loggedUser, PassengerStatusEnum.pending
-                    , trip);
-
-            //For testing purposes! Should be logged user!
-            PassengerDTO fakePassenger = ModelsMapper.fromUserToPassenger(loggedUser, passengerStatus);
-            if (fakePassenger.getUserId() == trip.getDriver().getId()) {
-                throw new IllegalArgumentException(Constants.YOUR_OWN_TRIP);
-            }
-
-            List<PassengerDTO> passengers = tripDTO.getPassengers();
-            PassengerDTO passengerDTO = passengers.stream()
-                    .filter(p -> p.getUserId() == fakePassenger.getUserId())
-                    .findFirst()
-                    .orElse(null);
-
-            if (passengerDTO != null) {
-                throw new IllegalArgumentException(Constants.ALREADY_APPLIED);
-            }
+            User user = session.get(User.class, userDTO.getId());
+            PassengerStatus passengerStatus = new PassengerStatus(user, PassengerStatusEnum.pending, trip);
             session.save(passengerStatus);
-
             session.getTransaction().commit();
         }
     }

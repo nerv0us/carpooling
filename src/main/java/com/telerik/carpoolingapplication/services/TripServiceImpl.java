@@ -100,8 +100,21 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void apply(int id) {
-        tripRepository.apply(id);
+    public void apply(int tripId, UserDTO user) {
+        TripDTO tripDTO = getTrip(tripId, user);
+        if (tripDTO.getDriver().getId() == user.getId()) {
+            throw new IllegalArgumentException(Constants.YOUR_OWN_TRIP);
+        }
+        List<PassengerDTO> passengers = tripDTO.getPassengers();
+        PassengerDTO passengerDTO = passengers.stream()
+                .filter(p -> p.getUserId() == user.getId())
+                .findFirst()
+                .orElse(null);
+        if (passengerDTO != null) {
+            throw new IllegalArgumentException(Constants.ALREADY_APPLIED);
+        }
+
+        tripRepository.apply(tripId, user);
     }
 
     @Override

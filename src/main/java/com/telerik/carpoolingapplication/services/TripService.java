@@ -21,7 +21,7 @@ public interface TripService {
 
     void addComment(int tripId, UserDTO user, CommentDTO commentDTO);
 
-    void apply(int id);
+    void apply(int tripId, UserDTO user);
 
     void changePassengerStatus(int tripId, int passengerId, String status);
 

@@ -152,22 +152,22 @@ public class TripRestController {
         }
         return Constants.COMMENT_ADDED;
     }
-    //TODO: Rest of the methods!
+
     @PostMapping("/{id}/passengers")
-    public String apply(@PathVariable int id) {
+    public String apply(@PathVariable int id, HttpServletRequest request) {
+        UserDTO user = getAuthorizedUser(request);
         try {
-            tripService.apply(id);
+            tripService.apply(id, user);
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-            if (e.getMessage().equals(Constants.UNAUTHORIZED_MESSAGE)) {
+            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
             }
             if (e.getMessage().equals(Constants.YOUR_OWN_TRIP) || e.getMessage().equals(Constants.ALREADY_APPLIED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
             }
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
         }
         return Constants.APPLIED;
     }

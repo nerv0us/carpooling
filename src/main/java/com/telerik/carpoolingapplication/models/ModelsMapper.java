@@ -29,7 +29,6 @@ public class ModelsMapper {
 
         List<PassengerStatus> filteredPassengerStatuses = passengerStatuses.stream()
                 .filter(ps -> ps.getTrip().getId() == trip.getId())
-                .filter(ps ->ps.getStatus() == PassengerStatusEnum.accepted)
                 .collect(Collectors.toList());
 
         for (PassengerStatus passengerStatus : filteredPassengerStatuses) {
