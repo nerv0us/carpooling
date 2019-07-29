@@ -5,15 +5,9 @@ import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
-import com.telerik.carpoolingapplication.security.CustomUserDetailsService;
-import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -62,7 +56,7 @@ public class TripServiceImpl implements TripService {
         if (user == null) {
             throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
         }
-        if (!(trip.getDriver().getId() == user.getId())) {
+        if ((trip.getDriver().getId() != user.getId())) {
             throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
         }
         tripRepository.editTrip(editTripDTO, user.getId());
@@ -125,7 +119,7 @@ public class TripServiceImpl implements TripService {
             throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
         }
         List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, passengerId, null);
-        if (passengerStatuses.size() == 0) {
+        if (passengerStatuses.isEmpty()) {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
         PassengerStatus passengerStatus = passengerStatuses.get(0);
@@ -149,7 +143,7 @@ public class TripServiceImpl implements TripService {
         }
         List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, user.getId()
                 , PassengerStatusEnum.accepted);
-        if (passengerStatuses.size() == 0) {
+        if (passengerStatuses.isEmpty()) {
             throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
         }
         tripRepository.rateDriver(tripDTO, user, ratingDTO);
