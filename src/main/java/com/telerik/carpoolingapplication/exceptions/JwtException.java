@@ -1,4 +1,4 @@
-package com.telerik.carpoolingapplication.exception;
+package com.telerik.carpoolingapplication.exceptions;
 
 import org.springframework.http.HttpStatus;
 

@@ -7,6 +7,7 @@ import com.telerik.carpoolingapplication.services.TripService;
 import com.telerik.carpoolingapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -55,6 +56,7 @@ public class TripRestController {
         return trips;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);

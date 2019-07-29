@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.security;
 
-import com.telerik.carpoolingapplication.exception.JwtException;
+import com.telerik.carpoolingapplication.exceptions.JwtException;
 import com.telerik.carpoolingapplication.models.JWTToken;
 import com.telerik.carpoolingapplication.models.enums.Role;
 import io.jsonwebtoken.Claims;

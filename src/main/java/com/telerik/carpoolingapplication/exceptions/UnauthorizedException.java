@@ -1,4 +1,4 @@
-package com.telerik.carpoolingapplication.exception;
+package com.telerik.carpoolingapplication.exceptions;
 
 public class UnauthorizedException extends RuntimeException {
     private final String message;

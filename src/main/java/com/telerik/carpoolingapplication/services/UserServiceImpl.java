@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.exception.UnauthorizedException;
-import com.telerik.carpoolingapplication.exception.ValidationException;
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
+import com.telerik.carpoolingapplication.exceptions.ValidationException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.Role;

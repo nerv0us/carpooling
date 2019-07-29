@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.controllers;
 
-import com.telerik.carpoolingapplication.exception.UnauthorizedException;
-import com.telerik.carpoolingapplication.exception.ValidationException;
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
+import com.telerik.carpoolingapplication.exceptions.ValidationException;
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.JWTToken;
 import com.telerik.carpoolingapplication.models.LoginDTO;

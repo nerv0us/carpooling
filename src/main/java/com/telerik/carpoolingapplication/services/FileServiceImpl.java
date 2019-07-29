@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.exception.UnauthorizedException;
-import com.telerik.carpoolingapplication.exception.ImageNotFoundException;
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
+import com.telerik.carpoolingapplication.exceptions.ImageNotFoundException;
 import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.FileRepository;
