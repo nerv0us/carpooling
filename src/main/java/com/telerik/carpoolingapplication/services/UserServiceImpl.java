@@ -1,13 +1,13 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.exception.CustomException;
+import com.telerik.carpoolingapplication.exception.ForbiddenException;
+import com.telerik.carpoolingapplication.exception.ValidationException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.enums.Role;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
 import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getByUsername(String username) {
-        if (!isUserExist(username)) {
+        if (!isUsernameExist(username)) {
             throw new IllegalArgumentException(String.format(Constants.USERNAME_NOT_FOUND, username));
         }
         User user = userRepository.getByUsername(username);
@@ -47,22 +48,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO editUser(UserDTO userDTO) {
+    public UserDTO editUser(UserDTO userDTO, HttpServletRequest request) {
         if (getById(userDTO.getId()) == null) {
             throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userDTO.getId()));
         }
-        try {
-            userRepository.editUser(userDTO);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+        if (isNotAuthorized(userDTO.getId(), request)) {
+            throw new ForbiddenException(Constants.FORBIDDEN);
         }
+        if (isEmailExist(userDTO.getEmail())) {
+            throw new ValidationException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
+        }
+        userRepository.editUser(userDTO);
         return userDTO;
     }
 
     @Override
-    public JWTToken createUser(CreateUserDTO userDTO) {
-        if (isUserExist(userDTO.getUsername())) {
-            throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
+    public CreateUserDTO createUser(CreateUserDTO userDTO) {
+        if (isUsernameExist(userDTO.getUsername())) {
+            throw new ValidationException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
+        }
+        if (isEmailExist(userDTO.getEmail())) {
+            throw new ValidationException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
         }
 
         User user = ModelsMapper.createUser(userDTO);
@@ -71,13 +77,9 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-        try {
-            userRepository.createUser(user);
-            return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
-        } catch (IllegalArgumentException e) {
-            throw new CustomException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()),
-                    HttpStatus.CONFLICT);
-        }
+        userRepository.createUser(user);
+        return userDTO;
+
     }
 
     @Override
@@ -86,7 +88,7 @@ public class UserServiceImpl implements UserService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.createToken(username, userRepository.getByUsername(username).getRoles());
         } catch (AuthenticationException e) {
-            throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ForbiddenException(Constants.INVALID_USERNAME_MESSAGE);
         }
     }
 
@@ -95,8 +97,17 @@ public class UserServiceImpl implements UserService {
         return userRepository.getById(id);
     }
 
-    private boolean isUserExist(String username) {
-        User user = userRepository.getByUsername(username);
-        return user != null;
+    private boolean isNotAuthorized(int id, HttpServletRequest request) {
+        User user = getById(id);
+        String token = jwtTokenProvider.resolveToken(request);
+        return !user.getUsername().equals(jwtTokenProvider.getUsername(token));
+    }
+
+    private boolean isUsernameExist(String username) {
+        return userRepository.isUsernameExist(username);
+    }
+
+    private boolean isEmailExist(String email) {
+        return userRepository.isEmailExist(email);
     }
 }

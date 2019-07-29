@@ -1,8 +1,12 @@
 package com.telerik.carpoolingapplication.controllers;
 
-import com.telerik.carpoolingapplication.exception.CustomException;
-import com.telerik.carpoolingapplication.models.*;
-import com.telerik.carpoolingapplication.security.JwtTokenProvider;
+import com.telerik.carpoolingapplication.exception.ForbiddenException;
+import com.telerik.carpoolingapplication.exception.ValidationException;
+import com.telerik.carpoolingapplication.models.CreateUserDTO;
+import com.telerik.carpoolingapplication.models.JWTToken;
+import com.telerik.carpoolingapplication.models.LoginDTO;
+import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.services.FileService;
 import com.telerik.carpoolingapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @RestController
@@ -21,15 +26,14 @@ import java.io.IOException;
 public class UserRestController {
     private UserService userService;
     private FileService fileService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserRestController(UserService service, FileService fileService, JwtTokenProvider jwtTokenProvider) {
+    public UserRestController(UserService service, FileService fileService) {
         this.userService = service;
         this.fileService = fileService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{username}")
     public UserDTO getUser(@PathVariable String username) {
         try {
@@ -39,25 +43,27 @@ public class UserRestController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/update")
-    public void editUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
-        if (isNotAuthorized(userDTO.getId(), request)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+    public String editUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
         try {
-            userService.editUser(userDTO);
+            userService.editUser(userDTO, request);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (ForbiddenException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
         }
+        return Constants.USER_UPDATED;
     }
 
     @PostMapping("/register")
-    public JWTToken createUser(@Valid @RequestBody CreateUserDTO userDTO) {
+    public CreateUserDTO createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         try {
             return userService.createUser(userDTO);
-        } catch (CustomException | IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
         }
     }
 
@@ -65,26 +71,24 @@ public class UserRestController {
     public JWTToken login(@RequestBody LoginDTO user) {
         try {
             return userService.login(user.getUsername(), user.getPassword());
-        } catch (CustomException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (ForbiddenException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/{id}/avatar")
     public void uploadFile(@PathVariable int id, @RequestParam(value = "file") MultipartFile image, HttpServletRequest request) {
-        if (isNotAuthorized(id, request)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
         try {
-            fileService.storeFile(id, image);
-        } catch (IllegalArgumentException | IOException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+            fileService.storeFile(id, image, request);
+        } catch (ForbiddenException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
-    }
-
-    private boolean isNotAuthorized(int id, HttpServletRequest request) {
-        User user = userService.getById(id);
-        String token = jwtTokenProvider.resolveToken(request);
-        return !user.getUsername().equals(jwtTokenProvider.getUsername(token));
     }
 }
