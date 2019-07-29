@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.controllers;
 
-import com.telerik.carpoolingapplication.exception.ForbiddenException;
+import com.telerik.carpoolingapplication.exception.UnauthorizedException;
 import com.telerik.carpoolingapplication.exception.ValidationException;
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.JWTToken;
@@ -33,7 +33,7 @@ public class UserRestController {
         this.fileService = fileService;
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{username}")
     public UserDTO getUser(@PathVariable String username) {
         try {
@@ -43,15 +43,15 @@ public class UserRestController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
     public String editUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
         try {
             userService.editUser(userDTO, request);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (ForbiddenException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (ValidationException e) {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
         }
@@ -71,17 +71,17 @@ public class UserRestController {
     public JWTToken login(@RequestBody LoginDTO user) {
         try {
             return userService.login(user.getUsername(), user.getPassword());
-        } catch (ForbiddenException e) {
+        } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/avatar")
     public void uploadFile(@PathVariable int id, @RequestParam(value = "file") MultipartFile image, HttpServletRequest request) {
         try {
             fileService.storeFile(id, image, request);
-        } catch (ForbiddenException e) {
+        } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

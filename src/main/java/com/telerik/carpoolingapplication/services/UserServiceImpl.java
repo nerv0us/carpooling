@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.exception.ForbiddenException;
+import com.telerik.carpoolingapplication.exception.UnauthorizedException;
 import com.telerik.carpoolingapplication.exception.ValidationException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
@@ -48,12 +48,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getById(int id) {
+        return userRepository.getById(id);
+    }
+
+    @Override
     public UserDTO editUser(UserDTO userDTO, HttpServletRequest request) {
         if (getById(userDTO.getId()) == null) {
             throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userDTO.getId()));
         }
         if (isNotAuthorized(userDTO.getId(), request)) {
-            throw new ForbiddenException(Constants.FORBIDDEN);
+            throw new UnauthorizedException(Constants.UNAUTHORIZED_MESSAGE);
         }
         if (isEmailExist(userDTO.getEmail())) {
             throw new ValidationException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
@@ -88,13 +93,8 @@ public class UserServiceImpl implements UserService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.createToken(username, userRepository.getByUsername(username).getRoles());
         } catch (AuthenticationException e) {
-            throw new ForbiddenException(Constants.INVALID_USERNAME_MESSAGE);
+            throw new UnauthorizedException(Constants.INVALID_USERNAME_MESSAGE);
         }
-    }
-
-    @Override
-    public User getById(int id) {
-        return userRepository.getById(id);
     }
 
     private boolean isNotAuthorized(int id, HttpServletRequest request) {

@@ -1,9 +1,9 @@
 package com.telerik.carpoolingapplication.exception;
 
-public class ForbiddenException extends RuntimeException {
+public class UnauthorizedException extends RuntimeException {
     private final String message;
 
-    public ForbiddenException(String message) {
+    public UnauthorizedException(String message) {
         this.message = message;
     }
 
