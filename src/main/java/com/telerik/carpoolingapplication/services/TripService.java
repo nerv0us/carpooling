@@ -6,21 +6,26 @@ import java.util.List;
 
 public interface TripService {
 
-    void createTrip(CreateTripDTO createTripDTO);
+    List<TripDTO> getTrips(String tripStatus, String driverUsername
+            , String origin, String destination, String latestDepartureTime
+            , String earliestDepartureTime, String availablePlaces
+            , String smoking, String pets, String luggage, String sortParameter, String ascending);
 
-    void editTrip(EditTripDTO editTripDTO);
+    void createTrip(CreateTripDTO createTripDTO, UserDTO user);
 
-    TripDTO getTrip(int id);
+    void editTrip(EditTripDTO editTripDTO, UserDTO user);
 
-    void changeTripStatus(int id, String status);
+    TripDTO getTrip(int tripId, UserDTO user);
 
-    void addComment(int id, CommentDTO commentDTO);
+    void changeTripStatus(int tripId, UserDTO user, String status);
 
-    void apply(int id);
+    void addComment(int tripId, UserDTO user, CommentDTO commentDTO);
 
-    void changePassengerStatus(int tripId, int passengerId, String status);
+    void apply(int tripId, UserDTO user);
 
-    void rateDriver(int id, RatingDTO ratingDTO);
+    void changePassengerStatus(int tripId, int passengerId, UserDTO user, String status);
 
-    void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO);
+    void rateDriver(int tripId, UserDTO user, RatingDTO ratingDTO);
+
+    void ratePassenger(int tripId, int passengerId, UserDTO user, RatingDTO ratingDTO);
 }

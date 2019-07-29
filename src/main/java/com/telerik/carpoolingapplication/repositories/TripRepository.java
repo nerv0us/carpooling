@@ -1,27 +1,35 @@
 package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import org.hibernate.Session;
 
 import java.util.List;
 
 public interface TripRepository {
+    List<TripDTO> getFilteredTrips(TripStatus status, String driverUsername, String origin, String destination
+            , String latestDepartureTime, String earliestDepartureTime
+            , Integer places, Boolean cigarettes, Boolean animals, Boolean baggage);
 
-    void createTrip(CreateTripDTO createTripDTO);
+    void createTrip(CreateTripDTO createTripDTO, int userId);
 
-    void editTrip(EditTripDTO editTripDTO);
+    void editTrip(EditTripDTO editTripDTO, int userId);
 
-    TripDTO getTrip(int id);
+    TripDTO getTrip(int tripId);
 
     void changeTripStatus(TripDTO tripDTO, TripStatus updatedStatus);
 
     void addComment(TripDTO tripDTO, CommentDTO commentDTO);
 
-    void apply(int id);
+    void apply(int id, UserDTO user);
 
-    void changePassengerStatus(int tripId, int passengerId, String status);
+    void changePassengerStatus(PassengerStatus passengerStatus);
 
-    void rateDriver(int id, RatingDTO ratingDTO);
+    void rateDriver(TripDTO tripDTO, UserDTO userDTO, RatingDTO ratingDTO);
 
-    void ratePassenger(int tripId, int passengerId, RatingDTO ratingDTO);
+    void ratePassenger(int tripId, int passengerId, UserDTO userDTO, RatingDTO ratingDTO);
+
+    List<PassengerStatus> passengers(int tripId, int userId
+            , PassengerStatusEnum passengerStatusEnum);
 }
