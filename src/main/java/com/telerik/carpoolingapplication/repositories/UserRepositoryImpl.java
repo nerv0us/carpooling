@@ -76,17 +76,17 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private boolean isEmailExist(String email) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<User> query = session.createQuery("from User where email = :email", User.class);
-        query.setParameter("email", email);
-        return !query.list().isEmpty();
-    }
-
-    private boolean isUsernameExist(String username) {
+    public boolean isUsernameExist(String username) {
         Session session = sessionFactory.getCurrentSession();
         Query<User> query = session.createQuery("from User where username = :username", User.class);
         query.setParameter("username", username);
+        return !query.list().isEmpty();
+    }
+
+    public boolean isEmailExist(String email) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<User> query = session.createQuery("from User where email = :email", User.class);
+        query.setParameter("email", email);
         return !query.list().isEmpty();
     }
 }

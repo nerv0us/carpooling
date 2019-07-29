@@ -12,4 +12,8 @@ public interface UserRepository {
     User getById(int id);
 
     void createUser(User user);
+
+    boolean isUsernameExist(String username);
+
+    boolean isEmailExist(String email);
 }
