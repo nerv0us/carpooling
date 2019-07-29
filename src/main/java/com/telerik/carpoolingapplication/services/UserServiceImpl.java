@@ -22,34 +22,33 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
+                           JwtTokenProvider jwtTokenProvider,
+                           AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
     public UserDTO getByUsername(String username) {
-        User user = userRepository.getByUsername(username);
-        if (user == null) {
+        if (!isUserExist(username)) {
             throw new IllegalArgumentException(String.format(Constants.USERNAME_NOT_FOUND, username));
         }
+        User user = userRepository.getByUsername(username);
         return ModelsMapper.getUser(user);
     }
 
     @Override
     public UserDTO editUser(UserDTO userDTO) {
-
-        if (isUserInvalid(userDTO.getUsername())) {
+        if (getById(userDTO.getId()) == null) {
             throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userDTO.getId()));
         }
         try {
@@ -62,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JWTToken createUser(CreateUserDTO userDTO) {
-        if (isUserInvalid(userDTO.getUsername())) {
+        if (isUserExist(userDTO.getUsername())) {
             throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getUsername()));
         }
 
@@ -76,7 +75,7 @@ public class UserServiceImpl implements UserService {
             userRepository.createUser(user);
             return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
         } catch (IllegalArgumentException e) {
-            throw new CustomException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getUsername()),
+            throw new CustomException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()),
                     HttpStatus.CONFLICT);
         }
     }
@@ -91,7 +90,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean isUserInvalid(String username) {
+    @Override
+    public User getById(int id) {
+        return userRepository.getById(id);
+    }
+
+    private boolean isUserExist(String username) {
         User user = userRepository.getByUsername(username);
         return user != null;
     }

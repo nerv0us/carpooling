@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.JWTToken;
+import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.UserDTO;
 
 public interface UserService {
@@ -13,4 +14,6 @@ public interface UserService {
     JWTToken createUser(CreateUserDTO user);
 
     JWTToken login(String username, String password);
+
+    User getById(int id);
 }
