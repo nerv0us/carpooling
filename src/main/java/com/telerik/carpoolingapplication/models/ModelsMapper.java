@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 @Component
 public class ModelsMapper {
 
+    private ModelsMapper() {
+    }
+
     public static List<TripDTO> fromTrip(List<Trip> trips, List<PassengerStatus> passengerStatuses, List<Comment> comments) {
         List<TripDTO> tripDTOS = new ArrayList<>();
         for (Trip trip : trips) {
@@ -106,7 +109,6 @@ public class ModelsMapper {
     }
 
     public static void editUser(User userToEdit, UserDTO userDTO) {
-        userToEdit.setUsername(userDTO.getUsername());
         userToEdit.setFirstName(userDTO.getFirstName());
         userToEdit.setLastName(userDTO.getLastName());
         userToEdit.setEmail(userDTO.getEmail());
