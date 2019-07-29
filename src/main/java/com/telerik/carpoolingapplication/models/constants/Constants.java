@@ -1,6 +1,10 @@
 package com.telerik.carpoolingapplication.models.constants;
 
-public class Constants {
+public final class Constants {
+
+    private Constants() {
+    }
+
     // Trip constants
     public static final String NOT_AVAILABLE_TRIPS = "There are no trips available!";
     public static final String TRIP_CREATED = "Trip created!";
@@ -24,24 +28,25 @@ public class Constants {
     public static final String NOT_A_BOOLEAN = "Value is not a boolean";
     public static final String NOT_A_DRIVER = "You are not the driver of the trip!";
     // User constants
-    public static final String USER_NOT_FOUND = "User not found!";
+    public static final String USER_NOT_FOUND = "Invalid ID: %d supplied!";
     public static final String USERNAME_NOT_FOUND = "User with username %s not found!";
+    public static final String INVALID_USERNAME_MESSAGE = "Invalid username/password supplied";
     public static final String USERNAME_ALREADY_EXIST = "User with username %s already exist!";
     public static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
-    public static final String USER_CREATED = "User created!";
     public static final String USER_UPDATED = "User updated!";
     public static final String DRIVER_RATED = "You have successfully rated this driver!";
     public static final String PASSENGER_RATED = "You have successfully rated this passenger!";
     public static final String DEFAULT_USER_IMAGE_NAME = "defaultUserPhoto";
-    public static final String USERNAME_CANNOT_BE_CHANGED_MESSAGE = "Username cannot be changed!";
     public static final String RATE_YOURSELF = "You cannot rate yourself!";
 
     // Storage constants
     public static final String FILE_SHOULD_BE_SMALLER_MESSAGE = "File should be less than 5MB";
-    public static final String INVALID_FILE_FORMAT_MESSAGE = "Invalid file format";
+    public static final String INVALID_FILE_FORMAT_MESSAGE = "Invalid file format! File should be .jpg/.jpeg/.png/.gif";
     public static final String FAILED_TO_STORE_FILE_MESSAGE = "Failed to store file: %s";
+    public static final String FILE_NOT_FOUND_MESSAGE = "File not found";
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
     public static final String DEFAULT_USER_AVATAR_ROUTE = "images/users/defaultUserPhoto.jpg";
     public static final int MAX_FILE_SIZE = 5242880;
 
+    public static final String FORBIDDEN = "Forbidden";
 }
