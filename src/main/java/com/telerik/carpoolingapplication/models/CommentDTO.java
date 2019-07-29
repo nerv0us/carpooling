@@ -1,36 +1,20 @@
 package com.telerik.carpoolingapplication.models;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "comments")
 public class CommentDTO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     @NotNull
     private String message;
 
-    @ManyToOne
     @NotNull
-    private UserDTO author;
+    private int userId;
 
     public CommentDTO() {
     }
 
-    public CommentDTO(@NotNull String message, @NotNull UserDTO author) {
+    public CommentDTO(@NotNull String message, @NotNull int userId) {
         this.message = message;
-        this.author = author;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.userId = userId;
     }
 
     public String getMessage() {
@@ -41,11 +25,11 @@ public class CommentDTO {
         this.message = message;
     }
 
-    public UserDTO getAuthor() {
-        return author;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setAuthor(UserDTO author) {
-        this.author = author;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

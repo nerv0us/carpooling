@@ -1,13 +1,16 @@
 package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.CreateUserDTO;
+import com.telerik.carpoolingapplication.models.JWTToken;
 import com.telerik.carpoolingapplication.models.UserDTO;
 
 public interface UserService {
 
-    String editUser(UserDTO userDTO);
+    UserDTO editUser(UserDTO userDTO);
 
-    UserDTO getUser(String username);
+    UserDTO getByUsername(String username);
 
-    String createUser(CreateUserDTO userDTO);
+    JWTToken createUser(CreateUserDTO user);
+
+    JWTToken login(String username, String password);
 }

@@ -1,14 +1,20 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripDTO {
-    @NotNull
+@Entity
+@Table(name = "trips")
+public class Trip {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
@@ -34,26 +40,20 @@ public class TripDTO {
     @NotNull
     private int availablePlaces;
 
-    private List<PassengerDTO> passengers;
-
     @NotNull
     private TripStatus tripStatus;
-
-    private List<CommentDTO> comments;
 
     private boolean smoking;
     private boolean pets;
     private boolean luggage;
 
-    public TripDTO() {
+    public Trip() {
     }
 
-    public TripDTO(@NotNull int id, @NotNull User driver, @NotNull String carModel
-            , @NotNull String message, @NotNull String departureTime, @NotNull String origin
-            , @NotNull String destination, @NotNull int availablePlaces
-            , @NotNull TripStatus tripStatus, boolean smoking, boolean pets
-            , boolean luggage) {
-        this.id = id;
+    public Trip(@NotNull User driver, @NotNull String carModel, @NotNull String message
+            , @NotNull String departureTime, @NotNull String origin, @NotNull String destination
+            , @NotNull int availablePlaces, @NotNull TripStatus tripStatus
+            , boolean smoking, boolean pets, boolean luggage) {
         this.driver = driver;
         this.carModel = carModel;
         this.message = message;
@@ -61,9 +61,7 @@ public class TripDTO {
         this.origin = origin;
         this.destination = destination;
         this.availablePlaces = availablePlaces;
-        this.passengers = new ArrayList<>();
         this.tripStatus = tripStatus;
-        this.comments = new ArrayList<>();
         this.smoking = smoking;
         this.pets = pets;
         this.luggage = luggage;
@@ -133,28 +131,12 @@ public class TripDTO {
         this.availablePlaces = availablePlaces;
     }
 
-    public List<PassengerDTO> getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(List<PassengerDTO> passengers) {
-        this.passengers = passengers;
-    }
-
     public TripStatus getTripStatus() {
         return tripStatus;
     }
 
     public void setTripStatus(TripStatus tripStatus) {
         this.tripStatus = tripStatus;
-    }
-
-    public List<CommentDTO> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<CommentDTO> comments) {
-        this.comments = comments;
     }
 
     public boolean isSmoking() {

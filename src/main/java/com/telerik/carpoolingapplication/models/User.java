@@ -1,12 +1,23 @@
 package com.telerik.carpoolingapplication.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.telerik.carpoolingapplication.models.enums.Role;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.List;
 
-public class UserDTO {
-    @NotNull
+@Entity
+@Table(name = "users")
+public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotNull
@@ -39,18 +50,37 @@ public class UserDTO {
 
     private String avatarUri;
 
-    public UserDTO() {
+    @NotNull
+    @JsonIgnore
+    @Column(name = "password")
+    private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Role> roles;
+
+    @NotNull
+    @JsonIgnore
+    @Column(name = "enabled")
+    private boolean enabled = true;
+
+    public User() {
     }
 
-    public UserDTO(@NotNull int id,@NotNull String username, @NotNull String firstName, @NotNull String lastName
-            , @NotNull String email, @NotNull String phone, Double ratingAsDriver
-            , Double ratingAsPassenger, String avatarUri) {
-        this.id = id;
+    public User(String username,
+                String firstName,
+                String lastName,
+                String email,
+                String phone,
+                String password,
+                double ratingAsDriver,
+                double ratingAsPassenger,
+                String avatarUri) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.password = password;
         this.ratingAsDriver = ratingAsDriver;
         this.ratingAsPassenger = ratingAsPassenger;
         this.avatarUri = avatarUri;
@@ -62,6 +92,44 @@ public class UserDTO {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public String getUsername() {
@@ -126,5 +194,13 @@ public class UserDTO {
 
     public void setAvatarUri(String avatarUri) {
         this.avatarUri = avatarUri;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> userRoles) {
+        this.roles = userRoles;
     }
 }

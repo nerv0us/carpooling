@@ -1,42 +1,20 @@
 package com.telerik.carpoolingapplication.models;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
-@Entity
-@Table(name = "ratings")
 public class RatingDTO {
-    @Id
-    private int id;
-
-    @NotNull
-    private Double rating;
-
-    @ManyToOne
-    @NotNull
-    private UserDTO userDTO;
+    private double rating;
 
     public RatingDTO() {
     }
 
-    public RatingDTO(Double rating, UserDTO userDTO) {
+    public RatingDTO(double rating) {
         this.rating = rating;
-        this.userDTO = userDTO;
     }
 
-    public Double getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(double rating) {
         this.rating = rating;
-    }
-
-    public UserDTO getUserDTO() {
-        return userDTO;
-    }
-
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
     }
 }

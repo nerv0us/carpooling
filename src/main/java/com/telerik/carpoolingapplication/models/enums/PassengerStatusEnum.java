@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.models.enums;
 
-public enum PassengerStatus {
+public enum PassengerStatusEnum {
     pending,
     accepted,
     rejected,
