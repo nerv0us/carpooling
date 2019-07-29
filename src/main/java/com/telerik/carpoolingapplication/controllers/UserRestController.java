@@ -42,18 +42,13 @@ public class UserRestController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
     public void editUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
-        String token = jwtTokenProvider.resolveToken(request);
-        UserDTO user = userService.getByUsername(jwtTokenProvider.getUsername(token));
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        if (!user.getUsername().equals(jwtTokenProvider.getUsername(token))) {
+        if (isNotAuthorized(userDTO.getId(), request)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
         try {
             userService.editUser(userDTO);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -61,7 +56,7 @@ public class UserRestController {
     public JWTToken createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         try {
             return userService.createUser(userDTO);
-        } catch (CustomException e) {
+        } catch (CustomException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
@@ -71,16 +66,25 @@ public class UserRestController {
         try {
             return userService.login(user.getUsername(), user.getPassword());
         } catch (CustomException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @PostMapping("/{id}/avatar")
-    public void uploadFile(@PathVariable int id, @RequestParam(value = "file") MultipartFile image) {
+    public void uploadFile(@PathVariable int id, @RequestParam(value = "file") MultipartFile image, HttpServletRequest request) {
+        if (isNotAuthorized(id, request)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
         try {
             fileService.storeFile(id, image);
         } catch (IllegalArgumentException | IOException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
+    }
+
+    private boolean isNotAuthorized(int id, HttpServletRequest request) {
+        User user = userService.getById(id);
+        String token = jwtTokenProvider.resolveToken(request);
+        return !user.getUsername().equals(jwtTokenProvider.getUsername(token));
     }
 }
