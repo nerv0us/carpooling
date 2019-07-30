@@ -58,4 +58,13 @@ public class TripServiceImplTests {
         // Assert
         Mockito.verify(tripRepository, Mockito.times(1)).getTrip(1);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getTrip_Should_ThrowException_When_User_Is_Null() {
+        // Arrange
+        UserDTO user = null;
+
+        // Act
+        tripService.getTrip(1, user);
+    }
 }
