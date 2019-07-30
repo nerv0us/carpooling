@@ -69,6 +69,7 @@ public class TripRestController {
         return Constants.TRIP_CREATED;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping
     public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
@@ -102,6 +103,7 @@ public class TripRestController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
     public String changeTripStatus(@PathVariable int id, @RequestParam String status, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
@@ -121,6 +123,7 @@ public class TripRestController {
         return Constants.TRIP_STATUS_CHANGED;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/comments")
     public String addComment(@PathVariable int id, @RequestBody CommentDTO commentDTO, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
@@ -139,6 +142,7 @@ public class TripRestController {
         return Constants.COMMENT_ADDED;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/passengers")
     public String apply(@PathVariable int id, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
@@ -158,6 +162,7 @@ public class TripRestController {
         return Constants.APPLIED;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PatchMapping("{tripId}/passengers/{passengerId}")
     public String changePassengerStatus(@PathVariable int tripId, @PathVariable int passengerId
             , @RequestParam String status, HttpServletRequest request) {
@@ -185,6 +190,7 @@ public class TripRestController {
         return Constants.PASSENGER_STATUS_CHANGED;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("{id}/driver/rate")
     public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
@@ -196,6 +202,7 @@ public class TripRestController {
         return Constants.DRIVER_RATED;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("{tripId}/passengers/{passengerId}/rate")
     public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId
             , @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
