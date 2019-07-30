@@ -2,16 +2,14 @@ package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
 import com.telerik.carpoolingapplication.exceptions.ValidationException;
-import com.telerik.carpoolingapplication.models.CreateUserDTO;
-import com.telerik.carpoolingapplication.models.JWTToken;
-import com.telerik.carpoolingapplication.models.LoginDTO;
-import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.services.FileService;
 import com.telerik.carpoolingapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,18 +24,21 @@ import java.io.IOException;
 public class UserRestController {
     private UserService userService;
     private FileService fileService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserRestController(UserService service, FileService fileService) {
+    public UserRestController(UserService service, FileService fileService, PasswordEncoder passwordEncoder) {
         this.userService = service;
         this.fileService = fileService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{username}")
     public UserDTO getUser(@PathVariable String username) {
         try {
-            return userService.getByUsername(username);
+            User user = userService.getByUsername(username);
+            return ModelsMapper.getUser(user);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -59,9 +60,11 @@ public class UserRestController {
     }
 
     @PostMapping("/register")
-    public CreateUserDTO createUser(@Valid @RequestBody CreateUserDTO userDTO) {
+    public String createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         try {
-            return userService.createUser(userDTO);
+            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            userService.createUser(userDTO);
+            return Constants.USER_CREATED;
         } catch (ValidationException e) {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
         }
