@@ -1,8 +1,7 @@
 package com.telerik.carpoolingapplication;
 
-import com.telerik.carpoolingapplication.models.CreateTripDTO;
-import com.telerik.carpoolingapplication.models.TripDTO;
-import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import com.telerik.carpoolingapplication.services.TripServiceImpl;
 import org.junit.Test;
@@ -44,5 +43,19 @@ public class TripServiceImplTests {
 
         // Act
         tripService.createTrip(trip, user);
+    }
+
+    //TODO: editTrip !
+
+    @Test
+    public void getTrip_Should_CallRepositoryGetTrip_When_GettingTrip() {
+        // Arrange
+        UserDTO user = new UserDTO();
+
+        // Act
+        tripService.getTrip(1, user);
+
+        // Assert
+        Mockito.verify(tripRepository, Mockito.times(1)).getTrip(1);
     }
 }
