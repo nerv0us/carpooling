@@ -1,17 +1,16 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.constants.Constants;
-import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
+import com.telerik.carpoolingapplication.models.enums.Role;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ModelsMapper {
+public final class ModelsMapper {
 
     private ModelsMapper() {
     }
@@ -127,6 +126,10 @@ public class ModelsMapper {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
+        user.setPassword(userDTO.getPassword());
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_USER);
+        user.setRoles(roles);
         user.setAvatarUri(Constants.DEFAULT_USER_AVATAR_ROUTE);
 
 

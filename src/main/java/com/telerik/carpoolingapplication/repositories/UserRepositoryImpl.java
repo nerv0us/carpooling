@@ -1,9 +1,9 @@
 package com.telerik.carpoolingapplication.repositories;
 
+import com.telerik.carpoolingapplication.models.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.ModelsMapper;
 import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.UserDTO;
-import com.telerik.carpoolingapplication.models.constants.Constants;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -26,17 +26,6 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             User userToEdit = session.get(User.class, userDTO.getId());
-            if (isEmailExist(userDTO.getEmail())
-                    && !userToEdit.getEmail().equals(userDTO.getEmail())) {
-                throw new IllegalArgumentException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
-            }
-            if (isUsernameExist(userDTO.getUsername())
-                    && !userToEdit.getUsername().equals(userDTO.getUsername())) {
-                throw new IllegalArgumentException(String.format(Constants.USERNAME_ALREADY_EXIST, userDTO.getEmail()));
-            }
-            if (userDTO.getAvatarUri() != null) {
-                userToEdit.setAvatarUri(userDTO.getAvatarUri());
-            }
             ModelsMapper.editUser(userToEdit, userDTO);
             session.getTransaction().commit();
         }
@@ -65,17 +54,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void createUser(User user) {
+    public void createUser(CreateUserDTO userDTO) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            if (isEmailExist(user.getEmail())) {
-                throw new IllegalArgumentException(Constants.EMAIL_ALREADY_EXIST);
-            }
+            User user = ModelsMapper.createUser(userDTO);
             session.save(user);
             session.getTransaction().commit();
         }
     }
 
+    @Override
     public boolean isUsernameExist(String username) {
         Session session = sessionFactory.getCurrentSession();
         Query<User> query = session.createQuery("from User where username = :username", User.class);
@@ -83,6 +71,7 @@ public class UserRepositoryImpl implements UserRepository {
         return !query.list().isEmpty();
     }
 
+    @Override
     public boolean isEmailExist(String email) {
         Session session = sessionFactory.getCurrentSession();
         Query<User> query = session.createQuery("from User where email = :email", User.class);

@@ -11,7 +11,7 @@ public interface UserService {
 
     UserDTO editUser(UserDTO userDTO, HttpServletRequest request);
 
-    UserDTO getByUsername(String username);
+    User getByUsername(String username);
 
     CreateUserDTO createUser(CreateUserDTO user);
 

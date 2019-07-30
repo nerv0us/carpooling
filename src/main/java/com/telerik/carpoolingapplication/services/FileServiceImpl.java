@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.exception.ForbiddenException;
-import com.telerik.carpoolingapplication.exception.ImageNotFoundException;
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
+import com.telerik.carpoolingapplication.exceptions.ImageNotFoundException;
 import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.FileRepository;
@@ -39,7 +39,7 @@ public class FileServiceImpl implements FileService {
             throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userId));
         }
         if (isNotAuthorized(userId, request)) {
-            throw new ForbiddenException(Constants.FORBIDDEN);
+            throw new UnauthorizedException(Constants.UNAUTHORIZED_MESSAGE);
         }
         if (image.getSize() > Constants.MAX_FILE_SIZE) {
             throw new IllegalStateException(Constants.FILE_SHOULD_BE_SMALLER_MESSAGE);

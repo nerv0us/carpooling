@@ -100,7 +100,7 @@ public class TripRepositoryImpl implements TripRepository {
             User user = session.get(User.class, commentDTO.getUserId());
             List<PassengerStatus> passengers = passengers(tripDTO.getId(), commentDTO.getUserId()
                     , PassengerStatusEnum.accepted);
-            if (passengers.size() == 0) {
+            if (passengers.isEmpty()) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
             Trip trip = session.get(Trip.class, tripDTO.getId());
@@ -140,7 +140,7 @@ public class TripRepositoryImpl implements TripRepository {
             Trip trip = session.get(Trip.class, tripDTO.getId());
             List<Rating> ratings = ratings(session, tripDTO.getId(), driver.getId()
                     , user.getId(), true);
-            if (ratings.size() == 0) {
+            if (ratings.isEmpty()) {
                 Rating rating = new Rating(ratingDTO.getRating(), user, driver, true, trip);
                 session.save(rating);
             } else {
@@ -163,7 +163,7 @@ public class TripRepositoryImpl implements TripRepository {
             User user = session.get(User.class, userDTO.getId());
             User passenger = session.get(User.class, passengerId);
             List<Rating> ratings = ratings(session, tripId, passengerId, user.getId(), false);
-            if (ratings.size() == 0) {
+            if (ratings.isEmpty()) {
                 Rating rating = new Rating(ratingDTO.getRating(), user, passenger, false, trip);
                 session.save(rating);
             } else {
