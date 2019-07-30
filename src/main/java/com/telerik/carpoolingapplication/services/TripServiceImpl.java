@@ -158,11 +158,11 @@ public class TripServiceImpl implements TripService {
         if (tripDTO.getTripStatus() != TripStatus.done) {
             throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
-        if (tripRepository.passengers(tripId, user.getId(), PassengerStatusEnum.accepted).size() == 0
+        if (tripRepository.passengers(tripId, user.getId(), PassengerStatusEnum.accepted).isEmpty()
                 && tripDTO.getDriver().getId() != user.getId()) {
             throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
         }
-        if (tripRepository.passengers(tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
+        if (tripRepository.passengers(tripId, passengerId, PassengerStatusEnum.accepted).isEmpty()) {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
         tripRepository.ratePassenger(tripId, passengerId, user,ratingDTO);

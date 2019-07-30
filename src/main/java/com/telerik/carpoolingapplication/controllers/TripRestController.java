@@ -56,7 +56,7 @@ public class TripRestController {
         return trips;
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping
     public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
@@ -227,6 +227,7 @@ public class TripRestController {
 
     private UserDTO getAuthorizedUser(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
-        return userService.getByUsername(jwtTokenProvider.getUsername(token));
+        User user = userService.getByUsername(jwtTokenProvider.getUsername(token));
+        return ModelsMapper.getUser(user);
     }
 }
