@@ -53,9 +53,6 @@ public class TripServiceImpl implements TripService {
     @Override
     public void editTrip(EditTripDTO editTripDTO, UserDTO user) {
         TripDTO trip = getTrip(editTripDTO.getId(), user);
-        if (user == null) {
-            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
-        }
         if ((trip.getDriver().getId() != user.getId())) {
             throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
         }
@@ -64,11 +61,10 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripDTO getTrip(int id, UserDTO user) {
-        TripDTO trip = tripRepository.getTrip(id);
         if (user == null) {
             throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
         }
-        return trip;
+        return tripRepository.getTrip(id);
     }
 
     @Override
