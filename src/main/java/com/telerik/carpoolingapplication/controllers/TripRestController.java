@@ -93,11 +93,7 @@ public class TripRestController {
         try {
             return tripService.getTrip(id, new UserDTO());
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-            }
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
