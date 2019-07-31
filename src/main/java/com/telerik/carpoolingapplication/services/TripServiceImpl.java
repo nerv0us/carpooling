@@ -135,7 +135,7 @@ public class TripServiceImpl implements TripService {
         if (tripDTO.getDriver().getId() == user.getId()) {
             throw new IllegalArgumentException(Constants.RATE_YOURSELF);
         }
-        if (tripDTO.getTripStatus() != TripStatus.done) {
+        if (tripDTO.getTripStatus() != TripStatus.DONE) {
             throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
         List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, user.getId()
@@ -152,7 +152,7 @@ public class TripServiceImpl implements TripService {
         if (passengerId == user.getId()) {
             throw new IllegalArgumentException(Constants.RATE_YOURSELF);
         }
-        if (tripDTO.getTripStatus() != TripStatus.done) {
+        if (tripDTO.getTripStatus() != TripStatus.DONE) {
             throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
         if (tripRepository.passengers(tripId, user.getId(), PassengerStatusEnum.ACCEPTED).isEmpty()

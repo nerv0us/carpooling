@@ -66,7 +66,7 @@ public final class ModelsMapper {
     public static Trip fromCreateTripDTO(CreateTripDTO createTripDTO, User user) {
         return new Trip(user, createTripDTO.getCarModel(), createTripDTO.getMessage()
                 , createTripDTO.getDepartureTime(), createTripDTO.getOrigin(), createTripDTO.getDestination()
-                , createTripDTO.getAvailablePlaces(), TripStatus.available, createTripDTO.smoking()
+                , createTripDTO.getAvailablePlaces(), TripStatus.AVAILABLE, createTripDTO.smoking()
                 , createTripDTO.pets(), createTripDTO.luggage());
     }
 

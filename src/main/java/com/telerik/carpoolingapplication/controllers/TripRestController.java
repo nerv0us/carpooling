@@ -89,7 +89,7 @@ public class TripRestController {
         }
         return Constants.TRIP_UPDATED;
     }
-
+    //TODO: Remove authentication?
     @GetMapping("/{id}")
     public TripDTO getTrip(@PathVariable int id, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
