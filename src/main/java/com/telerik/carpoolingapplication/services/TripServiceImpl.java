@@ -74,7 +74,7 @@ public class TripServiceImpl implements TripService {
     public void changeTripStatus(int id, UserDTO user, String status) {
         TripDTO trip = getTrip(id, user);
         if (trip.getDriver().getId() != user.getId()) {
-            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+            throw new UnauthorizedException(Constants.NOT_A_DRIVER);
         }
         try {
             TripStatus updatedStatus = TripStatus.valueOf(status);
