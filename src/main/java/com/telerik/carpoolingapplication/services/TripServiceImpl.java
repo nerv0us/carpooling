@@ -57,7 +57,7 @@ public class TripServiceImpl implements TripService {
     public void editTrip(EditTripDTO editTripDTO, UserDTO user) {
         TripDTO trip = getTrip(editTripDTO.getId(), user);
         if ((trip.getDriver().getId() != user.getId())) {
-            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+            throw new UnauthorizedException(Constants.NOT_A_DRIVER);
         }
         tripRepository.editTrip(editTripDTO, user.getId());
     }
@@ -65,7 +65,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public TripDTO getTrip(int id, UserDTO user) {
         if (user == null) {
-            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
+            throw new ValidationException(Constants.USER_NOT_FOUND);
         }
         return tripRepository.getTrip(id);
     }
@@ -164,7 +164,7 @@ public class TripServiceImpl implements TripService {
         if (tripRepository.passengers(tripId, passengerId, PassengerStatusEnum.ACCEPTED).isEmpty()) {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
-        tripRepository.ratePassenger(tripId, passengerId, user,ratingDTO);
+        tripRepository.ratePassenger(tripId, passengerId, user, ratingDTO);
     }
 
     private TripStatus tripStatusParser(String tripStatus) {

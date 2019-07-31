@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.controllers;
 
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.dto.*;
@@ -77,16 +78,12 @@ public class TripRestController {
         UserDTO user = getAuthorizedUser(request);
         try {
             tripService.editTrip(editTripDTO, user);
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.NOT_A_DRIVER)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            }
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return Constants.TRIP_UPDATED;
     }
