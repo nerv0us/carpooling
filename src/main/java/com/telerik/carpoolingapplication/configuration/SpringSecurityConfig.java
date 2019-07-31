@@ -31,6 +31,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/users/register").permitAll()
                 .antMatchers("/api/users/authenticate").permitAll()
                 .antMatchers("/api/trips").permitAll()
+                .antMatchers("/api/trips/{id}").permitAll()
+                .antMatchers("/").permitAll()
+
                 .anyRequest().authenticated();
 
         http.exceptionHandling().accessDeniedPage("/login");

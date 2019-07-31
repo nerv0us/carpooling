@@ -89,12 +89,11 @@ public class TripRestController {
         }
         return Constants.TRIP_UPDATED;
     }
-    //TODO: Remove authentication?
+
     @GetMapping("/{id}")
-    public TripDTO getTrip(@PathVariable int id, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
+    public TripDTO getTrip(@PathVariable int id) {
         try {
-            return tripService.getTrip(id, user);
+            return tripService.getTrip(id, new UserDTO());
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
