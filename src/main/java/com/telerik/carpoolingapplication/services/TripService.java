@@ -1,6 +1,6 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.dto.*;
 
 import java.util.List;
 

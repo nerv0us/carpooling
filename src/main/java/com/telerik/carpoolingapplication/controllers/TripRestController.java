@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import com.telerik.carpoolingapplication.services.TripService;
 import com.telerik.carpoolingapplication.services.UserService;

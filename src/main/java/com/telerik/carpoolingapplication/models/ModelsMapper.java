@@ -1,6 +1,7 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.Role;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.telerik.carpoolingapplication.models;
+package com.telerik.carpoolingapplication.models.dto;
 
 public class EditTripDTO {
     private int id;

@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
@@ -138,7 +139,7 @@ public class TripServiceImpl implements TripService {
             throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
         List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, user.getId()
-                , PassengerStatusEnum.accepted);
+                , PassengerStatusEnum.ACCEPTED);
         if (passengerStatuses.isEmpty()) {
             throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
         }
@@ -154,11 +155,11 @@ public class TripServiceImpl implements TripService {
         if (tripDTO.getTripStatus() != TripStatus.done) {
             throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
-        if (tripRepository.passengers(tripId, user.getId(), PassengerStatusEnum.accepted).isEmpty()
+        if (tripRepository.passengers(tripId, user.getId(), PassengerStatusEnum.ACCEPTED).isEmpty()
                 && tripDTO.getDriver().getId() != user.getId()) {
             throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
         }
-        if (tripRepository.passengers(tripId, passengerId, PassengerStatusEnum.accepted).isEmpty()) {
+        if (tripRepository.passengers(tripId, passengerId, PassengerStatusEnum.ACCEPTED).isEmpty()) {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
         tripRepository.ratePassenger(tripId, passengerId, user,ratingDTO);

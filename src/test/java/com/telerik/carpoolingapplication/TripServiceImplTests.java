@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication;
 
-import com.telerik.carpoolingapplication.models.*;
-import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import com.telerik.carpoolingapplication.models.dto.CreateTripDTO;
+import com.telerik.carpoolingapplication.models.dto.UserDTO;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
 import com.telerik.carpoolingapplication.services.TripServiceImpl;
 import org.junit.Test;

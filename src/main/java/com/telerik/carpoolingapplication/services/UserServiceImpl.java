@@ -2,10 +2,10 @@ package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
 import com.telerik.carpoolingapplication.exceptions.ValidationException;
-import com.telerik.carpoolingapplication.models.CreateUserDTO;
+import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.JWTToken;
 import com.telerik.carpoolingapplication.models.User;
-import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.dto.UserDTO;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
 import com.telerik.carpoolingapplication.security.JwtTokenProvider;

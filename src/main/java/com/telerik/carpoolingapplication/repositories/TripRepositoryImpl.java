@@ -2,6 +2,7 @@ package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
@@ -99,7 +100,7 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
             User user = session.get(User.class, commentDTO.getUserId());
             List<PassengerStatus> passengers = passengers(tripDTO.getId(), commentDTO.getUserId()
-                    , PassengerStatusEnum.accepted);
+                    , PassengerStatusEnum.ACCEPTED);
             if (passengers.isEmpty()) {
                 throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
@@ -116,7 +117,7 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
             Trip trip = session.get(Trip.class, id);
             User user = session.get(User.class, userDTO.getId());
-            PassengerStatus passengerStatus = new PassengerStatus(user, PassengerStatusEnum.pending, trip);
+            PassengerStatus passengerStatus = new PassengerStatus(user, PassengerStatusEnum.PENDING, trip);
             session.save(passengerStatus);
             session.getTransaction().commit();
         }

@@ -1,9 +1,9 @@
 package com.telerik.carpoolingapplication.services;
 
-import com.telerik.carpoolingapplication.models.CreateUserDTO;
+import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.JWTToken;
 import com.telerik.carpoolingapplication.models.User;
-import com.telerik.carpoolingapplication.models.UserDTO;
+import com.telerik.carpoolingapplication.models.dto.UserDTO;
 
 import javax.servlet.http.HttpServletRequest;
 

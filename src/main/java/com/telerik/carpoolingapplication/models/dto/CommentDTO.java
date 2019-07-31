@@ -1,4 +1,4 @@
-package com.telerik.carpoolingapplication.models;
+package com.telerik.carpoolingapplication.models.dto;
 
 import javax.validation.constraints.NotNull;
 
