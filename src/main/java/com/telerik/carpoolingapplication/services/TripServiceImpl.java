@@ -97,7 +97,7 @@ public class TripServiceImpl implements TripService {
     public void apply(int tripId, UserDTO user) {
         TripDTO tripDTO = getTrip(tripId, user);
         if (tripDTO.getDriver().getId() == user.getId()) {
-            throw new IllegalArgumentException(Constants.YOUR_OWN_TRIP);
+            throw new UnauthorizedException(Constants.YOUR_OWN_TRIP);
         }
         List<PassengerDTO> passengers = tripDTO.getPassengers();
         PassengerDTO passengerDTO = passengers.stream()
@@ -105,7 +105,7 @@ public class TripServiceImpl implements TripService {
                 .findFirst()
                 .orElse(null);
         if (passengerDTO != null) {
-            throw new IllegalArgumentException(Constants.ALREADY_APPLIED);
+            throw new UnauthorizedException(Constants.ALREADY_APPLIED);
         }
 
         tripRepository.apply(tripId, user);
