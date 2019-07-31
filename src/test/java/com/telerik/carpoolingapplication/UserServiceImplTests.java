@@ -1,7 +1,7 @@
 package com.telerik.carpoolingapplication;
 
 import com.telerik.carpoolingapplication.exceptions.ValidationException;
-import com.telerik.carpoolingapplication.models.CreateUserDTO;
+import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.repositories.UserRepositoryImpl;
 import com.telerik.carpoolingapplication.services.UserServiceImpl;

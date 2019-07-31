@@ -1,4 +1,4 @@
-package com.telerik.carpoolingapplication.models;
+package com.telerik.carpoolingapplication.models.dto;
 
 import org.hibernate.annotations.ColumnDefault;
 import javax.validation.constraints.Email;
