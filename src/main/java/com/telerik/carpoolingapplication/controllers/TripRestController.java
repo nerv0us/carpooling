@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.util.List;
 
 @RestController
@@ -63,7 +64,7 @@ public class TripRestController {
         UserDTO user = getAuthorizedUser(request);
         try {
             tripService.createTrip(createTripDTO, user);
-        } catch (IllegalArgumentException e) {
+        } catch (ValidationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
 

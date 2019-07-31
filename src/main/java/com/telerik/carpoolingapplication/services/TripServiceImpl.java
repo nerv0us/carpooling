@@ -1,5 +1,7 @@
 package com.telerik.carpoolingapplication.services;
 
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
+import com.telerik.carpoolingapplication.exceptions.ValidationException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.dto.*;
@@ -46,7 +48,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public void createTrip(CreateTripDTO createTripDTO, UserDTO user) {
         if (user == null) {
-            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
+            throw new ValidationException(Constants.USER_NOT_FOUND);
         }
         tripRepository.createTrip(createTripDTO, user.getId());
     }
