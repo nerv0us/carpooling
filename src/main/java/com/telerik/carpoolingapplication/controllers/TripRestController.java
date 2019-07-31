@@ -66,7 +66,7 @@ public class TripRestController {
         try {
             tripService.createTrip(createTripDTO, user);
         } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
 
         return Constants.TRIP_CREATED;
@@ -79,9 +79,9 @@ public class TripRestController {
         try {
             tripService.editTrip(editTripDTO, user);
         } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -104,9 +104,9 @@ public class TripRestController {
         try {
             tripService.changeTripStatus(id, user, status);
         } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -119,15 +119,12 @@ public class TripRestController {
         UserDTO user = getAuthorizedUser(request);
         try {
             tripService.addComment(id, user, commentDTO);
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            } else {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-            }
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return Constants.COMMENT_ADDED;
     }

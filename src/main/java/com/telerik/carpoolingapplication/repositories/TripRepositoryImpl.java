@@ -1,5 +1,6 @@
 package com.telerik.carpoolingapplication.repositories;
 
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.dto.*;
@@ -101,8 +102,8 @@ public class TripRepositoryImpl implements TripRepository {
             User user = session.get(User.class, commentDTO.getUserId());
             List<PassengerStatus> passengers = passengers(tripDTO.getId(), commentDTO.getUserId()
                     , PassengerStatusEnum.ACCEPTED);
-            if (passengers.isEmpty()) {
-                throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
+            if (tripDTO.getDriver().getId() != commentDTO.getUserId() && passengers.isEmpty()) {
+                throw new UnauthorizedException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
             Trip trip = session.get(Trip.class, tripDTO.getId());
             Comment comment = ModelsMapper.fromCommentDTO(commentDTO, user, trip);
