@@ -152,23 +152,12 @@ public class TripRestController {
         UserDTO user = getAuthorizedUser(request);
         try {
             tripService.changePassengerStatus(tripId, passengerId, user, status);
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(Constants.TRIP_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.USER_NOT_FOUND)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.NOT_A_DRIVER)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.NO_SUCH_PASSENGER)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-            }
-            if (e.getMessage().equals(Constants.NO_SUCH_STATUS)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-            }
-
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return Constants.PASSENGER_STATUS_CHANGED;
     }

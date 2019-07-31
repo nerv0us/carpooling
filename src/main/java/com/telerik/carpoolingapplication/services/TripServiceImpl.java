@@ -115,7 +115,7 @@ public class TripServiceImpl implements TripService {
     public void changePassengerStatus(int tripId, int passengerId, UserDTO user, String status) {
         TripDTO tripDTO = getTrip(tripId, user);
         if (tripDTO.getDriver().getId() != user.getId()) {
-            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+            throw new UnauthorizedException(Constants.NOT_A_DRIVER);
         }
         List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, passengerId, null);
         if (passengerStatuses.isEmpty()) {
