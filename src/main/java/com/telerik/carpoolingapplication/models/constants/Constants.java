@@ -20,6 +20,8 @@ public final class Constants {
     public static final String NOT_A_BOOLEAN = "Value is not a boolean";
     public static final String NOT_A_DRIVER = "You are not the driver of the trip!";
     public static final String CREATE_TRIP_IN_PAST = "You cannot create trip in the past!";
+    public static final String NO_AVAILABLE_PLACES = "This trip has no available places!";
+    public static final String SAME_STATUS = "This is the current passenger status!";
 
     // User constants
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized!";
@@ -43,5 +45,4 @@ public final class Constants {
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
     public static final String DEFAULT_USER_AVATAR_ROUTE = "images/users/defaultUserPhoto.jpg";
     public static final int MAX_FILE_SIZE = 5242880;
-
 }

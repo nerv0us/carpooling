@@ -43,9 +43,7 @@ public class TripRestController {
                 integer($int32)
             (query)
             */
-    //:TODO Create trip in the past!
     //:TODO Auto update available places when passenger is approved!
-    //:TODO local date time!
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) String tripStatus
             , @RequestParam(required = false) String driverUsername

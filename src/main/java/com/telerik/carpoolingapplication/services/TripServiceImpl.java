@@ -127,13 +127,29 @@ public class TripServiceImpl implements TripService {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
         PassengerStatus passengerStatus = passengerStatuses.get(0);
+        PassengerStatusEnum oldStatus = passengerStatus.getStatus();
+        PassengerStatusEnum newStatus;
         try {
-            PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
-            passengerStatus.setStatus(passengerStatusEnum);
+            newStatus = PassengerStatusEnum.valueOf(status);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
         }
-        tripRepository.changePassengerStatus(passengerStatus);
+
+        if (String.valueOf(oldStatus).equals(String.valueOf(newStatus))) {
+            throw new UnauthorizedException(Constants.SAME_STATUS);
+        }
+
+        if (newStatus == PassengerStatusEnum.ACCEPTED && tripDTO.getAvailablePlaces() == 0) {
+            throw new UnauthorizedException(Constants.NO_AVAILABLE_PLACES);
+        }
+        int placesReducingValue = 0;
+        if (newStatus == PassengerStatusEnum.ACCEPTED) {
+            placesReducingValue = -1;
+        } else if (oldStatus == PassengerStatusEnum.ACCEPTED) {
+            placesReducingValue = 1;
+        }
+        passengerStatus.setStatus(newStatus);
+        tripRepository.changePassengerStatus(passengerStatus, tripDTO.getId(), placesReducingValue);
     }
 
     @Override

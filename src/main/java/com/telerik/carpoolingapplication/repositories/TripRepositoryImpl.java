@@ -125,9 +125,14 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void changePassengerStatus(PassengerStatus passengerStatus) {
+    public void changePassengerStatus(PassengerStatus passengerStatus, int tripId, int placesReducingValue) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+            if (placesReducingValue != 0) {
+                Trip trip = session.get(Trip.class, tripId);
+                trip.setAvailablePlaces(trip.getAvailablePlaces() + placesReducingValue);
+                session.update(trip);
+            }
             session.update(passengerStatus);
             session.getTransaction().commit();
         }
