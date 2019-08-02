@@ -16,6 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -40,6 +43,9 @@ public class TripRestController {
                 integer($int32)
             (query)
             */
+    //:TODO Create trip in the past!
+    //:TODO Auto update available places when passenger is approved!
+    //:TODO local date time!
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) String tripStatus
             , @RequestParam(required = false) String driverUsername
@@ -53,10 +59,12 @@ public class TripRestController {
             , @RequestParam(required = false) String luggage
             , @RequestParam(required = false) String sortParameter
             , @RequestParam(required = false) String ascending) {
-        List<TripDTO> trips;
-        trips = tripService.getTrips(tripStatus, driverUsername, origin, destination, earliestDepartureTime
-                , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
-        return trips;
+        try {
+            return tripService.getTrips(tripStatus, driverUsername, origin, destination, earliestDepartureTime
+                    , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -67,8 +75,9 @@ public class TripRestController {
             tripService.createTrip(createTripDTO, user);
         } catch (ValidationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
         }
-
         return Constants.TRIP_CREATED;
     }
 

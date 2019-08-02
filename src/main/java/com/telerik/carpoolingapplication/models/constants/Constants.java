@@ -2,9 +2,6 @@ package com.telerik.carpoolingapplication.models.constants;
 
 public final class Constants {
 
-    private Constants() {
-    }
-
     // Trip constants
     public static final String TRIP_CREATED = "Trip created!";
     public static final String TRIP_UPDATED = "Trip updated!";
@@ -22,6 +19,7 @@ public final class Constants {
     public static final String NOT_A_NUMBER = "Value is not a number!";
     public static final String NOT_A_BOOLEAN = "Value is not a boolean";
     public static final String NOT_A_DRIVER = "You are not the driver of the trip!";
+    public static final String CREATE_TRIP_IN_PAST = "You cannot create trip in the past!";
 
     // User constants
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized!";

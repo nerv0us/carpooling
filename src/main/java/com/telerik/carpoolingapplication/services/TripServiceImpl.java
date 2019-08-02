@@ -11,6 +11,9 @@ import com.telerik.carpoolingapplication.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
@@ -49,6 +52,12 @@ public class TripServiceImpl implements TripService {
     public void createTrip(CreateTripDTO createTripDTO, UserDTO user) {
         if (user == null) {
             throw new ValidationException(Constants.USER_NOT_FOUND);
+        }
+        LocalDateTime departureTime = LocalDateTime.parse(createTripDTO.getDepartureTime()
+                , DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+
+        if (departureTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException(Constants.CREATE_TRIP_IN_PAST);
         }
         tripRepository.createTrip(createTripDTO, user.getId());
     }
