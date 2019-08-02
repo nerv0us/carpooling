@@ -15,6 +15,8 @@ public interface TripService {
 
     void editTrip(EditTripDTO editTripDTO, UserDTO user);
 
+    TripDTO getTrip(int id);
+
     TripDTO getTrip(int tripId, UserDTO user);
 
     void changeTripStatus(int tripId, UserDTO user, String status);

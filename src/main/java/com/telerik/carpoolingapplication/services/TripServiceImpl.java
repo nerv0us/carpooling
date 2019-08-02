@@ -68,6 +68,11 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
+    public TripDTO getTrip(int id) {
+        return tripRepository.getTrip(id);
+    }
+
+    @Override
     public TripDTO getTrip(int id, UserDTO user) {
         if (user == null) {
             throw new ValidationException(Constants.USER_NOT_FOUND);

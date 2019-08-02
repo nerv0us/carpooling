@@ -2,7 +2,10 @@ package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.User;
+import com.telerik.carpoolingapplication.models.dto.DriverDTO;
 import com.telerik.carpoolingapplication.models.dto.UserDTO;
+
+import java.util.List;
 
 public interface UserRepository {
 
@@ -17,4 +20,6 @@ public interface UserRepository {
     boolean isUsernameExist(String username);
 
     boolean isEmailExist(String email);
+
+    List<DriverDTO> getTopTenDrivers();
 }

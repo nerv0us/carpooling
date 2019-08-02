@@ -5,6 +5,7 @@ import com.telerik.carpoolingapplication.exceptions.ValidationException;
 import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.JWTToken;
 import com.telerik.carpoolingapplication.models.User;
+import com.telerik.carpoolingapplication.models.dto.DriverDTO;
 import com.telerik.carpoolingapplication.models.dto.UserDTO;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Transactional
 @Service
@@ -92,6 +94,11 @@ public class UserServiceImpl implements UserService {
         } catch (AuthenticationException e) {
             throw new UnauthorizedException(Constants.INVALID_USERNAME_MESSAGE);
         }
+    }
+
+    @Override
+    public List<DriverDTO> getTopTenDrivers() {
+        return userRepository.getTopTenDrivers();
     }
 
     private boolean isNotAuthorized(int id, HttpServletRequest request) {

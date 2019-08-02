@@ -3,6 +3,7 @@ package com.telerik.carpoolingapplication.repositories;
 import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.ModelsMapper;
 import com.telerik.carpoolingapplication.models.User;
+import com.telerik.carpoolingapplication.models.dto.DriverDTO;
 import com.telerik.carpoolingapplication.models.dto.UserDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -77,5 +78,13 @@ public class UserRepositoryImpl implements UserRepository {
         Query<User> query = session.createQuery("from User where email = :email", User.class);
         query.setParameter("email", email);
         return !query.list().isEmpty();
+    }
+
+    @Override
+    public List<DriverDTO> getTopTenDrivers() {
+        Session session = sessionFactory.getCurrentSession();
+        Query<User> query = session.createQuery("from User order by ratingAsDriver desc ", User.class);
+        query.setMaxResults(10);
+        return ModelsMapper.fromUserToDriverDto(query.list());
     }
 }

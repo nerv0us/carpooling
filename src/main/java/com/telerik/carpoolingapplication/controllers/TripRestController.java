@@ -43,7 +43,6 @@ public class TripRestController {
                 integer($int32)
             (query)
             */
-    //:TODO Auto update available places when passenger is approved!
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) String tripStatus
             , @RequestParam(required = false) String driverUsername
@@ -98,7 +97,7 @@ public class TripRestController {
     @GetMapping("/{id}")
     public TripDTO getTrip(@PathVariable int id) {
         try {
-            return tripService.getTrip(id, new UserDTO());
+            return tripService.getTrip(id);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

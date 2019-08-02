@@ -5,6 +5,7 @@ import com.telerik.carpoolingapplication.exceptions.ValidationException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
+import com.telerik.carpoolingapplication.models.dto.DriverDTO;
 import com.telerik.carpoolingapplication.models.dto.LoginDTO;
 import com.telerik.carpoolingapplication.models.dto.UserDTO;
 import com.telerik.carpoolingapplication.services.FileService;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -96,5 +98,11 @@ public class UserRestController {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
+    }
+
+    //TODO:
+    @GetMapping("/top-ten-drivers")
+    public List<DriverDTO> getTopTenDrivers(){
+        return userService.getTopTenDrivers();
     }
 }
