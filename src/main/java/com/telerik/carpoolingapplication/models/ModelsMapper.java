@@ -54,7 +54,8 @@ public final class ModelsMapper {
             PassengerDTO currentPassenger = fromUserToPassenger(user, passengerStatus);
             tripDTOPassengers.add(currentPassenger);
         }
-        TripDTO tripDTO = new TripDTO(trip.getId(), trip.getDriver(), trip.getCarModel()
+        UserDTO driver = getUser(trip.getDriver());
+        TripDTO tripDTO = new TripDTO(trip.getId(), driver, trip.getCarModel()
                 , trip.getMessage(), trip.getDepartureTime(), trip.getOrigin(), trip.getDestination()
                 , trip.getAvailablePlaces(), trip.getTripStatus(), trip.isSmoking()
                 , trip.isPets(), trip.isLuggage());
@@ -143,5 +144,18 @@ public final class ModelsMapper {
 
     public static CommentDTO fromComment(Comment comment) {
         return new CommentDTO(comment.getMessage(), comment.getUser().getId());
+    }
+
+    public static List<DriverDTO> fromUserToDriverDto(List<User> users) {
+        List<DriverDTO> topTenDrivers = new ArrayList<>();
+        for (User user : users) {
+            DriverDTO driver = new DriverDTO();
+            driver.setFirstName(user.getFirstName());
+            driver.setLastName(user.getLastName());
+            driver.setUsername(user.getUsername());
+            driver.setRatingAsDriver(user.getRatingAsDriver());
+            topTenDrivers.add(driver);
+        }
+        return topTenDrivers;
     }
 }

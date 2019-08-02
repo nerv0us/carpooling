@@ -14,7 +14,7 @@ public class TripDTO {
 
     @ManyToOne
     @NotNull
-    private User driver;
+    private UserDTO driver;
 
     @NotNull
     private String carModel;
@@ -49,7 +49,7 @@ public class TripDTO {
     public TripDTO() {
     }
 
-    public TripDTO(@NotNull int id, @NotNull User driver, @NotNull String carModel
+    public TripDTO(@NotNull int id, @NotNull UserDTO driver, @NotNull String carModel
             , @NotNull String message, @NotNull String departureTime, @NotNull String origin
             , @NotNull String destination, @NotNull int availablePlaces
             , @NotNull TripStatus tripStatus, boolean smoking, boolean pets
@@ -78,11 +78,11 @@ public class TripDTO {
         this.id = id;
     }
 
-    public User getDriver() {
+    public UserDTO getDriver() {
         return driver;
     }
 
-    public void setDriver(User driver) {
+    public void setDriver(UserDTO driver) {
         this.driver = driver;
     }
 
