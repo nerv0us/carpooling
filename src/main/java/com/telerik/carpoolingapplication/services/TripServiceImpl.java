@@ -53,12 +53,7 @@ public class TripServiceImpl implements TripService {
         if (user == null) {
             throw new ValidationException(Constants.USER_NOT_FOUND);
         }
-        LocalDateTime departureTime = LocalDateTime.parse(createTripDTO.getDepartureTime()
-                , DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
-
-        if (departureTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException(Constants.CREATE_TRIP_IN_PAST);
-        }
+        departureTimeValidator(createTripDTO.getDepartureTime());
         tripRepository.createTrip(createTripDTO, user.getId());
     }
 
@@ -68,6 +63,7 @@ public class TripServiceImpl implements TripService {
         if ((trip.getDriver().getId() != user.getId())) {
             throw new UnauthorizedException(Constants.NOT_A_DRIVER);
         }
+        departureTimeValidator(editTripDTO.getDepartureTime());
         tripRepository.editTrip(editTripDTO, user.getId());
     }
 
@@ -174,6 +170,15 @@ public class TripServiceImpl implements TripService {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
         tripRepository.ratePassenger(tripId, passengerId, user, ratingDTO);
+    }
+
+    private void departureTimeValidator(String time) {
+        LocalDateTime departureTime = LocalDateTime.parse(time
+                , DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+
+        if (departureTime.isBefore(LocalDateTime.now()) || departureTime.isEqual(LocalDateTime.now())) {
+            throw new IllegalArgumentException(Constants.CREATE_TRIP_IN_PAST);
+        }
     }
 
     private TripStatus tripStatusParser(String tripStatus) {
