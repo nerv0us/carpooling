@@ -1,0 +1,12 @@
+body {
+    background-color: honeydew;
+    font-size: larger;
+}
+
+.image {
+    border: 3px seagreen;
+}
+
+.error {
+    color: red;
+}
