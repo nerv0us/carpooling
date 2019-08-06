@@ -1,0 +1,29 @@
+.authorized-button {
+    display: none;
+}
+
+#login-form {
+    display: flex;
+    justify-content: center;
+}
+
+div.form-group {
+    margin-bottom: 40px;
+}
+
+div.input-group {
+    margin-bottom: 20px;
+}
+
+#register-form {
+    display: flex;
+    justify-content: center;
+}
+
+div.form-group {
+    margin-bottom: 40px;
+}
+
+div.input-group {
+    margin-bottom: 20px;
+}

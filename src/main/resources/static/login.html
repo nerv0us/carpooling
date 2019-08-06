@@ -1,50 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<div id="login-form">
+    <form class="form-signin" novalidate>
+        <div style="text-align:  center;">
+        </div>
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <div class="form-group bmd-form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="material-icons">account_circle</i></div>
+                </div>
+                <input type="text" class="form-control" id="username" placeholder="username..." required autofocus>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="material-icons">lock_outline</i></div>
+                </div>
+                <input type="password" class="form-control" id="password" placeholder="password...">
+            </div>
+        </div>
 
-    <title>Signin Template for Bootstrap</title>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" id="remember_me"> Remember me
+                <span class="form-check-sign">
+                    <span class="check"></span>
+                  </span>
+            </label>
+        </div>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
+<!--        <div class="checkbox">-->
+<!--            &lt;!&ndash;        <div id="message">&ndash;&gt;-->
+<!--            &lt;!&ndash;            <i id="wrong-pass">It seems like your username and password don't match.</i>&ndash;&gt;-->
+<!--            &lt;!&ndash;        </div>&ndash;&gt;-->
+<!--            <label>-->
+<!--                <input type="checkbox" id="remember_me"> Remember me-->
+<!--            </label>-->
+<!--        </div>-->
 
-    <!-- Bootstrap core CSS -->
-    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
-</head>
-<body class="text-center">
-
-<form class="form-signin">
-
-    <div style="text-align:  center;">
-        <i id="wrong-pass" class="text-hide">It seems like your username and password don't match.</i>
-<!--        <i id="existing-user" class="hide login-error">It seems like there is already a user with that username.</i>-->
-<!--        <i id="disabled-user" class="hide login-error">It seems like this user has been disabled.</i>-->
-    </div>
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="username" class="sr-only">Email address</label>
-    <input type="text" name="username" id="username" class="form-control" placeholder="username" required autofocus>
-    <label for="password" class="sr-only">Password</label>
-    <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" value="remember-me"> Remember me
-        </label>
-    </div>
-    <button class="btn btn-lg btn-primary btn-block" type="button" onclick="login()">Sign in</button>
-    <p class="mt-5 mb-3 text-muted"><a href="register.html">Register</a> &copy; 2019</p>
-
-</form>
-
-
-
-<script src="js/login.js"> </script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-</body>
-</html>
+        <button class="btn btn-lg btn-dark btn-block" type="button" onclick="login()">Sign in</button>
+    </form>
+</div>

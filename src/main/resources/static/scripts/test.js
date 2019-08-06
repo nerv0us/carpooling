@@ -1,5 +1,7 @@
 'use strict';
-$(document).ready(function () {
+
+// $(document).ready(function () {
+function getData() {
     /*prompt("In here");*/
 
     $("#btnClick").click(function () {
@@ -59,4 +61,4 @@ $(document).ready(function () {
             $(".error").html(JSON.stringify(err));
         });
     });
-});
+}

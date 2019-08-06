@@ -1,7 +1,3 @@
-loadTopTenDrivers();
-
-loadTrips();
-
 function loadTopTenDrivers() {
     $.ajax({
         url: `http://localhost:8080/api/users/top-ten-drivers`,
