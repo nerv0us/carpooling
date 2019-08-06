@@ -38,6 +38,7 @@ public class UserRestController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @CrossOrigin
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{username}")
     public UserDTO getUser(@PathVariable String username) {
@@ -49,6 +50,7 @@ public class UserRestController {
         }
     }
 
+    @CrossOrigin
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
     public String editUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
@@ -64,6 +66,7 @@ public class UserRestController {
         return Constants.USER_UPDATED;
     }
 
+    @CrossOrigin
     @PostMapping("/register")
     public String createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         try {
@@ -75,6 +78,7 @@ public class UserRestController {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/authenticate")
     public JWTToken login(@RequestBody LoginDTO user) {
         try {
@@ -84,6 +88,7 @@ public class UserRestController {
         }
     }
 
+    @CrossOrigin
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/avatar")
     public void uploadFile(@PathVariable int id, @RequestParam(value = "file") MultipartFile image, HttpServletRequest request) {
