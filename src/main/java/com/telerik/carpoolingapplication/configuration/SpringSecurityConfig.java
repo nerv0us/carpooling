@@ -5,9 +5,11 @@ import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,14 +36,31 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/trips/{id}").permitAll()
                 .antMatchers("/api/users/top-ten-drivers").permitAll()
                 .antMatchers("/").permitAll()
-                .antMatchers("/css/**", "/js/**", "/images/**", "/scripts/**", "/img/**").permitAll()
-                .antMatchers("/**.html").permitAll()
-                .antMatchers("/webjars/jquery/3.4.1/jquery.min.js").permitAll()
 
                 .anyRequest().authenticated();
 
         http.exceptionHandling().accessDeniedPage("/login");
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(
+                HttpMethod.GET,
+                "/",
+                "/webjars/**",
+                "/*.html",
+                "/**/*.html",
+                "/**/*.css",
+                "/**/*.js",
+                "/**/*.img",
+                "/**/*.images",
+                "/**/*.jpg",
+                "/**/*.jpeg",
+                "/**/*.png",
+                "/**/*.gif",
+                "/**/*.ico"
+        );
     }
 
     @Bean
