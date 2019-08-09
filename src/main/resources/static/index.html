@@ -12,24 +12,161 @@
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
     <!-- Material Kit CSS -->
-    <link href="css/material-kit.css?v=2.0.5" rel="stylesheet"/>
-
+    <link href="assets/css/material-kit.css?v=2.0.5" rel="stylesheet"/>
 
     <!-- jQuery - Google Content Delivery Network -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <link href="css/main.css" rel="stylesheet"/>
-
+    <link href="assets/css/main.css" rel="stylesheet"/>
 </head>
 
 <body>
-<header>
 
+<header>
+    <nav class="navbar bg-dark fixed-top navbar-expand-lg">
+        <div class="container">
+            <div class="navbar-translate">
+                <a class="navbar-brand" href="/">
+                    Carpooling </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item unauthorized-button " onclick="navigateToLogin()">
+                        <a id="login-button" class="nav-link">
+                            Login
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item unauthorized-button" href="profile.html">
+                        <a id="register-button" class="btn btn-rose btn-raised btn-round"
+                           data-toggle="dropdown">
+                            SignUp
+                        </a>
+                    </li>
+
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#create-trip-modal">
+                        <a class="nav-link">
+                            Create Trip
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item authorized-button" onclick="navigateToProfile()">
+                        <a class="nav-link">
+                            My Profile
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item authorized-button" onclick="logout()">
+                        <a href="/" class="btn btn-rose btn-raised btn-round "
+                           data-toggle="dropdown">
+                            Logout
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
 </header>
 
-<div id="content">
+<!-- Modal Create Trip -->
+<div class="modal fade create-trip-modal" id="create-trip-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Create trip</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">face</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="First Name...">
+                    </div>
+                </div>
 
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">email</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Email...">
+                    </div>
+                </div>
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">face</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="First Name...">
+                    </div>
+                </div>
+
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">email</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Email...">
+                    </div>
+                </div>
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">face</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="First Name...">
+                    </div>
+                </div>
+
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">email</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Email...">
+                    </div>
+                </div>
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">face</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="First Name...">
+                    </div>
+                </div>
+
+                <div class="form-group bmd-form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">email</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Email...">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<div id="content"></div>
 
 <footer class="footer footer-default">
     <div class="container">
@@ -43,29 +180,33 @@
     </div>
 </footer>
 
-<!--   Core JS Files   -->
-<script src="../static/js/core/jquery.min.js" type="text/javascript"></script>
-<script src="../static/js/core/popper.min.js" type="text/javascript"></script>
-<script src="../static/js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
-<script src="../static/js/plugins/moment.min.js"></script>
+<script src="assets/js/core/jquery.min.js" type="text/javascript"></script>
+<script src="assets/js/core/popper.min.js" type="text/javascript"></script>
+<script src="assets/js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+<script src="assets/js/plugins/moment.min.js"></script>
 <!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
-<script src="../static/js/plugins/bootstrap-datetimepicker.js" type="text/javascript"></script>
+<script src="assets/js/plugins/bootstrap-datetimepicker.js" type="text/javascript"></script>
 <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-<script src="../static/js/plugins/nouislider.min.js" type="text/javascript"></script>
+<script src="assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
-<script src="../static/js/material-kit.js?v=2.0.5" type="text/javascript"></script>
+<script src="assets/js/material-kit.js?v=2.0.5" type="text/javascript"></script>
 
 <!--   Main JS   -->
-<script src="js/main.js"></script>
+<script src="assets/js/main.js"></script>
 
 <!--   Login JS   -->
-<script src="js/login.js"></script>
+<script src="assets/js/login.js"></script>
 
 <!--   Authorize JS   -->
-<script src="js/auth.js"></script>
+<script src="assets/js/auth.js"></script>
+
+<!--   Profile JS   -->
+<script src="assets/js/profile.js"></script>
 
 <!--   Content JS   -->
-<script src="scripts/index-load.js" type="text/javascript"></script>
+<script src="assets/js/index-load.js" type="text/javascript"></script>
 
 </body>
 

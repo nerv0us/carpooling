@@ -1,0 +1,68 @@
+
+#login-form {
+    display: flex;
+    justify-content: center;
+}
+
+div.form-group {
+    margin-bottom: 40px;
+}
+
+div.input-group {
+    margin-bottom: 20px;
+}
+
+#register-form {
+    display: flex;
+    justify-content: center;
+}
+
+div.form-group {
+    margin-bottom: 40px;
+}
+
+div.input-group {
+    margin-bottom: 20px;
+}
+
+div.profile-container {
+    margin-top: 50px;
+}
+
+#create-trip-modal {
+    position: fixed;
+    /*top: 50%;*/
+    /*left: 50%;*/
+    /*transform: translate(-50%, -50%);*/
+    /*width: 500px;*/
+    /*height: 500px;*/
+    /*background-color: #ffffff;*/
+    /*z-index: 99999;*/
+    display: none;
+    overflow-y: visible;
+}
+
+#create-trip-modal.modal-content,
+#create-trip-modal.card {
+    height: 100%;
+}
+
+#create-trip-modal.modal-body {
+    overflow-y: scroll;
+}
+
+#create-trip-modal.form-group {
+    margin: 0;
+}
+
+#create-trip-modal button.close {
+    position: absolute;
+    right: 20px;
+    top: 0;
+}
+
+#create-trip-modal div.title {
+    margin: auto;
+    font-size: 24px;
+    font-weight: bold;
+}
