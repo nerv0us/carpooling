@@ -1,7 +1,7 @@
 // $('header').load('../header.html');
-$('#content').load('../main.html');
 
 $(document).ready(function () {
+    $('#content').load('../main.html');
     loadTopTenDrivers();
     loadTrips();
 
