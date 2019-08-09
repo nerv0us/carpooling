@@ -48,18 +48,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers(
                 HttpMethod.GET,
                 "/",
-                "/webjars/**",
                 "/*.html",
-                "/**/*.html",
-                "/**/*.css",
-                "/**/*.js",
-                "/**/*.img",
-                "/**/*.images",
-                "/**/*.jpg",
-                "/**/*.jpeg",
-                "/**/*.png",
-                "/**/*.gif",
-                "/**/*.ico"
+                "/assets/demo/**",
+                "/assets/css/**",
+                "/assets/img/**",
+                "/assets/js/**",
+                "/assets/scss/**",
+                "/scripts/**",
+                "/images/**"
         );
     }
 
