@@ -36,8 +36,8 @@ function closeCreateTripModal() {
 }
 
 function updateNavigationButtons(first, second) {
-    const authorizedButtons = document.querySelectorAll('.authorized-button');
-    const unauthorizedButtons = document.querySelectorAll('.unauthorized-button');
+    let authorizedButtons = document.querySelectorAll('.authorized-button');
+    let unauthorizedButtons = document.querySelectorAll('.unauthorized-button');
     unauthorizedButtons[0].style.display = first;
     unauthorizedButtons[1].style.display = first;
     authorizedButtons[0].style.display = second;
@@ -54,7 +54,9 @@ function navigateToRegister() {
 }
 
 function navigateToProfile() {
-    $('#content').load('../profile.html');
+    window.location.href = 'profile.html';
+
+    // $('#content').load('../profile.html');
 }
 
 $('.datetimepicker').datetimepicker({

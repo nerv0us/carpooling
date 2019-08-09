@@ -75,7 +75,7 @@ function register() {
 
 function logout() {
     removeJwtToken();
+    window.location.href = '/';
     updateNavigationButtons('initial', 'none');
-    $('#content').load('../main.html');
     location.reload();
 }
