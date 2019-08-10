@@ -5,7 +5,6 @@ let getJwtToken = function () {
 };
 
 let setJwtToken = function (token) {
-
     localStorage.setItem(TOKEN_KEY, token.id_token);
 };
 

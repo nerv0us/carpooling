@@ -33,7 +33,7 @@ function loadTrips() {
                  <div class="card mb-3" style="max-width: 540px;">
                     <div class="row no-gutters">                 
                         <div class="col-md-8">
-                        <a href="#" class="singleTrip">
+                        <a href="#" class="trip">
                             <div class="card-body">
                                 <h6 class="card-title">
                                     <p  class="row">
@@ -55,59 +55,137 @@ function loadTrips() {
         }
     })
 }
-
-$(document).on("click", ".singleTrip", function () {
-    let tripId = $(this).parent().find('.tripId').val();
+let tripId;
+$(document).on("click", ".trip", function () {
+    tripId = $(this).parent().find('.tripId').val();
     console.log(tripId);
     $.ajax({
         url: `http://localhost:8080/api/trips/` + tripId,
         method: 'GET',
         success: function (response) {
             let passengers = response.passengers;
-            $('#top-drivers').html('');
-            $("#upperPart").children().attr("disabled","disabled");
-            $('#trip-body').html('');
-            $("#trip-body").append(`
-                 <div class="card mb-3" style="max-width: 2040px;">
-                    <div class="row no-gutters">                 
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h6 class="card-title">                              
-                                    <a  class="row">
-                                        <span>
-                                        <img src='${response.driver.avatarUri}' style="max-width:50px;width:100%" alt="...">
-                                        Driver: ${response.driver.username} &nbsp &nbsp Rating: ${response.driver.ratingAsDriver}</span>
-                                    </a>
-                                    <br>
-                                    <a  class="row">
-                                    <span>Phone: ${response.driver.phone}</span>
-                                    </a>
-                                    <br>
-                                    <a  class="row">
-                                        <span>Origin: ${response.origin} &nbsp &nbsp Destination: ${response.destination}</span>
-                                    </a>
-                                    <br>
-                                    <a  class="row">
-                                        <span>Departure time: ${response.departureTime}</span>
-                                    </a>
-                                    <br>
-                                    <a>Passengers:</a>
-                                    <a  class="row"  id="tripBody">
-                                    </a>
-                                    <input type="hidden" class="tripId" value=${response.id}>                                  
-                                </h6>
+            let comments = response.comments;
+            /*$('#top-drivers').html('');
+            $("#upperPart").html('');*/
+            $('#content').html('');
+            $('#content').append(`
+            <div class="main main-raised" style="margin: 150px;">
+                <div class="container">
+                    <div class="section text-center">
+                        <h2 class="title">Trip</h2>
+                        <div class="row">
+                            <div class="card mb-3" style="max-width: 2040px;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h6 class="card-title">                                              
+                                                <a class="row">
+                                                <img src='${response.driver.avatarUri}' style="max-width:100px;width:100%" alt="...">
+                                                </a>   
+                                                <a  class="row">
+                                                    Driver: ${response.driver.firstName}&nbsp ${response.driver.lastName}
+                                                </a>                                
+                                                <a class="row">
+                                                </a>
+                                                <a class="row">
+                                                    Rating: ${response.driver.ratingAsDriver}
+                                                </a>
+                                                <a  class="row">
+                                                    Phone: ${response.driver.phone}
+                                                </a>
+                                                <br>
+                                                <a class="row">Car model: ${response.carModel}</a>
+                                                <br>
+                                                <a  class="row">
+                                                    Origin: ${response.origin}
+                                                </a>
+                                                <br>
+                                                <a  class="row">
+                                                    Destination: ${response.destination}
+                                                </a>  
+                                                <br>
+                                                <a  class="row">
+                                                    Departure time: ${response.departureTime}
+                                                </a>
+                                                <br>
+                                                <a  class="row">
+                                                    Available places: ${response.availablePlaces}
+                                                </a>
+                                                <br>
+                                                <a  class="row">
+                                                    Smoking: ${response.smoking}
+                                                </a>
+                                                <br>
+                                                <a  class="row">
+                                                    Pets: ${response.pets}
+                                                </a>
+                                                <br>
+                                                <a  class="row">
+                                                    Luggage: ${response.luggage}
+                                                </a>
+                                                <br>
+                                                <a class="row">
+                                                    Message: ${response.message}
+                                                </a>
+                                                <br>
+                                                <a class="comments">Comments: </a>
+                                                <br>
+                                                <a class="passengers">Passengers: </a>
+                                                <br>
+                                                <br>
+                                                <br>
+                                                <br>
+                                                <span class="apply"></span>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                 `);
-            $.each(passengers, function (i) {
-                $("#tripBody").append(`               
-                    <span>Name: ${passengers[i].username}</span>&nbsp&nbsp&nbsp
-                    <span>Rating: ${passengers[i].ratingAsPassenger}</span>&nbsp&nbsp&nbsp
-                    <span>Status: ${passengers[i].passengerStatusEnum}</span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            </div>                             
+            `);
+            $.each(comments, function (i) {
+                $(".comments").append(`
+                    <a  class="row">                
+                        "${comments[i].message}"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp                          
+                    </a>                 
                 `)
-            })
+            });
+            $.each(passengers, function (i) {
+                $(".passengers").append(`
+                    <a class="row">               
+                    Name: ${passengers[i].firstName}&nbsp ${passengers[i].lastName}&nbsp&nbsp&nbsp&nbsp 
+                    Rating: ${passengers[i].ratingAsPassenger}&nbsp&nbsp&nbsp&nbsp 
+                    Status: ${passengers[i].passengerStatusEnum}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp  
+                    </a> 
+                `)
+            });
+            $('.apply').append(`
+            <button type="button" class="btn btn-lg btn-primary" id="applyButton">Apply for this trip</button>
+              `)
         }
     })
 });
+
+$(document).on("click", "#applyButton", function () {
+    const token = getJwtToken();
+
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization:` Bearer ${token}`
+        },
+        method: "POST",
+        success: function () {
+            alert("success")
+
+        },
+        error: function(xhr) {
+            alert(xhr.responseText);
+        }
+    })
+});
+

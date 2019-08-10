@@ -135,6 +135,7 @@ public class TripRestController {
         return Constants.COMMENT_ADDED;
     }
 
+    @CrossOrigin
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/passengers")
     public String apply(@PathVariable int id, HttpServletRequest request) {

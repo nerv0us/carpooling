@@ -72,3 +72,4 @@ $('.datetimepicker').datetimepicker({
         close: 'fa fa-remove'
     }
 });
+
