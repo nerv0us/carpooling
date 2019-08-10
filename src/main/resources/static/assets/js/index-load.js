@@ -55,8 +55,10 @@ function loadTrips() {
         }
     })
 }
+let counter;
 let tripId;
 $(document).on("click", ".trip", function () {
+    counter = 0;
     tripId = $(this).parent().find('.tripId').val();
     console.log(tripId);
     $.ajax({
@@ -136,6 +138,8 @@ $(document).on("click", ".trip", function () {
                                                 <br>
                                                 <br>
                                                 <span class="apply"></span>
+                                                <span class="rateDriver">Rate driver</span>    
+                                                <span class="error"></span>                                           
                                             </h6>
                                         </div>
                                     </div>
@@ -155,7 +159,8 @@ $(document).on("click", ".trip", function () {
             });
             $.each(passengers, function (i) {
                 $(".passengers").append(`
-                    <a class="row">               
+                    <a href="#" class="row" id="singlePassenger">
+                    <i class="material-icons">face</i>&nbsp       
                     Name: ${passengers[i].firstName}&nbsp ${passengers[i].lastName}&nbsp&nbsp&nbsp&nbsp 
                     Rating: ${passengers[i].ratingAsPassenger}&nbsp&nbsp&nbsp&nbsp 
                     Status: ${passengers[i].passengerStatusEnum}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp  
@@ -164,6 +169,13 @@ $(document).on("click", ".trip", function () {
             });
             $('.apply').append(`
             <button type="button" class="btn btn-lg btn-primary" id="applyButton">Apply for this trip</button>
+              `);
+            $('.rateDriver').append(`
+            <span class="badge badge-default">1</span>
+            <span class="badge badge-default">2</span>
+            <span class="badge badge-default">3</span>
+            <span class="badge badge-default">4</span>
+            <span class="badge badge-default">5</span>
               `)
         }
     })
@@ -171,21 +183,81 @@ $(document).on("click", ".trip", function () {
 
 $(document).on("click", "#applyButton", function () {
     const token = getJwtToken();
-
     $.ajax({
         url: `http://localhost:8080/api/trips/` + tripId + `/passengers`,
         headers: {
             'Content-Type': 'application/json',
-            Authorization:` Bearer ${token}`
+            Authorization: ` Bearer ${token}`
         },
         method: "POST",
         success: function () {
-            alert("success")
-
+            $('.error').append(`
+                        <p style="color: red">
+                        Success
+                        </p>
+                `);
+            counter++;
         },
-        error: function(xhr) {
-            alert(xhr.responseText);
+        error: function (xhr) {
+            if (counter === 0) {
+                if (token === null) {
+                    $('.error').append(`
+                        <p style="color: red">
+                        You are not logged!
+                        </p>
+                `);
+                } else {
+                    $('.error').append(`
+                        <p style="color: red">
+                        ${xhr.responseText}
+                        </p>
+                 `);
+                }
+            }
+            counter = 1;
         }
-    })
+    });
 });
+
+$(document).on("click", "#rateDriverButton", function () {
+    const token = getJwtToken();
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        success: function () {
+            $('.error').append(`
+                        <p style="color: red">
+                        Success
+                        </p>
+                `);
+            counter++;
+        },
+        error: function (xhr) {
+            if (counter === 0) {
+                if (token === null) {
+                    $('.error').append(`
+                        <p style="color: red">
+                        You are not logged!
+                        </p>
+                `);
+                } else {
+                    $('.error').append(`
+                        <p style="color: red">
+                        ${xhr.responseText}
+                        </p>
+                 `);
+                }
+            }
+            counter = 1;
+        }
+    });
+});
+
 
