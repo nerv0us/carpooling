@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getCurrent(HttpServletRequest req) {
+        return userRepository.getByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
+    }
+
+    @Override
     public User getByUsername(String username) {
         User user = userRepository.getByUsername(username);
         if (user == null) {
