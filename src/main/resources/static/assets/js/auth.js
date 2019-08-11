@@ -11,10 +11,12 @@ let setJwtToken = function (token) {
 
 let createAuthorizationTokenHeader = function () {
     let token = getJwtToken();
+
     if (token) {
         return {
-            "Authorization": "Bearer " + token
-        };
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
     } else {
         return {
             'Content-Type': 'application/json'
