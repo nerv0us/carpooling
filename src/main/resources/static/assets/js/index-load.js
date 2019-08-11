@@ -55,6 +55,7 @@ function loadTrips() {
         }
     })
 }
+
 let counter;
 let tripId;
 $(document).on("click", ".trip", function () {
@@ -80,39 +81,53 @@ $(document).on("click", ".trip", function () {
                                 <div class="row no-gutters">
                                     <div class="col-md-8">
                                         <div class="card-body">
-                                            <h6 class="card-title">                                              
+                                            <h6 class="card-title">
+                                            
                                                 <a class="row">
                                                 <img src='${response.driver.avatarUri}' style="max-width:100px;width:100%" alt="...">
-                                                </a>   
-                                                <a  class="row">
-                                                    Driver: ${response.driver.firstName}&nbsp ${response.driver.lastName}
-                                                </a>                                
-                                                <a class="row">
                                                 </a>
+                                                                                                                                            
+                                               
                                                 <a class="row">
-                                                    Rating: ${response.driver.ratingAsDriver}
-                                                </a>
-                                                <a  class="row">
-                                                    Phone: ${response.driver.phone}
+                                                Driver: ${response.driver.firstName}&nbsp ${response.driver.lastName}
+                                                <a/>
+                                                <br>
+                                                <a class="row">
+                                                Rating: ${response.driver.ratingAsDriver}
                                                 </a>
                                                 <br>
+                                                <a  class="row">
+                                                Phone: ${response.driver.phone}
+                                                </a>
+                                                
+                                                                                                                                                                                                                                                                                                                             
+                                                <br>
+                                                
                                                 <a class="row">Car model: ${response.carModel}</a>
+                                                
                                                 <br>
+                                                
                                                 <a  class="row">
                                                     Origin: ${response.origin}
                                                 </a>
+                                                
                                                 <br>
+                                                
                                                 <a  class="row">
                                                     Destination: ${response.destination}
-                                                </a>  
+                                                </a>
+                                                 
                                                 <br>
+                                               
                                                 <a  class="row">
                                                     Departure time: ${response.departureTime}
                                                 </a>
                                                 <br>
+                                                
                                                 <a  class="row">
                                                     Available places: ${response.availablePlaces}
                                                 </a>
+                                                
                                                 <br>
                                                 <a  class="row">
                                                     Smoking: ${response.smoking}
@@ -127,6 +142,10 @@ $(document).on("click", ".trip", function () {
                                                 </a>
                                                 <br>
                                                 <a class="row">
+                                                    Trip status: ${response.tripStatus}
+                                                </a>
+                                                <br>
+                                                <a class="row">
                                                     Message: ${response.message}
                                                 </a>
                                                 <br>
@@ -137,8 +156,8 @@ $(document).on("click", ".trip", function () {
                                                 <br>
                                                 <br>
                                                 <br>
-                                                <span class="apply"></span>
-                                                <span class="rateDriver">Rate driver</span>    
+                                                <span class="apply"></span>&nbsp&nbsp
+                                                <span class="rateDriver"></span>    
                                                 <span class="error"></span>                                           
                                             </h6>
                                         </div>
@@ -164,21 +183,62 @@ $(document).on("click", ".trip", function () {
                     Name: ${passengers[i].firstName}&nbsp ${passengers[i].lastName}&nbsp&nbsp&nbsp&nbsp 
                     Rating: ${passengers[i].ratingAsPassenger}&nbsp&nbsp&nbsp&nbsp 
                     Status: ${passengers[i].passengerStatusEnum}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp  
-                    </a> 
+                    </a>
+                    <span class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Rate passenger
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">1</a>
+              <a class="dropdown-item" href="#">2</a>
+              <a class="dropdown-item" href="#">3</a>
+              <a class="dropdown-item" href="#">4</a>
+              <a class="dropdown-item" href="#">5</a>
+            </div>
+            </span>
                 `)
             });
             $('.apply').append(`
             <button type="button" class="btn btn-lg btn-primary" id="applyButton">Apply for this trip</button>
               `);
             $('.rateDriver').append(`
-            <span class="badge badge-default">1</span>
-            <span class="badge badge-default">2</span>
-            <span class="badge badge-default">3</span>
-            <span class="badge badge-default">4</span>
-            <span class="badge badge-default">5</span>
+            <span class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Rate driver
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#" id="driver-rate-1">1</a>
+              <a class="dropdown-item" href="#">2</a>
+              <a class="dropdown-item" href="#">3</a>
+              <a class="dropdown-item" href="#">4</a>
+              <a class="dropdown-item" href="#">5</a>
+            </div>
+            </span>
               `)
         }
     })
+});
+$(document).on("click", "#driver-rate-1", function () {
+    const token = getJwtToken();
+    let rating = 1;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("success")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
 });
 
 $(document).on("click", "#applyButton", function () {
@@ -219,45 +279,5 @@ $(document).on("click", "#applyButton", function () {
     });
 });
 
-$(document).on("click", "#rateDriverButton", function () {
-    const token = getJwtToken();
-    let data = {
-        rating
-    };
-    $.ajax({
-        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: ` Bearer ${token}`
-        },
-        method: "POST",
-        success: function () {
-            $('.error').append(`
-                        <p style="color: red">
-                        Success
-                        </p>
-                `);
-            counter++;
-        },
-        error: function (xhr) {
-            if (counter === 0) {
-                if (token === null) {
-                    $('.error').append(`
-                        <p style="color: red">
-                        You are not logged!
-                        </p>
-                `);
-                } else {
-                    $('.error').append(`
-                        <p style="color: red">
-                        ${xhr.responseText}
-                        </p>
-                 `);
-                }
-            }
-            counter = 1;
-        }
-    });
-});
 
 
