@@ -199,8 +199,7 @@ public class TripServiceImpl implements TripService {
 
     private void departureTimeValidator(String time) {
         LocalDateTime departureTime = LocalDateTime.parse(time
-                , DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
-
+                , DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a"));
         if (departureTime.isBefore(LocalDateTime.now()) || departureTime.isEqual(LocalDateTime.now())) {
             throw new IllegalArgumentException(Constants.CREATE_TRIP_IN_PAST);
         }
