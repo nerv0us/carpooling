@@ -52,8 +52,6 @@ function register() {
 
     };
 
-    debugger;
-
     $.ajax({
         url: url,
         type: "POST",
