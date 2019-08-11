@@ -133,7 +133,13 @@ public class TripRepositoryImpl implements TripRepository {
                 trip.setAvailablePlaces(trip.getAvailablePlaces() + placesReducingValue);
                 session.update(trip);
             }
-            session.update(passengerStatus);
+            Query<PassengerStatus> query = session.createQuery("from PassengerStatus where trip.id = :tripId " +
+                            "and user.id = :userId", PassengerStatus.class);
+            query.setParameter("tripId", tripId);
+            query.setParameter("userId", passengerStatus.getUser().getId());
+            PassengerStatus newStatus = query.list().get(0);
+            newStatus.setStatus(passengerStatus.getStatus());
+            session.update(newStatus);
             session.getTransaction().commit();
         }
     }

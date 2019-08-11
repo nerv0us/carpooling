@@ -160,7 +160,8 @@ $(document).on("click", ".trip", function () {
                                                 <br>
                                                 <br>
                                                 <span class="apply"></span>&nbsp&nbsp
-                                                <span class="rateDriver"></span>    
+                                                <span class="rateDriver"></span>&nbsp&nbsp
+                                                <span class="changeTripStatus"></span>    
                                                 <span class="error"></span>                                           
                                             </h6>
                                         </div>
@@ -189,7 +190,7 @@ $(document).on("click", ".trip", function () {
                     </a>
                     <span class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Rate passenger                       
+                        Rate ${passengers[i].firstName}                       
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                           <a class="passenger-rate-1" href="#">1</a>                        
@@ -198,9 +199,23 @@ $(document).on("click", ".trip", function () {
                           <a class="passenger-rate-4" href="#">4</a>
                           <a class="passenger-rate-5" href="#">5</a>  
                           <input type="hidden" class="passenger-id" value=${passengers[i].userId}>
-                          <input type="hidden" class="passenger-name" value=${passengers[i].firstName}></a>              
+                          <input type="hidden" class="passenger-name" value=${passengers[i].firstName}>             
                         </div>
-                    </span>
+                    </span>&nbsp&nbsp
+                    <span class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Change ${passengers[i].firstName} Status
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="passenger-status-pending" href="#">PENDING</a>
+                        <a class="passenger-status-accepted" href="#">ACCEPTED</a>
+                        <a class="passenger-status-rejected" href="#">REJECTED</a>
+                        <a class="passenger-status-canceled" href="#">CANCELED</a>
+                        <a class="passenger-status-absent" href="#">ABSENT</a>
+                        <input type="hidden" class="passenger-id" value=${passengers[i].userId}>
+                        <input type="hidden" class="passenger-name" value=${passengers[i].firstName}>  
+                    </div>
+                    <span>
                 `)
             });
             $('.apply').append(`
@@ -208,7 +223,7 @@ $(document).on("click", ".trip", function () {
               `);
             $('.rateDriver').append(`
             <span class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Rate driver
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -217,15 +232,158 @@ $(document).on("click", ".trip", function () {
                 <a class="dropdown-item" href="#" id="driver-rate-3">3</a>
                 <a class="dropdown-item" href="#" id="driver-rate-4">4</a>
                 <a class="dropdown-item" href="#" id="driver-rate-5">5</a>
+            </div>           
+              `);
+            $('.changeTripStatus').append(`
+            <span class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Change Trip Status
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#" id="tripStatus-available">AVAILABLE</a>
+                <a class="dropdown-item" href="#" id="tripStatus-booked">BOOKED</a>
+                <a class="dropdown-item" href="#" id="tripStatus-ongoing">ONGOING</a>
+                <a class="dropdown-item" href="#" id="tripStatus-done">DONE</a>
+                <a class="dropdown-item" href="#" id="tripStatus-canceled">CANCELED</a>
             </div>
-            </span>
-              `)
+            <span>`)
         }
     })
 });
 
 let passengerId;
 let passengerName;
+
+$(document).on("click", ".passenger-status-pending", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=PENDING`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert(passengerName + " status is now PENDING")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", ".passenger-status-accepted", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=ACCEPTED`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert(passengerName + " status is now ACCEPTED")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+
+$(document).on("click", "#tripStatus-available", function () {
+    const token = getJwtToken();
+
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=AVAILABLE",
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert("Trip status is now AVAILABLE")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", "#tripStatus-booked", function () {
+    const token = getJwtToken();
+
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=BOOKED",
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert("Trip status is now BOOKED")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", "#tripStatus-ongoing", function () {
+    const token = getJwtToken();
+
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=ONGOING",
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert("Trip status is now ONGOING")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", "#tripStatus-done", function () {
+    const token = getJwtToken();
+
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=DONE",
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert("Trip status is now DONE")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", "#tripStatus-canceled", function () {
+    const token = getJwtToken();
+
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=CANCELED",
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert("Trip status is now CANCELED")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+
 $(document).on("click", ".passenger-rate-1", function () {
     const token = getJwtToken();
     passengerId = $(this).parent().find('.passenger-id').val();
