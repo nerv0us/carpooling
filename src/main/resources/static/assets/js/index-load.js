@@ -292,6 +292,63 @@ $(document).on("click", ".passenger-status-accepted", function () {
         }
     });
 });
+$(document).on("click", ".passenger-status-rejected", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=REJECTED`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert(passengerName + " status is now REJECTED")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", ".passenger-status-canceled", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=CANCELED`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert(passengerName + " status is now CANCELED")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", ".passenger-status-absent", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=ABSENT`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "PATCH",
+        success: function () {
+            alert(passengerName + " status is now ABSENT")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
 
 $(document).on("click", "#tripStatus-available", function () {
     const token = getJwtToken();
