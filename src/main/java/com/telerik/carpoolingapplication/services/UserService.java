@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface UserService {
 
+    User getCurrent(HttpServletRequest req);
+
     UserDTO editUser(UserDTO userDTO, HttpServletRequest request);
 
     User getByUsername(String username);

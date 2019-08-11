@@ -39,7 +39,7 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
 
-                    <li class="nav-item unauthorized-button " onclick="navigateToLogin()">
+                    <li class="nav-item unauthorized-button" onclick="navigateToLogin()">
                         <a id="login-button" class="nav-link">
                             Login
                             <div class="ripple-container"></div>
@@ -80,93 +80,115 @@
 <!-- Rate and change passenger status modal-->
 
 <!-- Modal Create Trip -->
-<div class="modal fade create-trip-modal" id="create-trip-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal fade create-trip-modal" id="create-trip-modal" tabindex="-1" aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Create trip</h5>
+                <h2 class="modal-title" id="exampleModalLongTitle">Create trip</h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
+
+                <!--                Origin input-->
                 <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Origin</h5></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">face</i></div>
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
                         </div>
-                        <input type="text" class="form-control" placeholder="First Name...">
+                        <input type="text" class="form-control" placeholder="From..." id="origin">
                     </div>
                 </div>
 
+                <!--                Destination input-->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Destination</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="To..." id="destination">
+                    </div>
+                </div>
+
+                <!--                Car input-->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Car model</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Car model..." id="car_model">
+                    </div>
+                </div>
+
+                <!--                Date and time input-->
                 <div class="form-group">
-                    <label class="label-control">Datetime Picker</label>
-                    <input type="text" class="form-control datetimepicker" value="10/05/2016"/>
+                    <label for="date_time" class="label-control">Date and time</label>
+                    <input type="text" class="form-control datetimepicker" value="01/08/2019" id="date_time"/>
+                </div>
+
+
+                <!--                Comment input-->
+                <div class="form-group bmd-form-group">
+                    <label for="comment" class="bmd-label-floating">Add Comment</label>
+                    <textarea type="email" class="form-control" rows="3" id="comment"></textarea>
                 </div>
 
                 <div class="form-group bmd-form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">email</i></div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Email...">
-                    </div>
-                </div>
-                <div class="form-group bmd-form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">face</i></div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="First Name...">
-                    </div>
+                    <label for="inputState">Available places</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
                 </div>
 
+                <!--                ALLOW   -->
                 <div class="form-group bmd-form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">email</i></div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Email...">
+                    <!--                Allow pets-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="allow_pets">
+                            Allow pets
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
                     </div>
-                </div>
-                <div class="form-group bmd-form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">face</i></div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="First Name...">
+                    <!--                Allow smoking-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="allow_smoking">
+                            Allow smoking in car
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
                     </div>
+                    <!--                Allow luggage-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="allow_luggage">
+                            Allow luggage
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+
                 </div>
 
-                <div class="form-group bmd-form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">email</i></div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Email...">
-                    </div>
-                </div>
-                <div class="form-group bmd-form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">face</i></div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="First Name...">
-                    </div>
-                </div>
-
-                <div class="form-group bmd-form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><i class="material-icons">email</i></div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Email...">
-                    </div>
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" onclick="createTrip()">Create</button>
             </div>
         </div>
     </div>

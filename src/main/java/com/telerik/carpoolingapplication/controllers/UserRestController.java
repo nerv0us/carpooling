@@ -40,6 +40,13 @@ public class UserRestController {
 
     @CrossOrigin
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/my-profile")
+    public UserDTO getCurrent(HttpServletRequest req) {
+        return ModelsMapper.getUser(userService.getCurrent(req));
+    }
+
+    @CrossOrigin
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{username}")
     public UserDTO getUser(@PathVariable String username) {
         try {

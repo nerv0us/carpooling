@@ -20,6 +20,7 @@
 </head>
 
 <body>
+
 <!--            Header and Navbar           -->
 <header>
     <nav class="navbar bg-dark fixed-top navbar-expand-lg">
@@ -50,116 +51,83 @@
                             Logout
                         </a>
                     </li>
-
                 </ul>
             </div>
         </div>
     </nav>
 </header>
 
+
 <hr>
+
 <div class="container details profile-container">
+
     <div class="row">
-        <div class="col-sm-10"><h1>User name</h1></div>
+        <div class="header-small" id="userFullName"><h1></h1></div>
     </div>
-    <div class="row">
+    <div class="form-row">
+        <div class="col-sm-2"><!--left col-->
+
+        </div><!--/col-3-->
         <div class="col-sm-3"><!--left col-->
 
             <div class="text-center">
-                <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
-                     alt="avatar">
+                <img class="avatar img-circle img-thumbnail" alt="avatar" id="avatarImage" width="160" height="160">
                 <h6>Upload a different photo...</h6>
-                <input type="file" class="text-center center-block file-upload">
+                <input type="file" class="text-center center-block file-upload" id="file">
             </div>
+            <button id="edit-extension-button" type="button" class="btn btn-primary" onclick="updateProfileAvatar()">Change avatar</button>
+
             </hr>
             <br>
+            <br>
+            <tr>
+                <th class="first-item">Rating as driver :</th>
+                <td class="information" id="ratingAsDriver"></td>
+            </tr>
+
+
+            <div class="progress-container">
+                <span class="progress-badge">Rating as passenger</span>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="5"
+                         id="ratingAsPassenger">
+                    </div>
+                </div>
+            </div>
 
         </div><!--/col-3-->
-        <div class="col-sm-9">
-            <div class="tab-content">
-                <div class="tab-pane active" id="home">
-                    <hr>
-                    <form class="form" action="#" method="post" id="registrationForm">
-                        <div class="form-group">
+        <div class="col-sm-1"><!--left col-->
 
-                            <div class="col-xs-6">
-                                <h4><label for="first_name">First name</label></h4>
-                                <input type="text" class="form-control" name="first_name" id="first_name"
-                                       placeholder="first name" title="enter your first name if any.">
-                            </div>
-                        </div>
-                        <div class="form-group">
-
-                            <div class="col-xs-6">
-                                <h4><label for="last_name">Last name</label></h4>
-                                <input type="text" class="form-control" name="last_name" id="last_name"
-                                       placeholder="last name" title="enter your last name if any.">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="col-xs-6">
-                                <h4><label for="phone">Phone</label></h4>
-                                <input type="text" class="form-control" name="phone" id="phone"
-                                       placeholder="enter phone" title="enter your phone number if any.">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-xs-6">
-                                <h4><label for="mobile">Mobile</label></h4>
-                                <input type="text" class="form-control" name="mobile" id="mobile"
-                                       placeholder="enter mobile number" title="enter your mobile number if any.">
-                            </div>
-                        </div>
-                        <div class="form-group">
-
-                            <div class="col-xs-6">
-                                <h4><label for="email">Email</label></h4>
-                                <input type="email" class="form-control" name="email" id="email"
-                                       placeholder="you@email.com" title="enter your email.">
-                            </div>
-                        </div>
-                        <div class="form-group">
-
-                            <div class="col-xs-6">
-                                <h4><label for="email">Location</label></h4>
-                                <input type="email" class="form-control" id="location" placeholder="somewhere"
-                                       title="enter a location">
-                            </div>
-                        </div>
-                        <div class="form-group">
-
-                            <div class="col-xs-6">
-                                <h4><label for="password">Password</label></h4>
-                                <input type="password" class="form-control" name="password" id="password"
-                                       placeholder="password" title="enter your password.">
-                            </div>
-                        </div>
-                        <div class="form-group">
-
-                            <div class="col-xs-6">
-                                <h4><label for="password2">Verify</label></h4>
-                                <input type="password" class="form-control" name="password2" id="password2"
-                                       placeholder="password2" title="enter your password2.">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-xs-12">
-                                <br>
-                                <button class="btn btn-lg btn-success" type="submit"><i
-                                        class="glyphicon glyphicon-ok-sign"></i> Save
-                                </button>
-                                <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div><!--/tab-pane-->
-            </div><!--/tab-pane-->
-        </div><!--/tab-content-->
+        </div><!--/col-3-->
+        <form>
+            <div class="form-group">
+                <label for="updateUsername">@username</label>
+                <input type="text" class="form-control" id="updateUsername" disabled>
+            </div>
+            <div class="form-group">
+                <label for="updateEmail">Email</label>
+                <input type="email" class="form-control" id="updateEmail">
+            </div>
+            <div class="form-group">
+                <label for="updateFirstName">First name</label>
+                <input type="text" class="form-control" id="updateFirstName">
+            </div>
+            <div class="form-group">
+                <label for="updateLastName">Last name</label>
+                <input type="text" class="form-control" id="updateLastName">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="updatePhone">Phone</label>
+                    <input type="text" class="form-control" id="updatePhone">
+                </div>
+            </div>
+        </form>
     </div><!--/col-9-->
+<!--    <button type="submit" class="btn btn-primary btn-group-lg" onclick="updateProfileAvatar()">Update avatar</button>-->
+
+    <button type="submit" class="btn btn-success btn-group-lg" onclick="updateProfileInfo()">Update profile</button>
 </div><!--/row-->
 
 <footer class="footer footer-default">
