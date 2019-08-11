@@ -59,6 +59,9 @@ function loadTrips() {
 let counter;
 let tripId;
 $(document).on("click", ".trip", function () {
+    $('#upperPart').hide();
+    $('#easySearch').hide();
+    $('#top-drivers').hide();
     counter = 0;
     tripId = $(this).parent().find('.tripId').val();
     console.log(tripId);
@@ -185,17 +188,19 @@ $(document).on("click", ".trip", function () {
                     Status: ${passengers[i].passengerStatusEnum}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp  
                     </a>
                     <span class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Rate passenger
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">1</a>
-              <a class="dropdown-item" href="#">2</a>
-              <a class="dropdown-item" href="#">3</a>
-              <a class="dropdown-item" href="#">4</a>
-              <a class="dropdown-item" href="#">5</a>
-            </div>
-            </span>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Rate passenger                       
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="passenger-rate-1" href="#">1</a>                        
+                          <a class="passenger-rate-2" href="#">2</a>
+                          <a class="passenger-rate-3" href="#">3</a>
+                          <a class="passenger-rate-4" href="#">4</a>
+                          <a class="passenger-rate-5" href="#">5</a>  
+                          <input type="hidden" class="passenger-id" value=${passengers[i].userId}>
+                          <input type="hidden" class="passenger-name" value=${passengers[i].firstName}></a>              
+                        </div>
+                    </span>
                 `)
             });
             $('.apply').append(`
@@ -207,16 +212,144 @@ $(document).on("click", ".trip", function () {
               Rate driver
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#" id="driver-rate-1">1</a>
-              <a class="dropdown-item" href="#">2</a>
-              <a class="dropdown-item" href="#">3</a>
-              <a class="dropdown-item" href="#">4</a>
-              <a class="dropdown-item" href="#">5</a>
+                <a class="dropdown-item" href="#" id="driver-rate-1">1</a>
+                <a class="dropdown-item" href="#" id="driver-rate-2">2</a>
+                <a class="dropdown-item" href="#" id="driver-rate-3">3</a>
+                <a class="dropdown-item" href="#" id="driver-rate-4">4</a>
+                <a class="dropdown-item" href="#" id="driver-rate-5">5</a>
             </div>
             </span>
               `)
         }
     })
+});
+
+let passengerId;
+let passengerName;
+$(document).on("click", ".passenger-rate-1", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    console.log(passengerId);
+    let rating = 1;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated " + passengerName)
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", ".passenger-rate-2", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    console.log(passengerId);
+    let rating = 2;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated " + passengerName)
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", ".passenger-rate-3", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    console.log(passengerId);
+    let rating = 3;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated " + passengerName)
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", ".passenger-rate-4", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    console.log(passengerId);
+    let rating = 4;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated " + passengerName)
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", ".passenger-rate-5", function () {
+    const token = getJwtToken();
+    passengerId = $(this).parent().find('.passenger-id').val();
+    passengerName = $(this).parent().find('.passenger-name').val();
+    console.log(passengerId);
+    let rating = 5;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated " + passengerName)
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
 });
 $(document).on("click", "#driver-rate-1", function () {
     const token = getJwtToken();
@@ -233,14 +366,101 @@ $(document).on("click", "#driver-rate-1", function () {
         method: "POST",
         data: JSON.stringify(data),
         success: function () {
-            alert("success")
+            alert("You have successfully rated driver")
         },
         error: function (xhr) {
             alert(xhr.responseText)
         }
     });
 });
-
+$(document).on("click", "#driver-rate-2", function () {
+    const token = getJwtToken();
+    let rating = 2;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated driver")
+        },
+        error: function (xhr) {
+            alert(xhr.text)
+        }
+    });
+});
+$(document).on("click", "#driver-rate-3", function () {
+    const token = getJwtToken();
+    let rating = 3;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated driver")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", "#driver-rate-4", function () {
+    const token = getJwtToken();
+    let rating = 4;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated driver")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
+$(document).on("click", "#driver-rate-5", function () {
+    const token = getJwtToken();
+    let rating = 5;
+    let data = {
+        rating
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully rated driver")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
 $(document).on("click", "#applyButton", function () {
     const token = getJwtToken();
     $.ajax({
