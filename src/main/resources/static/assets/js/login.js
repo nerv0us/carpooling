@@ -20,11 +20,12 @@ function login() {
         data: JSON.stringify(data),
         success: function (data) {
             setJwtToken(data);
-            createAuthorizationTokenHeader();
             updateNavigationButtons('none', 'initial');
-            $('#content').load('../main.html');
+            window.location.href = '/';
+            setTimeout(50);
             loadTopTenDrivers();
             loadTrips();
+            location.reload();
         },
         error: function () {
             alert('Wrong username/password')
@@ -61,11 +62,11 @@ function register() {
         data: JSON.stringify(data),
 
         success: function () {
+            alert("Successfully registered!");
+            $('#page-header').hide();
             $('#content').load('../login.html');
-
         },
         error: function () {
-            console.log("failed");
             alert("Failed");
         }
     });

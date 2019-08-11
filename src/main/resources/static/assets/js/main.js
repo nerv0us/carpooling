@@ -1,4 +1,4 @@
-$('#content').load('../main.html');
+// $('#content').load('../main.html');
 
 $(document).ready(function () {
     loadTopTenDrivers();
@@ -72,17 +72,22 @@ function createTrip() {
 }
 
 function navigateToLogin() {
+    $('#upperPart').hide();
+    $('#easySearch').hide();
+    $('#top-drivers').hide();
     $('#content').load('../login.html');
 }
 
 function navigateToRegister() {
+    $('#upperPart').hide();
+    $('#easySearch').hide();
+    $('#top-drivers').hide();
     $('#content').load('../register.html');
 }
 
 function navigateToProfile() {
     window.location.href = "http://localhost:8080/profile.html";
 }
-
 
 $('.datetimepicker').datetimepicker({
     icons: {
@@ -97,5 +102,3 @@ $('.datetimepicker').datetimepicker({
         close: 'fa fa-remove'
     }
 });
-
-
