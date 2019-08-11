@@ -1,4 +1,3 @@
-// $('header').load('../header.html');
 $('#content').load('../main.html');
 
 $(document).ready(function () {
@@ -12,29 +11,6 @@ $(document).ready(function () {
     }
 });
 
-function openCreateTripModal() {
-    //  $('#create-trip-modal').load('../create-trip.html');
-    document.querySelector('#create-trip-modal');
-
-//     setTimeout(_ => {
-//         $('#datetimepicker').jqxDateTimeInput({
-//             width: '300px',
-//             height: '25px',
-//             formatString: 'F',
-//             theme: 'material-purple'
-//         });
-//     },1000)
-//
-//
-//
-// }
-}
-
-function closeCreateTripModal() {
-    // $('#create-trip-modal').html('');
-    document.querySelector('#create-trip-modal').style.display = 'none';
-}
-
 function updateNavigationButtons(first, second) {
     let authorizedButtons = document.querySelectorAll('.authorized-button');
     let unauthorizedButtons = document.querySelectorAll('.unauthorized-button');
@@ -43,6 +19,56 @@ function updateNavigationButtons(first, second) {
     authorizedButtons[0].style.display = second;
     authorizedButtons[1].style.display = second;
     authorizedButtons[2].style.display = second;
+}
+
+function createTrip() {
+    const url = 'http://localhost:8080/api/trips';
+    const token = getJwtToken();
+
+    let origin = $('#origin').val();
+    let destination = $('#destination').val();
+    let carModel = $('#car_model').val();
+    let departureTime = $('#date_time').val();
+    let message = $('#comment').val();
+    let availablePlaces = parseInt($('#inputState').val());
+    let pets = $('#allow_pets').prop('checked');
+    let luggage = $('#allow_luggage').prop('checked');
+    let smoking = $('#allow_smoking').prop('checked');
+
+    let trip = {
+        origin,
+        destination,
+        carModel,
+        departureTime,
+        message,
+        availablePlaces,
+        pets,
+        luggage,
+        smoking
+    };
+
+    console.log(trip);
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+
+        },
+        data: JSON.stringify(trip),
+
+        success: function () {
+            alert("Success")
+
+
+        },
+        error: function () {
+            console.log("failed");
+            alert("Failed")
+        }
+    });
 }
 
 function navigateToLogin() {
@@ -54,10 +80,9 @@ function navigateToRegister() {
 }
 
 function navigateToProfile() {
-    window.location.href = 'profile.html';
-
-    // $('#content').load('../profile.html');
+    window.location.href = "http://localhost:8080/profile.html";
 }
+
 
 $('.datetimepicker').datetimepicker({
     icons: {
@@ -72,3 +97,5 @@ $('.datetimepicker').datetimepicker({
         close: 'fa fa-remove'
     }
 });
+
+
