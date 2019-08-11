@@ -101,10 +101,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public void addComment(int tripId, UserDTO user, CommentDTO commentDTO) {
         TripDTO tripDTO = getTrip(tripId, user);
-        if (user.getId() != commentDTO.getUserId()) {
-            throw new IllegalArgumentException();
-        }
-        tripRepository.addComment(tripDTO, commentDTO);
+        tripRepository.addComment(tripDTO, commentDTO, user.getId());
     }
 
     @Override

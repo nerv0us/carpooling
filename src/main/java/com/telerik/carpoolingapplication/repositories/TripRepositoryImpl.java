@@ -96,13 +96,13 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void addComment(TripDTO tripDTO, CommentDTO commentDTO) {
+    public void addComment(TripDTO tripDTO, CommentDTO commentDTO, int userId) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            User user = session.get(User.class, commentDTO.getUserId());
-            List<PassengerStatus> passengers = passengers(tripDTO.getId(), commentDTO.getUserId()
+            User user = session.get(User.class, userId);
+            List<PassengerStatus> passengers = passengers(tripDTO.getId(), userId
                     , PassengerStatusEnum.ACCEPTED);
-            if (tripDTO.getDriver().getId() != commentDTO.getUserId() && passengers.isEmpty()) {
+            if (tripDTO.getDriver().getId() != userId && passengers.isEmpty()) {
                 throw new UnauthorizedException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
             Trip trip = session.get(Trip.class, tripDTO.getId());

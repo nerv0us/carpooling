@@ -246,13 +246,49 @@ $(document).on("click", ".trip", function () {
                 <a class="dropdown-item" href="#" id="tripStatus-done">DONE</a>
                 <a class="dropdown-item" href="#" id="tripStatus-canceled">CANCELED</a>
             </div>
-            <span>`)
+            <span>
+            <br>
+            <br>           
+            <span class="dropdown">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="material-icons"></i></div>
+                </div>
+                <input type="text" class="form-control" id="addComment" placeholder="leave comment...">
+            </div>
+            <span>
+               `)
         }
     })
 });
 
 let passengerId;
 let passengerName;
+
+$(document).on("change", "#addComment", function () {
+    const token = getJwtToken();
+    let message = $('#addComment').val();
+    let userId = 0;
+    let data = {
+        message,
+        userId
+    };
+    $.ajax({
+        url: `http://localhost:8080/api/trips/` + tripId + `/comments/`,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: ` Bearer ${token}`
+        },
+        method: "POST",
+        data: JSON.stringify(data),
+        success: function () {
+            alert("You have successfully post a comment")
+        },
+        error: function (xhr) {
+            alert(xhr.responseText)
+        }
+    });
+});
 
 $(document).on("click", ".passenger-status-pending", function () {
     const token = getJwtToken();
