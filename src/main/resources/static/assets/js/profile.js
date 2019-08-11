@@ -15,7 +15,6 @@ $(document).ready(function () {
             Authorization: `Bearer ${token}`
         },
         success: function (response) {
-            console.log(response);
             const fullName = `${response.firstName} ${response.lastName}`;
             id = `${response.id}`;
             username = `${response.username}`;
@@ -54,32 +53,21 @@ $(document).ready(function () {
 });
 
 function updateProfileAvatar() {
-    // let file;
-    // let input = $('#file');
-    // if (input.files && input.files[0]) {
-    //     console.log("In if statement")
-    //     file = input.files[0];
-    // }
+    let url = `http://localhost:8080/api/users/${id}/avatar`;
 
-    let file = document.getElementById('file');
-    let imageFile = file.files[0];
-    let fr = new FileReader();
-    fr.onload = receivedText;
-    //fr.readAsText(file);
-    fr.readAsDataURL(file);
-
-    // let form = new FormData();
-    // form = file.
-    // form.append('file', input);
+    let image = $('#file')[0].files[0];
+    let formData = new FormData();
+    formData.append("file", image);
 
     $.ajax({
-        url: "http://localhost:8080/api/users/1/avatar",
-        type: "POST",
+        url: url,
+        method: 'POST',
+        processData: false,
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
         },
-        data: form,
+        data: formData,
 
         success: function () {
             alert("Successfully updated user");

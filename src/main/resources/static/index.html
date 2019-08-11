@@ -52,6 +52,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#search-trip-modal">
+                        <a class="nav-link">
+                            Detail search trip
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+
                     <li class="nav-item authorized-button" data-toggle="modal" data-target="#create-trip-modal">
                         <a class="nav-link">
                             Create Trip
@@ -81,6 +88,9 @@
 <!--    upperPart   -->
 <!--    easySearch  -->
 <!--    top-drivers -->
+
+
+<!--                            Upper part                         -->
 
 <div id="upperPart" class="page-header header-filter" data-parallax="true" style="background-image: url('assets/img/toy-car-3.jpg');
             background-size: auto;">
@@ -180,7 +190,7 @@
                 <!--                Date and time input-->
                 <div class="form-group">
                     <label for="date_time" class="label-control">Date and time</label>
-                    <input type="text" class="form-control datetimepicker" value="01/08/2019" id="date_time"/>
+                    <input type="text" class="form-control datetimepicker" value="08/01/2019" id="date_time"/>
                 </div>
 
 
@@ -197,7 +207,6 @@
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
-                        <option>5</option>
                     </select>
                 </div>
 
@@ -239,54 +248,144 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="createTrip()">Create</button>
+                <button type="button" class="btn btn-success" onclick="createTrip()">Create</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal Search Trips -->
+<div class="modal fade create-trip-modal" id="search-trip-modal" tabindex="-1"
+     aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Search trips</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <!--                Origin -->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Origin</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="From..." id="searchOrigin">
+                    </div>
+                </div>
+
+                <!--                Destination -->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Destination</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="To..." id="searchDestination">
+                    </div>
+                </div>
+
+                <!--                Date and time input-->
+                <div class="form-group">
+                    <label for="date_time" class="label-control">Date and time</label>
+                    <input type="text" class="form-control datetimepicker" value="08/01/2019" id="searchDateTime"/>
+                </div>
+
+                <!--                Available places-->
+                <div class="form-group bmd-form-group">
+                    <label for="inputState">Available places</label>
+                    <select id="searchAvailablePlaces" class="form-control">
+                        <option selected>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </div>
+
+                <!--                ALLOW   -->
+                <div class="form-group bmd-form-group">
+                    <!--                Allow pets-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="searchIsAllowedPets">
+                            Allow pets
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <!--                Allow smoking-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="searchIsAllowedSmoking">
+                            Allow smoking in car
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <!--                Allow luggage-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="searchIsAllowedLuggage">
+                            Allow luggage
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="searchTrips()">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="main main-raised" id="easySearch">
     <div class="container">
-        <div class="section text-center">
+        <div class="section text-center" style="margin-top: 100px">
             <!--                        SEARCH FORM                     -->
             <form style="margin-left: 260px">
+
                 <div class="form-row align-items-center">
                     <!--                        ORIGIN              -->
-                    <div class="col-auto">
-                        <label class="label-control" for="originSearch">Origin</label>
+                    <div class="col-3">
+                        <label class="label-control" for="easyOriginSearch">Origin</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="originSearch" placeholder="From"
+                            <input type="text" class="form-control" id="easyOriginSearch" placeholder="From"
                                    style="color: #000000;">
                         </div>
                     </div>
 
                     <!--                        DESTINATION         -->
-                    <div class="col-auto">
-                        <label for="destinationSearch">Destination</label>
+                    <div class="col-3">
+                        <label for="easyDestinationSearch">Destination</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="destinationSearch" placeholder="To"
+                            <input type="text" class="form-control" id="easyDestinationSearch" placeholder="To"
                                    style="color: #000000;">
                         </div>
                     </div>
 
                     <div class="col-auto">
-                        <div class="form-group mb-4" style="background-color: white;">
-                            <label for="search_date_time" class="label-control">Date and time</label>
-                            <input type="text" class="form-control datetimepicker" value="01/08/2019"
-                                   id="search_date_time"/>
-                        </div>
+                        <button type="button" class="btn btn-primary mb-2" onclick="shortSearchTrips()">Search</button>
                     </div>
 
-
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-primary mb-2">Search</button>
-                    </div>
                 </div>
+
             </form>
             <h2 class="title">Trips</h2>
-            <div class="row" id="trip-body">
-            </div>
+            <div class="row" id="trip-body"></div>
         </div>
     </div>
 </div>
@@ -295,6 +394,8 @@
      aria-labelledby="exampleModalLongTitle"
      aria-hidden="true">
 </div>
+
+<!--                TOP DRIVERS TABLE-->
 
 <div class="main main-raised" style="margin-top: 20px;" id="top-drivers">
     <div class="container">
@@ -319,6 +420,7 @@
 
 <div id="content"></div>
 
+<!--                FOOTER-->
 <footer class="footer footer-default">
     <div class="container">
         <div class="copyright align-content-center">
