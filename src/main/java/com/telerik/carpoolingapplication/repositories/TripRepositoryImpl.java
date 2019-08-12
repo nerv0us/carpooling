@@ -311,12 +311,12 @@ public class TripRepositoryImpl implements TripRepository {
         }
         if (queryText.endsWith("Trip ")) {
             if (places != null) {
-                queryText += "where availablePlaces = :places ";
+                queryText += "where availablePlaces >= :places ";
                 parameters.add("places");
             }
         } else {
             if (places != null) {
-                queryText += "and availablePlaces = :places ";
+                queryText += "and availablePlaces >= :places ";
                 parameters.add("places");
             }
         }
