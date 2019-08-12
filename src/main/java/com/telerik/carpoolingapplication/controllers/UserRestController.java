@@ -8,6 +8,7 @@ import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.dto.DriverDTO;
 import com.telerik.carpoolingapplication.models.dto.LoginDTO;
 import com.telerik.carpoolingapplication.models.dto.UserDTO;
+import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import com.telerik.carpoolingapplication.services.FileService;
 import com.telerik.carpoolingapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,14 @@ public class UserRestController {
     private UserService userService;
     private FileService fileService;
     private PasswordEncoder passwordEncoder;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserRestController(UserService service, FileService fileService, PasswordEncoder passwordEncoder) {
+    public UserRestController(UserService service, FileService fileService, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.userService = service;
         this.fileService = fileService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @CrossOrigin
@@ -62,6 +65,9 @@ public class UserRestController {
     @PutMapping("/update")
     public String editUser(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
         try {
+            if (isNotAuthorized(userDTO.getId(), request)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constants.UNAUTHORIZED_MESSAGE);
+            }
             userService.editUser(userDTO, request);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -112,9 +118,16 @@ public class UserRestController {
         }
     }
 
-    //TODO:
     @GetMapping("/top-ten-drivers")
-    public List<DriverDTO> getTopTenDrivers(){
+    public List<DriverDTO> getTopTenDrivers() {
         return userService.getTopTenDrivers();
     }
+
+
+    private boolean isNotAuthorized(int id, HttpServletRequest request) {
+        User user = userService.getById(id);
+        String token = jwtTokenProvider.resolveToken(request);
+        return !user.getUsername().equals(jwtTokenProvider.getUsername(token));
+    }
 }
+
