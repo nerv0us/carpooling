@@ -24,10 +24,10 @@ function loadTopTenDrivers() {
 function loadTrips() {
     let url;
     if (page != null){
-        url = `http://localhost:8080/api/trips?page=` + page;
+        url = `http://localhost:8080/api/trips?page=` + page + `&showElements=` + showElements;
         $('#upperPart').hide();
     } else {
-        url = `http://localhost:8080/api/trips`;
+        url = `http://localhost:8080/api/trips?showElements=` + showElements;
     }
 
     $.ajax({

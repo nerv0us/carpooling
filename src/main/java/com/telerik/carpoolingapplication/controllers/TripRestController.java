@@ -45,20 +45,21 @@ public class TripRestController {
             */
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) Integer page,
-             @RequestParam(required = false) String tripStatus,
-             @RequestParam(required = false) String driverUsername,
-             @RequestParam(required = false) String origin,
-             @RequestParam(required = false) String destination,
-             @RequestParam(required = false) String earliestDepartureTime,
-             @RequestParam(required = false) String latestDepartureTime,
-             @RequestParam(required = false) String availablePlaces,
-             @RequestParam(required = false) String smoking,
-             @RequestParam(required = false) String pets,
-             @RequestParam(required = false) String luggage,
-             @RequestParam(required = false) String sortParameter,
-             @RequestParam(required = false) String ascending) {
+                                  @RequestParam(required = false) Integer showElements,
+                                  @RequestParam(required = false) String tripStatus,
+                                  @RequestParam(required = false) String driverUsername,
+                                  @RequestParam(required = false) String origin,
+                                  @RequestParam(required = false) String destination,
+                                  @RequestParam(required = false) String earliestDepartureTime,
+                                  @RequestParam(required = false) String latestDepartureTime,
+                                  @RequestParam(required = false) String availablePlaces,
+                                  @RequestParam(required = false) String smoking,
+                                  @RequestParam(required = false) String pets,
+                                  @RequestParam(required = false) String luggage,
+                                  @RequestParam(required = false) String sortParameter,
+                                  @RequestParam(required = false) String ascending) {
         try {
-            return tripService.getTrips(page ,tripStatus, driverUsername, origin, destination, earliestDepartureTime
+            return tripService.getTrips(page, showElements, tripStatus, driverUsername, origin, destination, earliestDepartureTime
                     , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

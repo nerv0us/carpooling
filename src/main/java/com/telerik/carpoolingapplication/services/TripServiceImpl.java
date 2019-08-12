@@ -28,7 +28,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripDTO> getTrips(Integer page, String tripStatus, String driverUsername
+    public List<TripDTO> getTrips(Integer page, Integer showElements, String tripStatus, String driverUsername
             , String origin, String destination, String latestDepartureTime
             , String earliestDepartureTime, String availablePlaces
             , String smoking, String pets, String luggage, String sortParameter, String ascending) {
@@ -49,15 +49,15 @@ public class TripServiceImpl implements TripService {
         if (page == null || page == 1) {
             if (trips.isEmpty()) {
                 return new ArrayList<>();
-            } else if (trips.size() < 6) {
+            } else if (trips.size() < showElements) {
                 return trips.subList(0, trips.size());
             } else {
-                return trips.subList(0, 6);
+                return trips.subList(0, showElements);
             }
         }
 
-        int start = (page - 1) * 6;
-        int end = start + 6;
+        int start = (page - 1) * showElements;
+        int end = start + showElements;
 
         if (start > trips.size() - 1) {
             return new ArrayList<>();
