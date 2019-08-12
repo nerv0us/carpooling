@@ -22,8 +22,16 @@ function loadTopTenDrivers() {
 
 //Add filtering and sorting function!
 function loadTrips() {
+    let url;
+    if (page != null){
+        url = `http://localhost:8080/api/trips?page=` + page;
+        $('#upperPart').hide();
+    } else {
+        url = `http://localhost:8080/api/trips`;
+    }
+
     $.ajax({
-        url: `http://localhost:8080/api/trips`,
+        url: url,
         method: 'GET',
         success: function (response) {
             $('#trip-body').html('');
