@@ -3,6 +3,7 @@ package com.telerik.carpoolingapplication;
 import com.telerik.carpoolingapplication.exceptions.ValidationException;
 import com.telerik.carpoolingapplication.models.dto.CreateUserDTO;
 import com.telerik.carpoolingapplication.models.User;
+import com.telerik.carpoolingapplication.models.dto.UserDTO;
 import com.telerik.carpoolingapplication.repositories.UserRepositoryImpl;
 import com.telerik.carpoolingapplication.services.UserServiceImpl;
 import org.junit.Assert;
@@ -12,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTests {
@@ -70,6 +73,38 @@ public class UserServiceImplTests {
 
         // Assert
         Mockito.verify(userRepository, Mockito.never()).getById(1);
+    }
+
+    @Test
+    public void editUser_Should_CallRepositoryEdit_When_EmailIsUnique() {
+        // Arrange
+        UserDTO userDTO = new UserDTO(1, "TestUser", "TestUser",
+                "username@mail.com", "12345", "08888888", 0D, 0D, "/avatar");
+        Mockito.when(userRepository.getById(1)).thenReturn(new User());
+//        Mockito.when(userRepository.isEmailExist("username@mail.com")).thenReturn(false);
+
+        HttpServletRequest request = null;
+
+        // Act
+        userService.editUser(userDTO, request);
+
+        // Assert
+        Mockito.verify(userRepository, Mockito.times(1)).editUser(userDTO);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void editUser_Should_ThrowException_When_EmailIsNotUnique() {
+        // Arrange
+        UserDTO userDTO = new UserDTO(1, "TestUser", "TestUser",
+                "username@mail.com", "12345", "08888888", 0D, 0D, "/avatar");
+//        Mockito.when(userRepository.isEmailExist("username@mail.com")).thenReturn(true);
+
+        HttpServletRequest request = null;
+
+        // Act
+        userService.editUser(userDTO, request);
+
+        // Assert
     }
 
     @Test

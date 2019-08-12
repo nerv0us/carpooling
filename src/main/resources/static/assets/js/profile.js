@@ -26,8 +26,13 @@ $(document).ready(function () {
             $('#updateLastName').attr("value", response.lastName);
             $('#updatePhone').attr("value", response.phone);
             $('#avatarImage').attr("src", response.avatarUri);
-            $('#ratingAsDriver').attr("text", response.ratingAsDriver);
-            $('#ratingAsPassenger').attr("width", response.ratingAsPassenger);
+
+            $('#ratingAsDriver').append(response.ratingAsDriver);
+            $('#ratingAsPassenger').append(response.ratingAsPassenger);
+            // document.getElementById("ratingAsDriver").value = response.ratingAsDriver;
+
+            // $('#ratingAsDriver').attr("value", response.ratingAsDriver);
+            // $('#ratingAsPassenger').attr("width", response.ratingAsPassenger);
         },
         error: function () {
             console.log("failed");

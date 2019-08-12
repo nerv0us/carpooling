@@ -77,6 +77,7 @@ function shortSearchTrips() {
 
     const origin = $('#easyOriginSearch').val();
     const destination = $('#easyDestinationSearch').val();
+    const easyDateTimeEarliest = $('#easyDateTimeEarliest').val();
 
     let filter = '';
 
@@ -90,7 +91,7 @@ function shortSearchTrips() {
 
     console.log(filter);
 
-    let url = `http://localhost:8080/api/trips${filter}`;
+    let url = `http://localhost:8080/api/trips${filter}&earliestDepartureTime=${easyDateTimeEarliest}`;
 
     $.ajax({
         url: url,
@@ -139,10 +140,13 @@ function shortSearchTrips() {
 function searchTrips() {
     const searchOrigin = $('#searchOrigin').val();
     const searchDestination = $('#searchDestination').val();
+    const searchByDateAndTimeEarliest = $('#searchDateTimeEarliest').val();
+    const searchByDateAndTimeLatest = $('#searchDateTimeLatest').val();
     const searchAvailablePlaces = $('#searchAvailablePlaces').val();
     const searchIsAllowedSmoking = $('#searchIsAllowedSmoking').prop('checked').toString();
     const searchIsAllowedPets = $('#searchIsAllowedPets').prop('checked').toString();
     const searchIsAllowedLuggage = $('#searchIsAllowedLuggage').prop('checked').toString();
+    const searchSortByParameter = $('#searchSortByParameter').val();
 
     let filterTrips = '';
 
@@ -156,7 +160,20 @@ function searchTrips() {
         filterTrips = '?'
     }
 
-    let url = `http://localhost:8080/api/trips${filterTrips}availablePlaces=${searchAvailablePlaces}&smoking=${searchIsAllowedSmoking}&pets=${searchIsAllowedPets}&luggage=${searchIsAllowedLuggage}`;
+    let sortParameter = '';
+
+    if (searchSortByParameter === "Departure time") {
+        sortParameter = "departureTime";
+    } else if (searchSortByParameter === "Available places") {
+        sortParameter = "availablePlaces"
+    } else if (searchSortByParameter === "Driver rating") {
+        sortParameter = "driverRating"
+    }
+
+
+    let url = `http://localhost:8080/api/trips${filterTrips}earliestDepartureTime=${searchByDateAndTimeEarliest}&latestDepartureTime=${searchByDateAndTimeLatest}&availablePlaces=${searchAvailablePlaces}&smoking=${searchIsAllowedSmoking}&pets=${searchIsAllowedPets}&luggage=${searchIsAllowedLuggage}&sortParameter=${sortParameter}`;
+
+    console.log(url);
 
     $.ajax({
         url: url,

@@ -63,9 +63,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO editUser(UserDTO userDTO, HttpServletRequest request) {
         User userToEdit = getById(userDTO.getId());
-        if (isNotAuthorized(userDTO.getId(), request)) {
-            throw new UnauthorizedException(Constants.UNAUTHORIZED_MESSAGE);
-        }
         if (isEmailExist(userDTO.getEmail())
                 && !userToEdit.getEmail().equals(userDTO.getEmail())) {
             throw new ValidationException(String.format(Constants.EMAIL_ALREADY_EXIST, userDTO.getEmail()));
@@ -104,12 +101,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<DriverDTO> getTopTenDrivers() {
         return userRepository.getTopTenDrivers();
-    }
-
-    private boolean isNotAuthorized(int id, HttpServletRequest request) {
-        User user = getById(id);
-        String token = jwtTokenProvider.resolveToken(request);
-        return !user.getUsername().equals(jwtTokenProvider.getUsername(token));
     }
 
     private boolean isUsernameExist(String username) {
