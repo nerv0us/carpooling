@@ -49,8 +49,8 @@ function loadTrips() {
                         </a>
                         </div>
                     </div>
-                </div>
-                 `);
+                </div>                          
+                 `)
             })
         }
     })

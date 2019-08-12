@@ -81,6 +81,8 @@ public class TripServiceImplTests {
         Assert.assertEquals(trip, result);
     }
 
+
+
     private TripDTO createTripHelper() {
         UserDTO user = new UserDTO();
         LocalDateTime departureTimeInPast = LocalDateTime.now().plusDays(1);

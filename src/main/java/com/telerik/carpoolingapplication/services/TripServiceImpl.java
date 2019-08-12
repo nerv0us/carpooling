@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripDTO> getTrips(String tripStatus, String driverUsername
+    public List<TripDTO> getTrips(Integer page, String tripStatus, String driverUsername
             , String origin, String destination, String latestDepartureTime
             , String earliestDepartureTime, String availablePlaces
             , String smoking, String pets, String luggage, String sortParameter, String ascending) {
@@ -45,7 +46,26 @@ public class TripServiceImpl implements TripService {
             tripSorter(trips, sortParameter, ascending);
         }
 
-        return trips;
+        if (page == null || page == 1) {
+            if (trips.isEmpty()) {
+                return new ArrayList<>();
+            } else if (trips.size() < 6) {
+                return trips.subList(0, trips.size());
+            } else {
+                return trips.subList(0, 6);
+            }
+        }
+
+        int start = (page - 1) * 6;
+        int end = start + 6;
+
+        if (start > trips.size() - 1) {
+            return new ArrayList<>();
+        } else if (trips.size() < end) {
+            return trips.subList(start, trips.size());
+        } else {
+            return trips.subList(start, end);
+        }
     }
 
     @Override

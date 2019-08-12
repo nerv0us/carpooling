@@ -295,22 +295,26 @@ public class TripRepositoryImpl implements TripRepository {
         }
         if (queryText.endsWith("Trip ")) {
             if (latestDepartureTime != null) {
+                /*latestDepartureTime = latestDepartureTime.replaceAll(" ","");*/
                 queryText += "where departureTime >= :latestDepartureTime ";
                 parameters.add("latestDepartureTime");
             }
         } else {
             if (latestDepartureTime != null) {
+                /*latestDepartureTime = latestDepartureTime.replaceAll(" ","");*/
                 queryText += "and departureTime >= :latestDepartureTime ";
                 parameters.add("latestDepartureTime");
             }
         }
         if (queryText.endsWith("Trip ")) {
             if (earliestDepartureTime != null) {
+                /*earliestDepartureTime = earliestDepartureTime.replaceAll(" ","");*/
                 queryText += "where departureTime <= :earliestDepartureTime ";
                 parameters.add("earliestDepartureTime");
             }
         } else {
             if (earliestDepartureTime != null) {
+                /*earliestDepartureTime = earliestDepartureTime.replaceAll(" ","");*/
                 queryText += "and departureTime <= :earliestDepartureTime ";
                 parameters.add("earliestDepartureTime");
             }
@@ -394,6 +398,7 @@ public class TripRepositoryImpl implements TripRepository {
                     break;
             }
         }
+        /*tripQuery.setMaxResults(6);*/
         return tripQuery;
     }
 }
