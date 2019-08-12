@@ -76,24 +76,17 @@
                 <h6>Upload a different photo...</h6>
                 <input type="file" class="text-center center-block file-upload" id="file">
             </div>
-            <button id="edit-extension-button" type="button" class="btn btn-primary" onclick="updateProfileAvatar()">Change avatar</button>
-
-            </hr>
+            <button id="edit-extension-button" type="button" class="btn btn-primary" onclick="updateProfileAvatar()">
+                Change avatar
+            </button>
             <br>
             <br>
-            <tr>
-                <th class="first-item">Rating as driver :</th>
-                <td class="information" id="ratingAsDriver"></td>
-            </tr>
-
-
+<!--                                            RATINGS         -->
             <div class="progress-container">
-                <span class="progress-badge">Rating as passenger</span>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="5"
-                         id="ratingAsPassenger">
-                    </div>
-                </div>
+                <span class="progress-badge" id="ratingAsDriver">Rating as driver: </span>
+            </div>
+            <div class="progress-container">
+                <span class="progress-badge" id="ratingAsPassenger">Rating as passenger: </span>
             </div>
 
         </div><!--/col-3-->
@@ -125,7 +118,7 @@
             </div>
         </form>
     </div><!--/col-9-->
-<!--    <button type="submit" class="btn btn-primary btn-group-lg" onclick="updateProfileAvatar()">Update avatar</button>-->
+    <!--    <button type="submit" class="btn btn-primary btn-group-lg" onclick="updateProfileAvatar()">Update avatar</button>-->
 
     <button type="submit" class="btn btn-success btn-group-lg" onclick="updateProfileInfo()">Update profile</button>
 </div><!--/row-->
