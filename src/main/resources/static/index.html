@@ -291,10 +291,29 @@
                     </div>
                 </div>
 
-                <!--                Date and time input-->
+                <!--                Earliest Date and time input-->
                 <div class="form-group">
-                    <label for="date_time" class="label-control">Date and time</label>
-                    <input type="text" class="form-control datetimepicker" value="08/01/2019" id="searchDateTime"/>
+                    <label for="date_time" class="label-control">Earliest date and time</label>
+                    <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                           id="searchDateTimeEarliest"/>
+                </div>
+
+                <!--                Allow latest date and time input-->
+<!--                <div class="form-check">-->
+<!--                    <label class="form-check-label">-->
+<!--                        <input class="form-check-input" type="checkbox" id="showLatestDateForm">-->
+<!--                        Add latest date and time-->
+<!--                        <span class="form-check-sign">-->
+<!--                            <span class="check"></span>-->
+<!--                            </span>-->
+<!--                    </label>-->
+<!--                </div>-->
+
+                <!--                Latest Date and time input-->
+                <div class="form-group dateTimeLatest">
+                    <label for="date_time" class="label-control">Latest date and time</label>
+                    <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                           id="searchDateTimeLatest"/>
                 </div>
 
                 <!--                Available places-->
@@ -341,12 +360,22 @@
                         </label>
                     </div>
 
-                </div>
+                    <!--                Sort parameters-->
+                    <div class="form-group bmd-form-group">
+                        <label for="inputState">Sort by:</label>
+                        <select id="searchSortByParameter" class="form-control">
+                            <option selected>Departure time</option>
+                            <option>Available places</option>
+                            <option>Driver rating</option>
+                        </select>
+                    </div>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="searchTrips()">Search</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="searchTrips()">Search
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -355,7 +384,13 @@
 <div class="main main-raised" id="easySearch">
     <div class="container">
         <div class="section text-center" style="margin-top: 100px">
-            <!--                        SEARCH FORM                     -->
+
+<!--Modal easy search trips                     -->
+            <blockquote class="blockquote text-center">
+                <h2 class="title">Search trips: </h2>
+<!--                <p class="mb-0 h5">SEARCH TRIP</p>-->
+            </blockquote>
+
             <form style="margin-left: 260px">
 
                 <div class="form-row align-items-center">
@@ -377,8 +412,16 @@
                         </div>
                     </div>
 
+                    <!--                        DATE AND TIME         -->
+                    <div class="form-group mb-0 mb-3">
+                        <label for="date_time" class="label-control">Earliest date and time</label>
+                        <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                               id="easyDateTimeEarliest"/>
+                    </div>
+
                     <div class="col-auto">
-                        <button type="button" class="btn btn-primary mb-2" onclick="shortSearchTrips()">Search</button>
+                        <button type="button" class="btn btn-primary mb-2" onclick="shortSearchTrips()">Search
+                        </button>
                     </div>
 
                 </div>
