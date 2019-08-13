@@ -1,9 +1,9 @@
 package com.telerik.carpoolingapplication.repositories;
 
 import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
-import org.hibernate.Session;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public interface TripRepository {
 
     void apply(int id, UserDTO user);
 
-    void changePassengerStatus(PassengerStatus passengerStatus);
+    void changePassengerStatus(PassengerStatus passengerStatus, int tripId, int placesReducingValue);
 
     void rateDriver(TripDTO tripDTO, UserDTO userDTO, RatingDTO ratingDTO);
 

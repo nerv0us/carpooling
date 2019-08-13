@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Carpooling</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <!-- Material Kit CSS -->
+    <link href="assets/css/material-kit.css?v=2.0.5" rel="stylesheet"/>
+
+    <!-- jQuery - Google Content Delivery Network -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <link href="assets/css/main.css" rel="stylesheet"/>
+</head>
+
+<body>
+
+<header>
+    <nav class="navbar bg-dark fixed-top navbar-expand-lg">
+        <div class="container">
+            <div class="navbar-translate">
+                <a class="navbar-brand" href="/">
+                    Carpooling </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item unauthorized-button" onclick="navigateToLogin()">
+                        <a id="login-button" class="nav-link">
+                            Login
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item unauthorized-button" onclick="navigateToRegister()">
+                        <a id="register-button" class="btn btn-rose btn-raised btn-round"
+                           data-toggle="dropdown">
+                            SignUp
+                        </a>
+                    </li>
+
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#search-trip-modal">
+                        <a class="nav-link">
+                            Detail search trip
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#create-trip-modal">
+                        <a class="nav-link">
+                            Create Trip
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item authorized-button" onclick="navigateToProfile()">
+                        <a class="nav-link">
+                            My Profile
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item authorized-button" onclick="logout()">
+                        <a href="/" class="btn btn-rose btn-raised btn-round "
+                           data-toggle="dropdown">
+                            Logout
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!--                            Containers ID's                         -->
+<!--    upperPart   -->
+<!--    easySearch  -->
+<!--    top-drivers -->
+
+
+<!--                            Upper part                         -->
+
+<div id="upperPart" class="page-header header-filter" data-parallax="true" style="background-image: url('assets/img/toy-car-3.jpg');
+            background-size: auto;">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-8 mx-auto">
+
+                <div class="title">
+                    <h2 class="title">Connects people looking to travel with drivers heading the same way</h2>
+                </div>
+
+                <div class="col-lg-8 mx-auto">
+                    <div class="d-none d-sm-block">
+                        <div class="d-flex flex-row">
+                            <div class="p-4">
+                                <i class="fa fa-angle-right fa-3x"></i>
+                            </div>
+                            <div class="p-4 align-self-center">
+                                <h3>It's Economic</h3>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <div class="p-4">
+                                <i class="fa fa-angle-right fa-3x"></i>
+                            </div>
+                            <div class="p-4 align-self-center">
+                                <h3>It's Ecological</h3>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <div class="p-4">
+                                <i class="fa fa-angle-right fa-3x"></i>
+                            </div>
+                            <div class="p-4 align-self-center">
+                                <h3>It's Flexible</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rate and change passenger status modal-->
+
+<!-- Modal Create Trip -->
+<div class="modal fade create-trip-modal" id="create-trip-modal" tabindex="-1"
+     aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle">Create trip</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <!--                Origin input-->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Origin</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="From..." id="origin">
+                    </div>
+                </div>
+
+                <!--                Destination input-->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Destination</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="To..." id="destination">
+                    </div>
+                </div>
+
+                <!--                Car input-->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Car model</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Car model..." id="car_model">
+                    </div>
+                </div>
+
+                <!--                Date and time input-->
+                <div class="form-group">
+                    <label for="date_time" class="label-control">Date and time</label>
+                    <input type="text" class="form-control datetimepicker" value="08/01/2019" id="date_time"/>
+                </div>
+
+
+                <!--                Comment input-->
+                <div class="form-group bmd-form-group">
+                    <label for="comment" class="bmd-label-floating">Add Comment</label>
+                    <textarea type="email" class="form-control" rows="3" id="comment"></textarea>
+                </div>
+
+                <div class="form-group bmd-form-group">
+                    <label for="inputState">Available places</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </div>
+
+                <!--                ALLOW   -->
+                <div class="form-group bmd-form-group">
+                    <!--                Allow pets-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="allow_pets">
+                            Allow pets
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <!--                Allow smoking-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="allow_smoking">
+                            Allow smoking in car
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <!--                Allow luggage-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="allow_luggage">
+                            Allow luggage
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="createTrip()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Search Trips -->
+<div class="modal fade create-trip-modal" id="search-trip-modal" tabindex="-1"
+     aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Search trips</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <!--                Origin -->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Origin</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="From..." id="searchOrigin">
+                    </div>
+                </div>
+
+                <!--                Destination -->
+                <div class="form-group bmd-form-group">
+                    <label for="car_model"><h5>Destination</h5></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="material-icons">car</i></div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="To..." id="searchDestination">
+                    </div>
+                </div>
+
+                <!--                Earliest Date and time input-->
+                <div class="form-group">
+                    <label for="date_time" class="label-control">Earliest date and time</label>
+                    <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                           id="searchDateTimeEarliest"/>
+                </div>
+
+                <!--                Allow latest date and time input-->
+<!--                <div class="form-check">-->
+<!--                    <label class="form-check-label">-->
+<!--                        <input class="form-check-input" type="checkbox" id="showLatestDateForm">-->
+<!--                        Add latest date and time-->
+<!--                        <span class="form-check-sign">-->
+<!--                            <span class="check"></span>-->
+<!--                            </span>-->
+<!--                    </label>-->
+<!--                </div>-->
+
+                <!--                Latest Date and time input-->
+                <div class="form-group dateTimeLatest">
+                    <label for="date_time" class="label-control">Latest date and time</label>
+                    <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                           id="searchDateTimeLatest"/>
+                </div>
+
+                <!--                Available places-->
+                <div class="form-group bmd-form-group">
+                    <label for="inputState">Available places</label>
+                    <select id="searchAvailablePlaces" class="form-control">
+                        <option selected>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </div>
+
+                <!--                ALLOW   -->
+                <div class="form-group bmd-form-group">
+                    <!--                Allow pets-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="searchIsAllowedPets">
+                            Allow pets
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <!--                Allow smoking-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="searchIsAllowedSmoking">
+                            Allow smoking in car
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <!--                Allow luggage-->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="searchIsAllowedLuggage">
+                            Allow luggage
+                            <span class="form-check-sign">
+                            <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <!--                Sort parameters-->
+                    <div class="form-group bmd-form-group">
+                        <label for="inputState">Sort by:</label>
+                        <select id="searchSortByParameter" class="form-control">
+                            <option selected>Departure time</option>
+                            <option>Available places</option>
+                            <option>Driver rating</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="searchTrips()">Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main main-raised" id="easySearch">
+    <div class="container">
+        <div class="section text-center" style="margin-top: 100px">
+
+<!--Modal easy search trips                     -->
+            <blockquote class="blockquote text-center">
+                <h2 class="title">Search trips: </h2>
+<!--                <p class="mb-0 h5">SEARCH TRIP</p>-->
+            </blockquote>
+
+            <form style="margin-left: 260px">
+
+                <div class="form-row align-items-center">
+                    <!--                        ORIGIN              -->
+                    <div class="col-3">
+                        <label class="label-control" for="easyOriginSearch">Origin</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="easyOriginSearch" placeholder="From"
+                                   style="color: #000000;">
+                        </div>
+                    </div>
+
+                    <!--                        DESTINATION         -->
+                    <div class="col-3">
+                        <label for="easyDestinationSearch">Destination</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="easyDestinationSearch" placeholder="To"
+                                   style="color: #000000;">
+                        </div>
+                    </div>
+
+                    <!--                        DATE AND TIME         -->
+                    <div class="form-group mb-0 mb-3">
+                        <label for="date_time" class="label-control">Earliest date and time</label>
+                        <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                               id="easyDateTimeEarliest"/>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary mb-2" onclick="shortSearchTrips()">Search
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+            <h2 class="title">Trips</h2>
+            <div class="row" id="trip-body"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade create-trip-modal" id="single-trip-modal" tabindex="-1"
+     aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+</div>
+
+<!--                TOP DRIVERS TABLE-->
+
+<div class="main main-raised" style="margin-top: 20px;" id="top-drivers">
+    <div class="container">
+        <div class="section text-center">
+            <h2 class="title">Top drivers</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col" id="rating">Driver Rating</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">FirstName</th>
+                    <th scope="col">LastName</th>
+                </tr>
+                </thead>
+                <tbody id="top-ten-drivers">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="content"></div>
+
+<!--                FOOTER-->
+<footer class="footer footer-default">
+    <div class="container">
+        <div class="copyright align-content-center">
+            &copy;
+            <script>
+                document.write(new Date().getFullYear())
+            </script>
+            Final project in Telerik academy
+        </div>
+    </div>
+</footer>
+
+<script src="assets/js/core/jquery.min.js" type="text/javascript"></script>
+<script src="assets/js/core/popper.min.js" type="text/javascript"></script>
+<script src="assets/js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+<script src="assets/js/plugins/moment.min.js"></script>
+<!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
+<script src="assets/js/plugins/bootstrap-datetimepicker.js" type="text/javascript"></script>
+<!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+<script src="assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
+<script src="assets/js/material-kit.js?v=2.0.5" type="text/javascript"></script>
+
+<!--   Main JS   -->
+<script src="assets/js/main.js"></script>
+
+<!--   Login JS   -->
+<script src="assets/js/login.js"></script>
+
+<!--   Authorize JS   -->
+<script src="assets/js/auth.js"></script>
+
+<!--   Profile JS   -->
+<script src="assets/js/profile.js"></script>
+
+<!--   Content JS   -->
+<script src="assets/js/index-load.js" type="text/javascript"></script>
+
+
+</body>
+
+</html>

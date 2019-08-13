@@ -1,14 +1,18 @@
 package com.telerik.carpoolingapplication.services;
 
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
+import com.telerik.carpoolingapplication.exceptions.ImageNotFoundException;
 import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.repositories.FileRepository;
 import com.telerik.carpoolingapplication.repositories.UserRepository;
+import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,27 +25,35 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService {
     private UserRepository userRepository;
     private FileRepository fileRepository;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public FileServiceImpl(UserRepository userRepository, FileRepository fileRepository) {
+    public FileServiceImpl(UserRepository userRepository, FileRepository fileRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.fileRepository = fileRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
     @Override
-    public void storeFile(int userId, MultipartFile image) throws IOException {
+    public void storeFile(int userId, MultipartFile image, HttpServletRequest request) throws IOException {
+        if (userRepository.getById(userId) == null) {
+            throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userId));
+        }
+        if (isNotAuthorized(userId, request)) {
+            throw new UnauthorizedException(Constants.UNAUTHORIZED_MESSAGE);
+        }
         if (image.getSize() > Constants.MAX_FILE_SIZE) {
-            throw new IllegalArgumentException(Constants.FILE_SHOULD_BE_SMALLER_MESSAGE);
+            throw new IllegalStateException(Constants.FILE_SHOULD_BE_SMALLER_MESSAGE);
         }
         if (isFileFormatInvalid(image)) {
             throw new IllegalArgumentException(Constants.INVALID_FILE_FORMAT_MESSAGE);
         }
-        if (userRepository.getById(userId) == null) {
-            throw new IllegalArgumentException(String.format(Constants.USER_NOT_FOUND, userId));
-        }
         User user = userRepository.getById(userId);
         if (!user.getAvatarUri().isEmpty() && !user.getAvatarUri().contains(Constants.DEFAULT_USER_IMAGE_NAME)) {
-            Files.delete(Paths.get(user.getAvatarUri()));
+            try {
+                Files.delete(Paths.get(user.getAvatarUri()));
+            } catch (IOException e) {
+                throw new ImageNotFoundException(Constants.FILE_NOT_FOUND_MESSAGE);
+            }
         }
 
         Path currentRelativePath = Paths.get("");
@@ -73,7 +85,6 @@ public class FileServiceImpl implements FileService {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-
         return imageDirectory;
     }
 
@@ -81,5 +92,11 @@ public class FileServiceImpl implements FileService {
         String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
         int index = originalFileName.lastIndexOf('.');
         return (UUID.randomUUID()) + originalFileName.substring(index);
+    }
+
+    private boolean isNotAuthorized(int id, HttpServletRequest request) {
+        User user = userRepository.getById(id);
+        String token = jwtTokenProvider.resolveToken(request);
+        return !user.getUsername().equals(jwtTokenProvider.getUsername(token));
     }
 }

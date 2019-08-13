@@ -1,7 +1,9 @@
 package com.telerik.carpoolingapplication.repositories;
 
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.hibernate.Session;
@@ -99,9 +101,9 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
             User user = session.get(User.class, commentDTO.getUserId());
             List<PassengerStatus> passengers = passengers(tripDTO.getId(), commentDTO.getUserId()
-                    , PassengerStatusEnum.accepted);
-            if (passengers.size() == 0) {
-                throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
+                    , PassengerStatusEnum.ACCEPTED);
+            if (tripDTO.getDriver().getId() != commentDTO.getUserId() && passengers.isEmpty()) {
+                throw new UnauthorizedException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
             Trip trip = session.get(Trip.class, tripDTO.getId());
             Comment comment = ModelsMapper.fromCommentDTO(commentDTO, user, trip);
@@ -116,16 +118,21 @@ public class TripRepositoryImpl implements TripRepository {
             session.beginTransaction();
             Trip trip = session.get(Trip.class, id);
             User user = session.get(User.class, userDTO.getId());
-            PassengerStatus passengerStatus = new PassengerStatus(user, PassengerStatusEnum.pending, trip);
+            PassengerStatus passengerStatus = new PassengerStatus(user, PassengerStatusEnum.PENDING, trip);
             session.save(passengerStatus);
             session.getTransaction().commit();
         }
     }
 
     @Override
-    public void changePassengerStatus(PassengerStatus passengerStatus) {
+    public void changePassengerStatus(PassengerStatus passengerStatus, int tripId, int placesReducingValue) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+            if (placesReducingValue != 0) {
+                Trip trip = session.get(Trip.class, tripId);
+                trip.setAvailablePlaces(trip.getAvailablePlaces() + placesReducingValue);
+                session.update(trip);
+            }
             session.update(passengerStatus);
             session.getTransaction().commit();
         }
@@ -140,7 +147,7 @@ public class TripRepositoryImpl implements TripRepository {
             Trip trip = session.get(Trip.class, tripDTO.getId());
             List<Rating> ratings = ratings(session, tripDTO.getId(), driver.getId()
                     , user.getId(), true);
-            if (ratings.size() == 0) {
+            if (ratings.isEmpty()) {
                 Rating rating = new Rating(ratingDTO.getRating(), user, driver, true, trip);
                 session.save(rating);
             } else {
@@ -163,7 +170,7 @@ public class TripRepositoryImpl implements TripRepository {
             User user = session.get(User.class, userDTO.getId());
             User passenger = session.get(User.class, passengerId);
             List<Rating> ratings = ratings(session, tripId, passengerId, user.getId(), false);
-            if (ratings.size() == 0) {
+            if (ratings.isEmpty()) {
                 Rating rating = new Rating(ratingDTO.getRating(), user, passenger, false, trip);
                 session.save(rating);
             } else {
@@ -304,12 +311,12 @@ public class TripRepositoryImpl implements TripRepository {
         }
         if (queryText.endsWith("Trip ")) {
             if (places != null) {
-                queryText += "where availablePlaces = :places ";
+                queryText += "where availablePlaces >= :places ";
                 parameters.add("places");
             }
         } else {
             if (places != null) {
-                queryText += "and availablePlaces = :places ";
+                queryText += "and availablePlaces >= :places ";
                 parameters.add("places");
             }
         }

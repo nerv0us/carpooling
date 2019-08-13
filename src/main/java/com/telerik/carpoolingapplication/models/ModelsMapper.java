@@ -1,17 +1,20 @@
 package com.telerik.carpoolingapplication.models;
 
 import com.telerik.carpoolingapplication.models.constants.Constants;
-import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
+import com.telerik.carpoolingapplication.models.dto.*;
+import com.telerik.carpoolingapplication.models.enums.Role;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ModelsMapper {
+public final class ModelsMapper {
+
+    private ModelsMapper() {
+    }
 
     public static List<TripDTO> fromTrip(List<Trip> trips, List<PassengerStatus> passengerStatuses, List<Comment> comments) {
         List<TripDTO> tripDTOS = new ArrayList<>();
@@ -51,7 +54,8 @@ public class ModelsMapper {
             PassengerDTO currentPassenger = fromUserToPassenger(user, passengerStatus);
             tripDTOPassengers.add(currentPassenger);
         }
-        TripDTO tripDTO = new TripDTO(trip.getId(), trip.getDriver(), trip.getCarModel()
+        UserDTO driver = getUser(trip.getDriver());
+        TripDTO tripDTO = new TripDTO(trip.getId(), driver, trip.getCarModel()
                 , trip.getMessage(), trip.getDepartureTime(), trip.getOrigin(), trip.getDestination()
                 , trip.getAvailablePlaces(), trip.getTripStatus(), trip.isSmoking()
                 , trip.isPets(), trip.isLuggage());
@@ -63,7 +67,7 @@ public class ModelsMapper {
     public static Trip fromCreateTripDTO(CreateTripDTO createTripDTO, User user) {
         return new Trip(user, createTripDTO.getCarModel(), createTripDTO.getMessage()
                 , createTripDTO.getDepartureTime(), createTripDTO.getOrigin(), createTripDTO.getDestination()
-                , createTripDTO.getAvailablePlaces(), TripStatus.available, createTripDTO.smoking()
+                , createTripDTO.getAvailablePlaces(), TripStatus.AVAILABLE, createTripDTO.smoking()
                 , createTripDTO.pets(), createTripDTO.luggage());
     }
 
@@ -108,7 +112,6 @@ public class ModelsMapper {
     }
 
     public static void editUser(User userToEdit, UserDTO userDTO) {
-        userToEdit.setUsername(userDTO.getUsername());
         userToEdit.setFirstName(userDTO.getFirstName());
         userToEdit.setLastName(userDTO.getLastName());
         userToEdit.setEmail(userDTO.getEmail());
@@ -125,6 +128,10 @@ public class ModelsMapper {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
+        user.setPassword(userDTO.getPassword());
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_USER);
+        user.setRoles(roles);
         user.setAvatarUri(Constants.DEFAULT_USER_AVATAR_ROUTE);
 
 
@@ -137,5 +144,18 @@ public class ModelsMapper {
 
     public static CommentDTO fromComment(Comment comment) {
         return new CommentDTO(comment.getMessage(), comment.getUser().getId());
+    }
+
+    public static List<DriverDTO> fromUserToDriverDto(List<User> users) {
+        List<DriverDTO> topTenDrivers = new ArrayList<>();
+        for (User user : users) {
+            DriverDTO driver = new DriverDTO();
+            driver.setFirstName(user.getFirstName());
+            driver.setLastName(user.getLastName());
+            driver.setUsername(user.getUsername());
+            driver.setRatingAsDriver(user.getRatingAsDriver());
+            topTenDrivers.add(driver);
+        }
+        return topTenDrivers;
     }
 }

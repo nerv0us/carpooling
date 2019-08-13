@@ -1,19 +1,19 @@
 package com.telerik.carpoolingapplication.services;
 
+import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
+import com.telerik.carpoolingapplication.exceptions.ValidationException;
 import com.telerik.carpoolingapplication.models.*;
 import com.telerik.carpoolingapplication.models.constants.Constants;
+import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
-import com.telerik.carpoolingapplication.security.CustomUserDetailsService;
-import com.telerik.carpoolingapplication.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
@@ -51,37 +51,44 @@ public class TripServiceImpl implements TripService {
     @Override
     public void createTrip(CreateTripDTO createTripDTO, UserDTO user) {
         if (user == null) {
-            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
+            throw new ValidationException(Constants.USER_NOT_FOUND);
         }
+        departureTimeValidator(createTripDTO.getDepartureTime());
         tripRepository.createTrip(createTripDTO, user.getId());
     }
 
     @Override
     public void editTrip(EditTripDTO editTripDTO, UserDTO user) {
         TripDTO trip = getTrip(editTripDTO.getId(), user);
-        if (user == null) {
-            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
+        if ((trip.getDriver().getId() != user.getId())) {
+            throw new UnauthorizedException(Constants.NOT_A_DRIVER);
         }
-        if (!(trip.getDriver().getId() == user.getId())) {
-            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
-        }
+        departureTimeValidator(editTripDTO.getDepartureTime());
         tripRepository.editTrip(editTripDTO, user.getId());
     }
 
     @Override
-    public TripDTO getTrip(int id, UserDTO user) {
-        TripDTO trip = tripRepository.getTrip(id);
-        if (user == null) {
-            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
+    public TripDTO getTrip(int id) {
+        try {
+            return tripRepository.getTrip(id);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
         }
-        return trip;
+    }
+
+    @Override
+    public TripDTO getTrip(int id, UserDTO user) {
+        if (user == null) {
+            throw new ValidationException(Constants.USER_NOT_FOUND);
+        }
+        return tripRepository.getTrip(id);
     }
 
     @Override
     public void changeTripStatus(int id, UserDTO user, String status) {
         TripDTO trip = getTrip(id, user);
-        if (trip.getDriver().getId() != user.getId()) {
-            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+        if ((trip.getDriver().getId()) != (user.getId())) {
+            throw new UnauthorizedException(Constants.NOT_A_DRIVER);
         }
         try {
             TripStatus updatedStatus = TripStatus.valueOf(status);
@@ -104,7 +111,7 @@ public class TripServiceImpl implements TripService {
     public void apply(int tripId, UserDTO user) {
         TripDTO tripDTO = getTrip(tripId, user);
         if (tripDTO.getDriver().getId() == user.getId()) {
-            throw new IllegalArgumentException(Constants.YOUR_OWN_TRIP);
+            throw new UnauthorizedException(Constants.YOUR_OWN_TRIP);
         }
         List<PassengerDTO> passengers = tripDTO.getPassengers();
         PassengerDTO passengerDTO = passengers.stream()
@@ -112,7 +119,7 @@ public class TripServiceImpl implements TripService {
                 .findFirst()
                 .orElse(null);
         if (passengerDTO != null) {
-            throw new IllegalArgumentException(Constants.ALREADY_APPLIED);
+            throw new UnauthorizedException(Constants.ALREADY_APPLIED);
         }
 
         tripRepository.apply(tripId, user);
@@ -122,35 +129,51 @@ public class TripServiceImpl implements TripService {
     public void changePassengerStatus(int tripId, int passengerId, UserDTO user, String status) {
         TripDTO tripDTO = getTrip(tripId, user);
         if (tripDTO.getDriver().getId() != user.getId()) {
-            throw new IllegalArgumentException(Constants.NOT_A_DRIVER);
+            throw new UnauthorizedException(Constants.NOT_A_DRIVER);
         }
         List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, passengerId, null);
-        if (passengerStatuses.size() == 0) {
+        if (passengerStatuses.isEmpty()) {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
         PassengerStatus passengerStatus = passengerStatuses.get(0);
+        PassengerStatusEnum oldStatus = passengerStatus.getStatus();
+        PassengerStatusEnum newStatus;
         try {
-            PassengerStatusEnum passengerStatusEnum = PassengerStatusEnum.valueOf(status);
-            passengerStatus.setStatus(passengerStatusEnum);
+            newStatus = PassengerStatusEnum.valueOf(status);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
         }
-        tripRepository.changePassengerStatus(passengerStatus);
+
+        if (String.valueOf(oldStatus).equals(String.valueOf(newStatus))) {
+            throw new UnauthorizedException(Constants.SAME_STATUS);
+        }
+
+        if (newStatus == PassengerStatusEnum.ACCEPTED && tripDTO.getAvailablePlaces() == 0) {
+            throw new UnauthorizedException(Constants.NO_AVAILABLE_PLACES);
+        }
+        int placesReducingValue = 0;
+        if (newStatus == PassengerStatusEnum.ACCEPTED) {
+            placesReducingValue = -1;
+        } else if (oldStatus == PassengerStatusEnum.ACCEPTED) {
+            placesReducingValue = 1;
+        }
+        passengerStatus.setStatus(newStatus);
+        tripRepository.changePassengerStatus(passengerStatus, tripDTO.getId(), placesReducingValue);
     }
 
     @Override
     public void rateDriver(int tripId, UserDTO user, RatingDTO ratingDTO) {
         TripDTO tripDTO = getTrip(tripId, user);
         if (tripDTO.getDriver().getId() == user.getId()) {
-            throw new IllegalArgumentException(Constants.RATE_YOURSELF);
+            throw new UnauthorizedException(Constants.RATE_YOURSELF);
         }
-        if (tripDTO.getTripStatus() != TripStatus.done) {
-            throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
+        if (tripDTO.getTripStatus() != TripStatus.DONE) {
+            throw new UnauthorizedException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
         List<PassengerStatus> passengerStatuses = tripRepository.passengers(tripId, user.getId()
-                , PassengerStatusEnum.accepted);
-        if (passengerStatuses.size() == 0) {
-            throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
+                , PassengerStatusEnum.ACCEPTED);
+        if (passengerStatuses.isEmpty()) {
+            throw new UnauthorizedException(Constants.YOU_DO_NOT_PARTICIPATE);
         }
         tripRepository.rateDriver(tripDTO, user, ratingDTO);
     }
@@ -159,19 +182,27 @@ public class TripServiceImpl implements TripService {
     public void ratePassenger(int tripId, int passengerId, UserDTO user, RatingDTO ratingDTO) {
         TripDTO tripDTO = getTrip(tripId, user);
         if (passengerId == user.getId()) {
-            throw new IllegalArgumentException(Constants.RATE_YOURSELF);
+            throw new UnauthorizedException(Constants.RATE_YOURSELF);
         }
-        if (tripDTO.getTripStatus() != TripStatus.done) {
-            throw new IllegalArgumentException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
+        if (tripDTO.getTripStatus() != TripStatus.DONE) {
+            throw new UnauthorizedException(Constants.RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE);
         }
-        if (tripRepository.passengers(tripId, user.getId(), PassengerStatusEnum.accepted).size() == 0
+        if (tripRepository.passengers(tripId, user.getId(), PassengerStatusEnum.ACCEPTED).isEmpty()
                 && tripDTO.getDriver().getId() != user.getId()) {
-            throw new IllegalArgumentException(Constants.YOU_DO_NOT_PARTICIPATE);
+            throw new UnauthorizedException(Constants.YOU_DO_NOT_PARTICIPATE);
         }
-        if (tripRepository.passengers(tripId, passengerId, PassengerStatusEnum.accepted).size() == 0) {
+        if (tripRepository.passengers(tripId, passengerId, PassengerStatusEnum.ACCEPTED).isEmpty()) {
             throw new IllegalArgumentException(Constants.NO_SUCH_PASSENGER);
         }
-        tripRepository.ratePassenger(tripId, passengerId, user,ratingDTO);
+        tripRepository.ratePassenger(tripId, passengerId, user, ratingDTO);
+    }
+
+    private void departureTimeValidator(String time) {
+        LocalDateTime departureTime = LocalDateTime.parse(time
+                , DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a"));
+        if (departureTime.isBefore(LocalDateTime.now()) || departureTime.isEqual(LocalDateTime.now())) {
+            throw new IllegalArgumentException(Constants.CREATE_TRIP_IN_PAST);
+        }
     }
 
     private TripStatus tripStatusParser(String tripStatus) {
