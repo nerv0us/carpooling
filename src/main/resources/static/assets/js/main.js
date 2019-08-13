@@ -171,7 +171,10 @@ function searchTrips() {
     }
 
 
-    let url = `http://localhost:8080/api/trips${filterTrips}earliestDepartureTime=${searchByDateAndTimeEarliest}&latestDepartureTime=${searchByDateAndTimeLatest}&availablePlaces=${searchAvailablePlaces}&smoking=${searchIsAllowedSmoking}&pets=${searchIsAllowedPets}&luggage=${searchIsAllowedLuggage}&sortParameter=${sortParameter}`;
+    let url = `http://localhost:8080/api/trips${filterTrips}earliestDepartureTime=${searchByDateAndTimeEarliest}
+    &latestDepartureTime=${searchByDateAndTimeLatest}&availablePlaces=${searchAvailablePlaces}
+    &smoking=${searchIsAllowedSmoking}&pets=${searchIsAllowedPets}&luggage=${searchIsAllowedLuggage}
+    &sortParameter=${sortParameter}`;
 
     console.log(url);
 
@@ -250,4 +253,47 @@ $('.datetimepicker').datetimepicker({
         clear: 'fa fa-trash',
         close: 'fa fa-remove'
     }
+});
+
+let page;
+$(document).on('click', '#page1', function f() {
+    page = 1;
+    loadTrips();
+});
+$(document).on('click', '#page2', function f() {
+    page = 2;
+    loadTrips();
+});
+$(document).on('click', '#page3', function f() {
+    page = 3;
+    loadTrips();
+});
+$(document).on('click', '#page4', function f() {
+    page = 4;
+    loadTrips();
+});
+$(document).on('click', '#page5', function f() {
+    page = 5;
+    loadTrips();
+});
+
+let showElements = 4;
+$(document).on('click', '#showElements4', function f() {
+    showElements = 4;
+    loadTrips();
+
+});
+$(document).on('click', '#showElements8', function f() {
+    showElements = 8;
+    loadTrips();
+
+});
+$(document).on('click', '#showElements16', function f() {
+    showElements = 16;
+    loadTrips();
+
+});
+$(document).on('click', '#showElements32', function f() {
+    showElements = 32;
+    loadTrips();
 });

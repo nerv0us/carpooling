@@ -299,15 +299,15 @@
                 </div>
 
                 <!--                Allow latest date and time input-->
-<!--                <div class="form-check">-->
-<!--                    <label class="form-check-label">-->
-<!--                        <input class="form-check-input" type="checkbox" id="showLatestDateForm">-->
-<!--                        Add latest date and time-->
-<!--                        <span class="form-check-sign">-->
-<!--                            <span class="check"></span>-->
-<!--                            </span>-->
-<!--                    </label>-->
-<!--                </div>-->
+                <!--                <div class="form-check">-->
+                <!--                    <label class="form-check-label">-->
+                <!--                        <input class="form-check-input" type="checkbox" id="showLatestDateForm">-->
+                <!--                        Add latest date and time-->
+                <!--                        <span class="form-check-sign">-->
+                <!--                            <span class="check"></span>-->
+                <!--                            </span>-->
+                <!--                    </label>-->
+                <!--                </div>-->
 
                 <!--                Latest Date and time input-->
                 <div class="form-group dateTimeLatest">
@@ -385,15 +385,23 @@
     <div class="container">
         <div class="section text-center" style="margin-top: 100px">
 
-<!--Modal easy search trips                     -->
-            <blockquote class="blockquote text-center">
-                <h2 class="title">Search trips: </h2>
-<!--                <p class="mb-0 h5">SEARCH TRIP</p>-->
-            </blockquote>
-
             <form style="margin-left: 260px">
 
                 <div class="form-row align-items-center">
+                    <div class="dropdown">
+                        <span class="dropdown">
+                         <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                                 aria-haspopup="true" aria-expanded="false" id="showTripsBtn">
+                           Show trips
+                         </button>
+                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                             <a class="dropdown-item" href="#" id="showElements4">4</a>
+                             <a class="dropdown-item" href="#" id="showElements8">8</a>
+                             <a class="dropdown-item" href="#" id="showElements16">16</a>
+                             <a class="dropdown-item" href="#" id="showElements32">32</a>
+                         </div>
+                        </span>
+                    </div>
                     <!--                        ORIGIN              -->
                     <div class="col-3">
                         <label class="label-control" for="easyOriginSearch">Origin</label>
@@ -429,6 +437,21 @@
             </form>
             <h2 class="title">Trips</h2>
             <div class="row" id="trip-body"></div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#" id="page1">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page2">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page3">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page4">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page5">5</a></li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

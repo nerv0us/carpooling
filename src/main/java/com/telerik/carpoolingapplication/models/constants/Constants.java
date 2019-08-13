@@ -14,7 +14,7 @@ public final class Constants {
     public static final String ALREADY_APPLIED = "You have already applied for this trip!";
     public static final String PASSENGER_STATUS_CHANGED = "Passenger status changed!";
     public static final String YOU_DO_NOT_PARTICIPATE = "You do not participate in this trip!";
-    public static final String NO_SUCH_PASSENGER = "Passenger does not participate in this trip!";
+    public static final String NO_SUCH_PASSENGER = "Passenger is not ACCEPTED!";
     public static final String RATING_NOT_ALLOWED_BEFORE_TRIP_IS_DONE = "You cannot rate before trip is over!";
     public static final String NOT_A_NUMBER = "Value is not a number!";
     public static final String NOT_A_BOOLEAN = "Value is not a boolean";

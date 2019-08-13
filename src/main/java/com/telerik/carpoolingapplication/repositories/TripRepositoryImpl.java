@@ -96,13 +96,13 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public void addComment(TripDTO tripDTO, CommentDTO commentDTO) {
+    public void addComment(TripDTO tripDTO, CommentDTO commentDTO, int userId) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            User user = session.get(User.class, commentDTO.getUserId());
-            List<PassengerStatus> passengers = passengers(tripDTO.getId(), commentDTO.getUserId()
+            User user = session.get(User.class, userId);
+            List<PassengerStatus> passengers = passengers(tripDTO.getId(), userId
                     , PassengerStatusEnum.ACCEPTED);
-            if (tripDTO.getDriver().getId() != commentDTO.getUserId() && passengers.isEmpty()) {
+            if (tripDTO.getDriver().getId() != userId && passengers.isEmpty()) {
                 throw new UnauthorizedException(Constants.YOU_DO_NOT_PARTICIPATE);
             }
             Trip trip = session.get(Trip.class, tripDTO.getId());
@@ -133,7 +133,13 @@ public class TripRepositoryImpl implements TripRepository {
                 trip.setAvailablePlaces(trip.getAvailablePlaces() + placesReducingValue);
                 session.update(trip);
             }
-            session.update(passengerStatus);
+            Query<PassengerStatus> query = session.createQuery("from PassengerStatus where trip.id = :tripId " +
+                            "and user.id = :userId", PassengerStatus.class);
+            query.setParameter("tripId", tripId);
+            query.setParameter("userId", passengerStatus.getUser().getId());
+            PassengerStatus newStatus = query.list().get(0);
+            newStatus.setStatus(passengerStatus.getStatus());
+            session.update(newStatus);
             session.getTransaction().commit();
         }
     }
@@ -289,22 +295,26 @@ public class TripRepositoryImpl implements TripRepository {
         }
         if (queryText.endsWith("Trip ")) {
             if (latestDepartureTime != null) {
+                /*latestDepartureTime = latestDepartureTime.replaceAll(" ","");*/
                 queryText += "where departureTime >= :latestDepartureTime ";
                 parameters.add("latestDepartureTime");
             }
         } else {
             if (latestDepartureTime != null) {
+                /*latestDepartureTime = latestDepartureTime.replaceAll(" ","");*/
                 queryText += "and departureTime >= :latestDepartureTime ";
                 parameters.add("latestDepartureTime");
             }
         }
         if (queryText.endsWith("Trip ")) {
             if (earliestDepartureTime != null) {
+                /*earliestDepartureTime = earliestDepartureTime.replaceAll(" ","");*/
                 queryText += "where departureTime <= :earliestDepartureTime ";
                 parameters.add("earliestDepartureTime");
             }
         } else {
             if (earliestDepartureTime != null) {
+                /*earliestDepartureTime = earliestDepartureTime.replaceAll(" ","");*/
                 queryText += "and departureTime <= :earliestDepartureTime ";
                 parameters.add("earliestDepartureTime");
             }
@@ -388,6 +398,7 @@ public class TripRepositoryImpl implements TripRepository {
                     break;
             }
         }
+        /*tripQuery.setMaxResults(6);*/
         return tripQuery;
     }
 }
