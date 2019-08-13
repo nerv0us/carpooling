@@ -73,6 +73,7 @@ $(document).on("click", ".trip", function () {
     counter = 0;
     tripId = $(this).parent().find('.tripId').val();
     console.log(tripId);
+
     $.ajax({
         url: `http://localhost:8080/api/trips/` + tripId,
         method: 'GET',
