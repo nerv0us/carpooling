@@ -1,13 +1,16 @@
 package com.telerik.carpoolingapplication.models.dto;
 
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class CreateCommentDTO {
     @NotNull
-    @Size(min = 3, message = "Comment should be at least 3 characters.")
+    @Size(min = 3, max = 200, message = "Message should be between 3 and 200 symbols")
+    @Lob
     private String message;
 
+    @NotNull
     private UserDTO author;
 
     public CreateCommentDTO() {

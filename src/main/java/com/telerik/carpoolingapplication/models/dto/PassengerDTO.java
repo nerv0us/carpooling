@@ -1,24 +1,40 @@
 package com.telerik.carpoolingapplication.models.dto;
 
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
+import org.hibernate.annotations.ColumnDefault;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class PassengerDTO {
     @NotNull
     private int userId;
+
     @NotNull
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.")
     private String username;
+
     @NotNull
+    @Size(min = 3, max = 25, message = "First name should be between 3 and 25 characters.")
     private String firstName;
+
     @NotNull
+    @Size(min = 3, max = 25, message = "Last name should be between 3 and 25 characters.")
     private String lastName;
+
     @NotNull
+    @Email
     private String email;
+
     @NotNull
+    @Size(min = 4, max = 25, message = "Phone number should be between 4 and 25 characters.")
     private String phone;
+
     @NotNull
+    @ColumnDefault("0")
     private Double ratingAsPassenger;
+
     @NotNull
     private PassengerStatusEnum passengerStatusEnum;
 

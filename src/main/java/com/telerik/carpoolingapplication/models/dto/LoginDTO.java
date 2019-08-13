@@ -1,8 +1,17 @@
 package com.telerik.carpoolingapplication.models.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class LoginDTO {
+    @Size(min = 3, max = 50, message = "Password should be between 3 and 50 characters.")
     private String password;
+
+    @NotNull
     private boolean rememberMe;
+
+    @NotNull
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.")
     private String username;
 
     public LoginDTO() {
