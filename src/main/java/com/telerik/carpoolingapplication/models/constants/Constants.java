@@ -45,4 +45,10 @@ public final class Constants {
     public static final String STORAGE_ROUTE = "/tmp/images/users/";
     public static final String DEFAULT_USER_AVATAR_ROUTE = "images/users/defaultUserPhoto.jpg";
     public static final int MAX_FILE_SIZE = 5242880;
+
+    // Token
+    public static final String INVALID_TOKEN_MESSAGE = "Invalid token";
+
+    // Date and time
+    public static final String INVALID_DATE_OR_TIME_MESSAGE = "Invalid date or time";
 }
