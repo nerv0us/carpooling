@@ -22,14 +22,17 @@ function loadTopTenDrivers() {
 
 //Add filtering and sorting function!
 function loadTrips() {
-    let url;
-    if (page != null){
-        url = `http://localhost:8080/api/trips?page=` + page;
-        $('#upperPart').hide();
-    } else {
-        url = `http://localhost:8080/api/trips`;
+    console.log("loadTrips()");
+
+    let searchOrigin = $('#searchOrigin').val();
+    let searchOriginUrl = '';
+    if (searchOrigin !== ''){
+        searchOriginUrl = 'origin=' + searchOrigin + '&';
     }
 
+    let url = `http://localhost:8080/api/trips?` + searchOriginUrl;
+
+    console.log(url);
     $.ajax({
         url: url,
         method: 'GET',
