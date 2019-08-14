@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 
 @Transactional
@@ -100,7 +101,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<DriverDTO> getTopTenDrivers() {
-        return userRepository.getTopTenDrivers();
+        List<DriverDTO> topTenDrivers = userRepository.getTopTenDrivers();
+        topTenDrivers.sort((o1, o2) -> {
+            if (o1.getRatingAsDriver() >= o2.getRatingAsDriver()) return -1;
+            else return 1;
+        });
+
+        return topTenDrivers;
     }
 
     private boolean isUsernameExist(String username) {

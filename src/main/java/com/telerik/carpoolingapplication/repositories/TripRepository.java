@@ -31,4 +31,6 @@ public interface TripRepository {
     void ratePassenger(int tripId, int passengerId, UserDTO userDTO, RatingDTO ratingDTO);
 
     List<PassengerStatus> passengers(int tripId, int userId, PassengerStatusEnum passengerStatusEnum);
+
+    double calculateAverageRating(int userId, boolean isReceiverDriver);
 }

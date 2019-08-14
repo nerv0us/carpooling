@@ -4,14 +4,24 @@ import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.Role;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
+import com.telerik.carpoolingapplication.repositories.TripRepository;
+import com.telerik.carpoolingapplication.repositories.TripRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public final class ModelsMapper {
+public class ModelsMapper {
+    private static TripRepository tripRepository;
+
+    @Autowired
+    public ModelsMapper(TripRepository tripRepository) {
+        ModelsMapper.tripRepository = tripRepository;
+    }
 
     private ModelsMapper() {
     }
@@ -96,7 +106,7 @@ public final class ModelsMapper {
         passengerDTO.setLastName(user.getLastName());
         passengerDTO.setEmail(user.getEmail());
         passengerDTO.setPhone(user.getPhone());
-        passengerDTO.setRatingAsPassenger(user.getRatingAsPassenger());
+        passengerDTO.setRatingAsPassenger(tripRepository.calculateAverageRating(user.getId(), false));
         passengerDTO.setPassengerStatusEnum(passengerStatus.getStatus());
         return passengerDTO;
     }
@@ -109,8 +119,8 @@ public final class ModelsMapper {
         userDTO.setLastName(user.getLastName());
         userDTO.setEmail(user.getEmail());
         userDTO.setPhone(user.getPhone());
-        userDTO.setRatingAsDriver(user.getRatingAsDriver());
-        userDTO.setRatingAsDriver(user.getRatingAsDriver());
+        userDTO.setRatingAsDriver(tripRepository.calculateAverageRating(user.getId(), true));
+        userDTO.setRatingAsPassenger(tripRepository.calculateAverageRating(user.getId(), false));
         userDTO.setAvatarUri(user.getAvatarUri());
         return userDTO;
     }
@@ -120,8 +130,6 @@ public final class ModelsMapper {
         userToEdit.setLastName(userDTO.getLastName());
         userToEdit.setEmail(userDTO.getEmail());
         userToEdit.setPhone(userDTO.getPhone());
-        userToEdit.setRatingAsDriver(userDTO.getRatingAsDriver());
-        userToEdit.setRatingAsPassenger(userDTO.getRatingAsPassenger());
     }
 
     public static User createUser(CreateUserDTO userDTO) {
@@ -157,7 +165,7 @@ public final class ModelsMapper {
             driver.setFirstName(user.getFirstName());
             driver.setLastName(user.getLastName());
             driver.setUsername(user.getUsername());
-            driver.setRatingAsDriver(user.getRatingAsDriver());
+            driver.setRatingAsDriver(tripRepository.calculateAverageRating(user.getId(), true));
             topTenDrivers.add(driver);
         }
         return topTenDrivers;

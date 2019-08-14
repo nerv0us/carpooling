@@ -137,7 +137,7 @@ public class TripRepositoryImpl implements TripRepository {
                 session.update(trip);
             }
             Query<PassengerStatus> query = session.createQuery("from PassengerStatus where trip.id = :tripId " +
-                            "and user.id = :userId", PassengerStatus.class);
+                    "and user.id = :userId", PassengerStatus.class);
             query.setParameter("tripId", tripId);
             query.setParameter("userId", passengerStatus.getUser().getId());
             PassengerStatus newStatus = query.list().get(0);
@@ -164,9 +164,6 @@ public class TripRepositoryImpl implements TripRepository {
                 ratingDriver.setRating(ratingDTO.getRating());
                 session.update(ratingDriver);
             }
-            double averageRating = calculateAverageRating(session, driver.getId(), true);
-            driver.setRatingAsDriver(averageRating);
-            session.update(driver);
             session.getTransaction().commit();
         }
     }
@@ -187,9 +184,6 @@ public class TripRepositoryImpl implements TripRepository {
                 rating.setRating(ratingDTO.getRating());
                 session.update(rating);
             }
-            double averageRating = calculateAverageRating(session, passengerId, false);
-            passenger.setRatingAsPassenger(averageRating);
-            session.update(passenger);
             session.getTransaction().commit();
         }
     }
@@ -235,13 +229,30 @@ public class TripRepositoryImpl implements TripRepository {
         return ratingQuery.list();
     }
 
-    private double calculateAverageRating(Session session, int userId, boolean isReceiverDriver) {
-        Query calculated = session.createQuery("select avg(rating) from Rating " +
-                "where ratingReceiver.id = :userId " +
-                "and isReceiverDriver = :isReceiverDriver ");
-        calculated.setParameter("userId", userId);
-        calculated.setParameter("isReceiverDriver", isReceiverDriver);
-        return (double) calculated.list().get(0);
+    public double calculateAverageRating(int userId, boolean isReceiverDriver) {
+        double rating = 0;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Query<Rating> ratingQuery = session.createQuery("from Rating " +
+                    "where ratingReceiver.id = :userId " +
+                    "and isReceiverDriver = :isReceiverDriver ", Rating.class);
+            ratingQuery.setParameter("userId", userId);
+            ratingQuery.setParameter("isReceiverDriver", isReceiverDriver);
+            if (ratingQuery.list().size() > 0) {
+                rating = calculateRating(ratingQuery.list());
+            }
+            session.getTransaction().commit();
+            return rating;
+        }
+    }
+
+    private double calculateRating(List<Rating> ratings) {
+        double avgRating = 0;
+        int numberOfRatings = ratings.size();
+        for (Rating rating : ratings) {
+            avgRating += rating.getRating();
+        }
+        return avgRating / numberOfRatings;
     }
 
     private List<TripDTO> getPassengersStatusesAndComments(List<Trip> trips, Session session) {

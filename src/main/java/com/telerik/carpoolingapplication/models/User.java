@@ -40,14 +40,6 @@ public class User implements UserDetails {
     @Size(min = 4, max = 25, message = "Phone number should be between 4 and 25 characters.")
     private String phone;
 
-    @NotNull
-    @ColumnDefault("0")
-    private double ratingAsDriver;
-
-    @NotNull
-    @ColumnDefault("0")
-    private double ratingAsPassenger;
-
     private String avatarUri;
 
     @NotNull
@@ -75,8 +67,6 @@ public class User implements UserDetails {
                 String email,
                 String phone,
                 String password,
-                double ratingAsDriver,
-                double ratingAsPassenger,
                 String avatarUri) {
         this.username = username;
         this.firstName = firstName;
@@ -84,8 +74,6 @@ public class User implements UserDetails {
         this.email = email;
         this.phone = phone;
         this.password = password;
-        this.ratingAsDriver = ratingAsDriver;
-        this.ratingAsPassenger = ratingAsPassenger;
         this.avatarUri = avatarUri;
     }
 
@@ -173,22 +161,6 @@ public class User implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public double getRatingAsDriver() {
-        return ratingAsDriver;
-    }
-
-    public void setRatingAsDriver(double ratingAsDriver) {
-        this.ratingAsDriver = ratingAsDriver;
-    }
-
-    public double getRatingAsPassenger() {
-        return ratingAsPassenger;
-    }
-
-    public void setRatingAsPassenger(double ratingAsPassenger) {
-        this.ratingAsPassenger = ratingAsPassenger;
     }
 
     public String getAvatarUri() {
