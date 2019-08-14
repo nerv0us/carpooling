@@ -68,7 +68,9 @@ function createTrip() {
         },
         error: function () {
             console.log("failed");
-            alert("Failed")
+            alert("Failed");
+            $('#errorCreateTrip').append(`
+            <div><h6 style="color: #7f231c">Wrong input</h6></div>`)
         }
     });
 }

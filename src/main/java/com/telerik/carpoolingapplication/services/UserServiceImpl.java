@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
             else return 1;
         });
 
-        return topTenDrivers;
+        return topTenDrivers.subList(0,10);
     }
 
     private boolean isUsernameExist(String username) {

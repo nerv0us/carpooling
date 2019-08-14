@@ -139,13 +139,6 @@ function loadTrips() {
 
     let pagingUrl = 'page=' + page;
     console.log(page);
-
-    /*if (searchOriginUrl !== '' || searchDestinationUrl !== '' || searchDateTimeEarliestUrl !== '' ||
-        searchDateTimeLatestUrl !== '' || searchAvailablePlacesUrl !== '' ||
-        searchPetsAllowedUrl !== '' || searchSmokingAllowedUrl !== '' || searchLuggageAllowedUrl !== '' ||
-        searchSortByParameterUrl !== '') {
-        $('#easySearch').hide();
-    }*/
     let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
         searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl + searchPetsAllowedUrl +
         searchSmokingAllowedUrl + searchLuggageAllowedUrl + searchSortByParameterUrl + pagingUrl;
@@ -200,7 +193,6 @@ $(document).on("click", ".trip", function () {
     $('#frontTrips').hide();
     $('#detailedSearchTrip').hide();
     $('#createTrip').hide();
-
     counter = 0;
     tripId = $(this).parent().find('.tripId').val();
     console.log(tripId);
