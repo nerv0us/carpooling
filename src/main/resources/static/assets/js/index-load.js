@@ -24,12 +24,14 @@ function loadTopTenDrivers() {
 function loadTrips() {
     console.log("loadTrips()");
     $('#upperPart').hide();
+    let searchOriginFront = $('#searchOriginFront').val();
     let searchOrigin = $('#searchOrigin').val();
     let searchOriginUrl = '';
     if (searchOrigin !== '') {
         searchOriginUrl = 'origin=' + searchOrigin + '&';
     }
 
+    let searchDestinationFront = $('#searchDestinationFront').val();
     let searchDestination = $('#searchDestination').val();
     let searchDestinationUrl = '';
     if (searchDestination !== '') {
@@ -37,6 +39,7 @@ function loadTrips() {
     }
 
     let searchDateTimeEarliest = $('#searchDateTimeEarliest').val();
+    let searchDateTimeEarliestFront = $('#searchDateTimeEarliestFront').val();
     let searchDateTimeEarliestUrl = '';
     if (searchDateTimeEarliest !== '') {
         searchDateTimeEarliestUrl = 'earliestDepartureTime=' + searchDateTimeEarliest + '&';

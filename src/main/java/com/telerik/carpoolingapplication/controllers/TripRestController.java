@@ -49,7 +49,7 @@ public class TripRestController {
                                   @RequestParam(required = false) String sortParameter,
                                   @RequestParam(required = false) String ascending) {
         try {
-            return tripService.getTrips(page, showElements, tripStatus, driverUsername, origin, destination, earliestDepartureTime,
+            return tripService.getTrips(page,  tripStatus, driverUsername, origin, destination, earliestDepartureTime,
                     latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

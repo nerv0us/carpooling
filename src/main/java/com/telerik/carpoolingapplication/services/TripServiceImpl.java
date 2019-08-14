@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,10 +28,10 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripDTO> getTrips(Integer page, Integer showElements, String tripStatus,
-                                  String driverUsername, String origin, String destination,
-                                  String latestDepartureTime, String earliestDepartureTime, String availablePlaces,
-                                  String smoking, String pets, String luggage, String sortParameter, String ascending) {
+    public List<TripDTO> getTrips(Integer page, String tripStatus, String driverUsername
+            , String origin, String destination, String latestDepartureTime
+            , String earliestDepartureTime, String availablePlaces
+            , String smoking, String pets, String luggage, String sortParameter, String ascending) {
 
         TripStatus status = tripStatusParser(tripStatus);
         Integer places = integerParser(availablePlaces);
@@ -38,13 +39,33 @@ public class TripServiceImpl implements TripService {
         Boolean animals = booleanParser(pets);
         Boolean baggage = booleanParser(luggage);
 
-        List<TripDTO> trips = tripRepository.getFilteredTrips(status, driverUsername, origin, destination,
-                latestDepartureTime, earliestDepartureTime, places, cigarettes, animals, baggage);
+        List<TripDTO> trips = tripRepository.getFilteredTrips(status, driverUsername, origin, destination, latestDepartureTime
+                , earliestDepartureTime, places, cigarettes, animals, baggage);
 
         if (sortParameter != null) {
             tripSorter(trips, sortParameter, ascending);
         }
-        return trips;
+
+        if (page == null || page == 1) {
+            if (trips.isEmpty()) {
+                return new ArrayList<>();
+            } else if (trips.size() < 4) {
+                return trips.subList(0, trips.size());
+            } else {
+                return trips.subList(0, 4);
+            }
+        }
+
+        int start = (page - 1) * 4;
+        int end = start + 4;
+
+        if (start > trips.size() - 1) {
+            return new ArrayList<>();
+        } else if (trips.size() < end) {
+            return trips.subList(start, trips.size());
+        } else {
+            return trips.subList(start, end);
+        }
     }
 
     @Override
