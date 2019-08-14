@@ -224,17 +224,20 @@ function searchTrips() {
 }
 
 function navigateToLogin() {
-    $('#upperPart').hide();
-    $('#easySearch').hide();
-    $('#top-drivers').hide();
+    hideUpperPart();
     $('#content').load('../login.html');
 }
 
 function navigateToRegister() {
+    hideUpperPart();
+    $('#content').load('../register.html');
+}
+
+function hideUpperPart() {
     $('#upperPart').hide();
     $('#easySearch').hide();
     $('#top-drivers').hide();
-    $('#content').load('../register.html');
+    $('#frontTrips').hide();
 }
 
 function navigateToProfile() {
