@@ -23,10 +23,13 @@ function loadTopTenDrivers() {
 //Add filtering and sorting function!
 function loadTrips() {
     console.log("loadTrips()");
-    $('#upperPart').hide();
+    /*$('#upperPart').hide();*/
     let searchOriginFront = $('#searchOriginFront').val();
     let searchOrigin = $('#searchOrigin').val();
     let searchOriginUrl = '';
+    if (searchOriginFront !== ''){
+        searchOriginUrl = 'origin=' + searchOriginFront + '&';
+    }
     if (searchOrigin !== '') {
         searchOriginUrl = 'origin=' + searchOrigin + '&';
     }
@@ -34,13 +37,19 @@ function loadTrips() {
     let searchDestinationFront = $('#searchDestinationFront').val();
     let searchDestination = $('#searchDestination').val();
     let searchDestinationUrl = '';
+    if (searchDestinationFront !== ''){
+        searchDestinationUrl = 'destination=' + searchDestinationFront + '&';
+    }
     if (searchDestination !== '') {
         searchDestinationUrl = 'destination=' + searchDestination + '&';
     }
 
-    let searchDateTimeEarliest = $('#searchDateTimeEarliest').val();
     let searchDateTimeEarliestFront = $('#searchDateTimeEarliestFront').val();
+    let searchDateTimeEarliest = $('#searchDateTimeEarliest').val();
     let searchDateTimeEarliestUrl = '';
+    if (searchDateTimeEarliestFront !== ''){
+        searchDateTimeEarliestUrl = 'earliestDepartureTime=' + searchDateTimeEarliestFront + '&';
+    }
     if (searchDateTimeEarliest !== '') {
         searchDateTimeEarliestUrl = 'earliestDepartureTime=' + searchDateTimeEarliest + '&';
     }
@@ -87,12 +96,12 @@ function loadTrips() {
     let pagingUrl = 'page=' + page;
     console.log(page);
 
-    if (searchOriginUrl !== '' || searchDestinationUrl !== '' || searchDateTimeEarliestUrl !== '' ||
+    /*if (searchOriginUrl !== '' || searchDestinationUrl !== '' || searchDateTimeEarliestUrl !== '' ||
         searchDateTimeLatestUrl !== '' || searchAvailablePlacesUrl !== '' ||
         searchPetsAllowedUrl !== '' || searchSmokingAllowedUrl !== '' || searchLuggageAllowedUrl !== '' ||
         searchSortByParameterUrl !== '') {
         $('#easySearch').hide();
-    }
+    }*/
     let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
         searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl + searchPetsAllowedUrl +
         searchSmokingAllowedUrl + searchLuggageAllowedUrl + searchSortByParameterUrl + pagingUrl;
@@ -161,10 +170,10 @@ $(document).on("click", ".trip", function () {
             $("#upperPart").html('');*/
             $('#content').html('');
             $('#content').append(`
-            <div class="main main-raised" style="margin: 150px;">
+            <div class="main main-raised" style="margin: 100px;">
                 <div class="container">
                     <div class="section text-center">
-                        <h2 class="title">Trip</h2>
+                        <h2 class="title">${response.driver.firstName}'s trip</h2>
                         <div class="row">
                             <div class="card mb-3" style="max-width: 2040px;">
                                 <div class="row no-gutters">
