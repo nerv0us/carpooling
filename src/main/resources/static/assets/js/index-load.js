@@ -42,8 +42,15 @@ function loadTrips() {
         searchDateTimeEarliestUrl = 'earliestDepartureTime=' + searchDateTimeEarliest + '&';
     }
 
+    let searchDateTimeLatest = $('#searchDateTimeLatest').val();
+    let searchDateTimeLatestUrl = '';
+    if (searchDateTimeLatest !== ''){
+        searchDateTimeLatestUrl = 'latestDepartureTime=' + searchDateTimeLatest + '&';
+    }
 
-    let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl + searchDateTimeEarliestUrl;
+
+    let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
+        searchDateTimeEarliestUrl + searchDateTimeLatestUrl;
     console.log(url);
     $.ajax({
         url: url,
