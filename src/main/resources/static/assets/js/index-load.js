@@ -23,7 +23,7 @@ function loadTopTenDrivers() {
 //Add filtering and sorting function!
 function loadTrips() {
     console.log("loadTrips()");
-
+    $('#upperPart').hide();
     let searchOrigin = $('#searchOrigin').val();
     let searchOriginUrl = '';
     if (searchOrigin !== '') {
@@ -81,6 +81,9 @@ function loadTrips() {
         searchSortByParameterUrl = 'sortParameter=' + searchSortByParameter + '&';
     }
 
+    let pagingUrl = 'page=' + page;
+    console.log(page);
+
     if (searchOriginUrl !== '' || searchDestinationUrl !== '' || searchDateTimeEarliestUrl !== '' ||
         searchDateTimeLatestUrl !== '' || searchAvailablePlacesUrl !== '' ||
         searchPetsAllowedUrl !== '' || searchSmokingAllowedUrl !== '' || searchLuggageAllowedUrl !== '' ||
@@ -89,7 +92,7 @@ function loadTrips() {
     }
     let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
         searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl + searchPetsAllowedUrl +
-        searchSmokingAllowedUrl + searchLuggageAllowedUrl + searchSortByParameterUrl;
+        searchSmokingAllowedUrl + searchLuggageAllowedUrl + searchSortByParameterUrl + pagingUrl;
     console.log(url);
     $.ajax({
         url: url,
@@ -830,5 +833,26 @@ $(document).on("click", "#applyButton", function () {
     });
 });
 
+let page = 1;
+$(document).on('click', '#page1', function f() {
+    page = 1;
+    loadTrips()
+});
+$(document).on('click', '#page2', function f() {
+    page = 2;
+    loadTrips()
+});
+$(document).on('click', '#page3', function f() {
+    page = 3;
+    loadTrips()
+});
+$(document).on('click', '#page4', function f() {
+    page = 4;
+    loadTrips()
+});
+$(document).on('click', '#page5', function f() {
+    page = 5;
+    loadTrips()
+});
 
 

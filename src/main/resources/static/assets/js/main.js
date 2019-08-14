@@ -254,25 +254,3 @@ $('.datetimepicker').datetimepicker({
         close: 'fa fa-remove'
     }
 });
-
-let page;
-$(document).on('click', '#page1', function f() {
-    page = 1;
-    loadTrips();
-});
-$(document).on('click', '#page2', function f() {
-    page = 2;
-    loadTrips();
-});
-$(document).on('click', '#page3', function f() {
-    page = 3;
-    loadTrips();
-});
-$(document).on('click', '#page4', function f() {
-    page = 4;
-    loadTrips();
-});
-$(document).on('click', '#page5', function f() {
-    page = 5;
-    loadTrips();
-});

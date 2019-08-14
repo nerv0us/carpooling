@@ -49,15 +49,15 @@ public class TripServiceImpl implements TripService {
         if (page == null || page == 1) {
             if (trips.isEmpty()) {
                 return new ArrayList<>();
-            } else if (trips.size() < 6) {
+            } else if (trips.size() < 4) {
                 return trips.subList(0, trips.size());
             } else {
-                return trips.subList(0, 6);
+                return trips.subList(0, 4);
             }
         }
 
-        int start = (page - 1) * 6;
-        int end = start + 6;
+        int start = (page - 1) * 4;
+        int end = start + 4;
 
         if (start > trips.size() - 1) {
             return new ArrayList<>();
