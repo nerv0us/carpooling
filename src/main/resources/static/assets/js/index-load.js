@@ -54,13 +54,32 @@ function loadTrips() {
         searchAvailablePlacesUrl = 'availablePlaces=' + searchAvailablePlaces + '&';
     }
 
+    let searchPetsAllowed = $('#searchPetsAllowed').val();
+    let searchPetsAllowedUrl = '';
+    if (searchPetsAllowed !== 'Select option') {
+        searchPetsAllowedUrl = 'pets=' + searchPetsAllowed + '&';
+    }
+
+    let searchSmokingAllowed = $('#searchSmokingAllowed').val();
+    let searchSmokingAllowedUrl = '';
+    if (searchSmokingAllowed !== 'Select option') {
+        searchSmokingAllowedUrl = 'smoking=' + searchSmokingAllowed + '&';
+    }
+
+    let searchLuggageAllowed = $('#searchLuggageAllowed').val();
+    let searchLuggageAllowedUrl = '';
+    if (searchLuggageAllowed !== 'Select option') {
+        searchLuggageAllowedUrl = 'luggage=' + searchLuggageAllowed + '&';
+    }
 
     if (searchOriginUrl !== '' || searchDestinationUrl !== '' || searchDateTimeEarliestUrl !== '' ||
-        searchDateTimeLatestUrl !== '' || searchAvailablePlacesUrl !== ''){
+        searchDateTimeLatestUrl !== '' || searchAvailablePlacesUrl !== '' ||
+        searchPetsAllowedUrl !== '' || searchSmokingAllowedUrl !== '' || searchLuggageAllowedUrl !== ''){
         $('#easySearch').hide();
     }
     let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
-        searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl;
+        searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl + searchPetsAllowedUrl +
+        searchSmokingAllowedUrl + searchLuggageAllowedUrl;
     console.log(url);
     $.ajax({
         url: url,
@@ -100,8 +119,8 @@ let counter;
 let tripId;
 $(document).on("click", ".trip", function () {
     $('#upperPart').hide();
-    $('#easySearch').hide();
     $('#top-drivers').hide();
+    $('#frontTrips').hide();
     $('#detailedSearchTrip').hide();
     $('#createTrip').hide();
 
