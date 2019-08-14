@@ -26,31 +26,41 @@ function loadTrips() {
 
     let searchOrigin = $('#searchOrigin').val();
     let searchOriginUrl = '';
-    if (searchOrigin !== ''){
+    if (searchOrigin !== '') {
         searchOriginUrl = 'origin=' + searchOrigin + '&';
     }
 
     let searchDestination = $('#searchDestination').val();
     let searchDestinationUrl = '';
-    if (searchDestination !== ''){
+    if (searchDestination !== '') {
         searchDestinationUrl = 'destination=' + searchDestination + '&';
     }
 
     let searchDateTimeEarliest = $('#searchDateTimeEarliest').val();
     let searchDateTimeEarliestUrl = '';
-    if (searchDateTimeEarliest !== ''){
+    if (searchDateTimeEarliest !== '') {
         searchDateTimeEarliestUrl = 'earliestDepartureTime=' + searchDateTimeEarliest + '&';
     }
 
     let searchDateTimeLatest = $('#searchDateTimeLatest').val();
     let searchDateTimeLatestUrl = '';
-    if (searchDateTimeLatest !== ''){
+    if (searchDateTimeLatest !== '') {
         searchDateTimeLatestUrl = 'latestDepartureTime=' + searchDateTimeLatest + '&';
     }
 
+    let searchAvailablePlaces = $('#searchAvailablePlaces').val();
+    let searchAvailablePlacesUrl = '';
+    if (searchAvailablePlaces !== 'Select option') {
+        searchAvailablePlacesUrl = 'availablePlaces=' + searchAvailablePlaces + '&';
+    }
 
+
+    if (searchOriginUrl !== '' || searchDestinationUrl !== '' || searchDateTimeEarliestUrl !== '' ||
+        searchDateTimeLatestUrl !== '' || searchAvailablePlacesUrl !== ''){
+        $('#easySearch').hide();
+    }
     let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
-        searchDateTimeEarliestUrl + searchDateTimeLatestUrl;
+        searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl;
     console.log(url);
     $.ajax({
         url: url,
@@ -92,6 +102,9 @@ $(document).on("click", ".trip", function () {
     $('#upperPart').hide();
     $('#easySearch').hide();
     $('#top-drivers').hide();
+    $('#detailedSearchTrip').hide();
+    $('#createTrip').hide();
+
     counter = 0;
     tripId = $(this).parent().find('.tripId').val();
     console.log(tripId);

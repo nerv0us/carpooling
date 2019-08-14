@@ -52,14 +52,14 @@
                         </a>
                     </li>
 
-                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#search-trip-modal">
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#search-trip-modal" id="detailedSearchTrip">
                         <a class="nav-link">
                             Detailed search trip
                             <div class="ripple-container"></div>
                         </a>
                     </li>
 
-                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#create-trip-modal">
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#create-trip-modal" id="createTrip">
                         <a class="nav-link">
                             Create Trip
                             <div class="ripple-container"></div>
@@ -316,18 +316,19 @@
                            id="searchDateTimeLatest"/>
                 </div>
 
-<!--                &lt;!&ndash;                Available places&ndash;&gt;
+                <!--                Available places-->
                 <div class="form-group bmd-form-group">
                     <label for="inputState">Available places</label>
                     <select id="searchAvailablePlaces" class="form-control">
-                        <option selected>1</option>
+                        <option selected>Select option</option>
+                        <option>1</option>
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
                     </select>
                 </div>
 
-                &lt;!&ndash;                ALLOW   &ndash;&gt;
+<!--                &lt;!&ndash;                ALLOW   &ndash;&gt;
                 <div class="form-group bmd-form-group">
                     &lt;!&ndash;                Allow pets&ndash;&gt;
                     <div class="form-check">
@@ -381,19 +382,13 @@
     </div>
 </div>
 
-<div class="main main-raised" id="easySearch">
+<div class="main main-raised">
     <div class="container">
         <div class="section text-center" style="margin-top: 100px">
+            <h2 class="title">Trips</h2>
+            <form style="margin-left: 260px" id="easySearch">
 
-<!--Modal easy search trips                     -->
-            <blockquote class="blockquote text-center">
-                <h2 class="title">Search trips: </h2>
-<!--                <p class="mb-0 h5">SEARCH TRIP</p>-->
-            </blockquote>
-
-            <form style="margin-left: 260px">
-
-                <div class="form-row align-items-center">
+                <div class="form-row align-items-left">
                     <!--                        ORIGIN              -->
                     <div class="col-3">
                         <label class="label-control" for="easyOriginSearch">Origin</label>
@@ -427,7 +422,6 @@
                 </div>
 
             </form>
-            <h2 class="title">Trips</h2>
             <div class="row" id="trip-body"></div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
