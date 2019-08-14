@@ -1,14 +1,37 @@
 package com.telerik.carpoolingapplication.models.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class EditTripDTO {
+    @NotNull
     private int id;
+
+    @NotNull
+    @Size(min = 3, max = 20, message = "Car model should be between 3 and 20 symbols")
     private String carModel;
+
+    @Size(min = 3, max = 200, message = "Message should be between 3 and 200 symbols")
     private String message;
-    //Date-time format
+
+    @NotNull
+    @Size(min = 18, max = 19, message = "Departure time should be between 18 and 19 symbols")
     private String departureTime;
+
+    @NotNull
+    @Size(min = 3, max = 30, message = "Origin should be between 3 and 30 symbols")
     private String origin;
+
+    @Size(min = 3, max = 30, message = "Destination should be between 3 and 30 symbols")
     private String destination;
+
+    @NotNull
+    @Min(1)
+    @Max(7)
     private int availablePlaces;
+
     private boolean smoking;
     private boolean pets;
     private boolean luggage;

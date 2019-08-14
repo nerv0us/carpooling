@@ -1,14 +1,10 @@
 package com.telerik.carpoolingapplication.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "trips")
@@ -24,10 +20,9 @@ public class Trip {
     @NotNull
     private String carModel;
 
-    @NotNull
+    @ColumnDefault("")
     private String message;
 
-    //Date-time format
     @NotNull
     private String departureTime;
 
@@ -50,10 +45,8 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(@NotNull User driver, @NotNull String carModel, @NotNull String message
-            , @NotNull String departureTime, @NotNull String origin, @NotNull String destination
-            , @NotNull int availablePlaces, @NotNull TripStatus tripStatus
-            , boolean smoking, boolean pets, boolean luggage) {
+    public Trip(User driver, String carModel, String message, String departureTime, String origin, String destination,
+                int availablePlaces, TripStatus tripStatus, boolean smoking, boolean pets, boolean luggage) {
         this.driver = driver;
         this.carModel = carModel;
         this.message = message;

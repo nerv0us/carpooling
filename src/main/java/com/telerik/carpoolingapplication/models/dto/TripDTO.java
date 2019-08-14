@@ -1,10 +1,12 @@
 package com.telerik.carpoolingapplication.models.dto;
 
-import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 
-import javax.persistence.*;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,22 +19,28 @@ public class TripDTO {
     private UserDTO driver;
 
     @NotNull
+    @Size(min = 3, max = 20, message = "Car model should be between 3 and 20 symbols")
     private String carModel;
 
     @NotNull
+    @Size(min = 3, max = 200, message = "Message should be between 3 and 200 symbols")
     private String message;
 
-    //Date-time format
     @NotNull
+    @Size(min = 18, max = 19, message = "Departure time should be between 18 and 19 symbols")
     private String departureTime;
 
     @NotNull
+    @Size(min = 3, max = 30, message = "Origin should be between 3 and 30 symbols")
     private String origin;
 
     @NotNull
+    @Size(min = 3, max = 30, message = "Destination should be between 3 and 30 symbols")
     private String destination;
 
     @NotNull
+    @Min(1)
+    @Max(7)
     private int availablePlaces;
 
     private List<PassengerDTO> passengers;
@@ -49,11 +57,9 @@ public class TripDTO {
     public TripDTO() {
     }
 
-    public TripDTO(@NotNull int id, @NotNull UserDTO driver, @NotNull String carModel
-            , @NotNull String message, @NotNull String departureTime, @NotNull String origin
-            , @NotNull String destination, @NotNull int availablePlaces
-            , @NotNull TripStatus tripStatus, boolean smoking, boolean pets
-            , boolean luggage) {
+    public TripDTO(int id, UserDTO driver, String carModel, String message, String departureTime, String origin,
+                   String destination, int availablePlaces, TripStatus tripStatus, boolean smoking, boolean pets,
+                   boolean luggage) {
         this.id = id;
         this.driver = driver;
         this.carModel = carModel;

@@ -1,12 +1,22 @@
 package com.telerik.carpoolingapplication.models.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class DriverDTO {
+    @NotNull
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.")
     private String username;
 
+    @NotNull
+    @Size(min = 3, max = 25, message = "First name should be between 3 and 25 characters.")
     private String firstName;
 
+    @NotNull
+    @Size(min = 3, max = 25, message = "Last name should be between 3 and 25 characters.")
     private String lastName;
 
+    @NotNull
     private double ratingAsDriver;
 
     public DriverDTO() {

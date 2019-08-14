@@ -73,7 +73,11 @@ public final class ModelsMapper {
 
     public static void updateTrip(Trip tripToEdit, EditTripDTO editTripDTO) {
         tripToEdit.setCarModel(editTripDTO.getCarModel());
-        tripToEdit.setMessage(editTripDTO.getMessage());
+        if (editTripDTO.getMessage() == null) {
+            tripToEdit.setMessage("");
+        } else {
+            tripToEdit.setMessage(editTripDTO.getMessage());
+        }
         tripToEdit.setDepartureTime(editTripDTO.getDepartureTime());
         tripToEdit.setOrigin(editTripDTO.getOrigin());
         tripToEdit.setDestination(editTripDTO.getDestination());
