@@ -20,6 +20,16 @@ function loadTopTenDrivers() {
     })
 }
 
+$(document).on("click", "#easySearchBtn", function () {
+    $('#upperPart').hide();
+    $('#top-drivers').hide();
+});
+$(document).on("click", "#fullSearchBtn", function () {
+    $('#upperPart').hide();
+    $('#top-drivers').hide();
+    $('#easySearch').hide();
+});
+
 //Add filtering and sorting function!
 function loadTrips() {
     console.log("loadTrips()");
