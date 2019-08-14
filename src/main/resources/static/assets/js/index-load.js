@@ -21,14 +21,48 @@ function loadTopTenDrivers() {
 }
 
 $(document).on("click", "#easySearchBtn", function () {
-    $('#upperPart').hide();
-    $('#top-drivers').hide();
+    page = 1;
+    hidePageUpAndBottom();
+    loadTrips()
 });
 $(document).on("click", "#fullSearchBtn", function () {
+    page = 1;
+    hidePageUpAndBottom();
+    $('#easySearch').hide();
+    loadTrips()
+});
+
+let page = 1;
+$(document).on("click", "#page1", function () {
+    hidePageUpAndBottom();
+    page = 1;
+    loadTrips()
+});
+$(document).on("click", "#page2", function () {
+    hidePageUpAndBottom();
+    page = 2;
+    loadTrips()
+});
+$(document).on("click", "#page3", function () {
+    hidePageUpAndBottom();
+    page = 3;
+    loadTrips()
+});
+$(document).on("click", "#page4", function () {
+    hidePageUpAndBottom();
+    page = 4;
+    loadTrips()
+});
+$(document).on("click", "#page5", function () {
+    hidePageUpAndBottom();
+    page = 5;
+    loadTrips()
+});
+
+function hidePageUpAndBottom() {
     $('#upperPart').hide();
     $('#top-drivers').hide();
-    $('#easySearch').hide();
-});
+}
 
 //Add filtering and sorting function!
 function loadTrips() {
@@ -37,7 +71,7 @@ function loadTrips() {
     let searchOriginFront = $('#searchOriginFront').val();
     let searchOrigin = $('#searchOrigin').val();
     let searchOriginUrl = '';
-    if (searchOriginFront !== ''){
+    if (searchOriginFront !== '') {
         searchOriginUrl = 'origin=' + searchOriginFront + '&';
     }
     if (searchOrigin !== '') {
@@ -47,7 +81,7 @@ function loadTrips() {
     let searchDestinationFront = $('#searchDestinationFront').val();
     let searchDestination = $('#searchDestination').val();
     let searchDestinationUrl = '';
-    if (searchDestinationFront !== ''){
+    if (searchDestinationFront !== '') {
         searchDestinationUrl = 'destination=' + searchDestinationFront + '&';
     }
     if (searchDestination !== '') {
@@ -57,7 +91,7 @@ function loadTrips() {
     let searchDateTimeEarliestFront = $('#searchDateTimeEarliestFront').val();
     let searchDateTimeEarliest = $('#searchDateTimeEarliest').val();
     let searchDateTimeEarliestUrl = '';
-    if (searchDateTimeEarliestFront !== ''){
+    if (searchDateTimeEarliestFront !== '') {
         searchDateTimeEarliestUrl = 'earliestDepartureTime=' + searchDateTimeEarliestFront + '&';
     }
     if (searchDateTimeEarliest !== '') {
@@ -855,26 +889,5 @@ $(document).on("click", "#applyButton", function () {
     });
 });
 
-let page = 1;
-$(document).on('click', '#page1', function f() {
-    page = 1;
-    loadTrips()
-});
-$(document).on('click', '#page2', function f() {
-    page = 2;
-    loadTrips()
-});
-$(document).on('click', '#page3', function f() {
-    page = 3;
-    loadTrips()
-});
-$(document).on('click', '#page4', function f() {
-    page = 4;
-    loadTrips()
-});
-$(document).on('click', '#page5', function f() {
-    page = 5;
-    loadTrips()
-});
 
 
