@@ -30,8 +30,20 @@ function loadTrips() {
         searchOriginUrl = 'origin=' + searchOrigin + '&';
     }
 
-    let url = `http://localhost:8080/api/trips?` + searchOriginUrl;
+    let searchDestination = $('#searchDestination').val();
+    let searchDestinationUrl = '';
+    if (searchDestination !== ''){
+        searchDestinationUrl = 'destination=' + searchDestination + '&';
+    }
 
+    let searchDateTimeEarliest = $('#searchDateTimeEarliest').val();
+    let searchDateTimeEarliestUrl = '';
+    if (searchDateTimeEarliest !== ''){
+        searchDateTimeEarliestUrl = 'earliestDepartureTime=' + searchDateTimeEarliest + '&';
+    }
+
+
+    let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl + searchDateTimeEarliestUrl;
     console.log(url);
     $.ajax({
         url: url,
