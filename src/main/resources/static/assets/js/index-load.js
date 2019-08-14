@@ -72,14 +72,24 @@ function loadTrips() {
         searchLuggageAllowedUrl = 'luggage=' + searchLuggageAllowed + '&';
     }
 
+    let searchSortByParameter = $('#searchSortByParameter').val();
+    let searchSortByParameterUrl = '';
+    if (searchSortByParameter !== 'Select option') {
+        if (searchSortByParameter === 'Driver rating') searchSortByParameter = 'driverRating';
+        if (searchSortByParameter === 'Departure time') searchSortByParameter = 'departureTime';
+        if (searchSortByParameter === 'Available places') searchSortByParameter = 'availablePlaces';
+        searchSortByParameterUrl = 'sortParameter=' + searchSortByParameter + '&';
+    }
+
     if (searchOriginUrl !== '' || searchDestinationUrl !== '' || searchDateTimeEarliestUrl !== '' ||
         searchDateTimeLatestUrl !== '' || searchAvailablePlacesUrl !== '' ||
-        searchPetsAllowedUrl !== '' || searchSmokingAllowedUrl !== '' || searchLuggageAllowedUrl !== ''){
+        searchPetsAllowedUrl !== '' || searchSmokingAllowedUrl !== '' || searchLuggageAllowedUrl !== '' ||
+        searchSortByParameterUrl !== '') {
         $('#easySearch').hide();
     }
     let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
         searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl + searchPetsAllowedUrl +
-        searchSmokingAllowedUrl + searchLuggageAllowedUrl;
+        searchSmokingAllowedUrl + searchLuggageAllowedUrl + searchSortByParameterUrl;
     console.log(url);
     $.ajax({
         url: url,
@@ -96,11 +106,19 @@ function loadTrips() {
                             <div class="card-body">
                                 <h6 class="card-title">
                                     <p  class="row">
+                                        <span>Driver rating: ${response[i].driver.ratingAsDriver}</span>
+                                    </p>
+                                    <br>
+                                    <p  class="row">
                                         <span>Origin: ${response[i].origin} &nbsp &nbsp Destination: ${response[i].destination}</span>
                                     </p>
                                     <br>
                                     <p  class="row">
                                         <span>Departure time: ${response[i].departureTime}</span>
+                                    </p>
+                                    <br>
+                                    <p  class="row">
+                                        <span>Available places: ${response[i].availablePlaces}</span>
                                     </p>
                                     <input type="hidden" class="tripId" value=${response[i].id}>                                                            
                                 </h6>
