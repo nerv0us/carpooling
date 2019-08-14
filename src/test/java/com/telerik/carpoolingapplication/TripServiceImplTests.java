@@ -29,7 +29,7 @@ public class TripServiceImplTests {
     TripServiceImpl tripService;
 
     @Test
-    public void createTrip_Should_CallRepositoryCreateTrip_When_CreatingTrip() {
+    public void createTrip_Should_CallRepository_When_Trip_Is_Valid() {
         // Arrange
         String departureTimeInFuture = "01/01/9999 00:00 AM";
         CreateTripDTO trip = new CreateTripDTO("Test", "test message", departureTimeInFuture,
@@ -44,7 +44,7 @@ public class TripServiceImplTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createTrip_Should_ThrowException_When_DepartureTime_IsNot_Valid() {
+    public void createTrip_Should_ThrowException_When_DepartureTime_Is_In_The_Past() {
         // Arrange
         String departureTimeInPast = "01/01/2000 00:00 AM";
         CreateTripDTO trip = new CreateTripDTO("Test", "test message", departureTimeInPast,
@@ -60,10 +60,12 @@ public class TripServiceImplTests {
 
 
     @Test(expected = ValidationException.class)
-    public void createTrip_Should_ThrowException_When_User_Is_Null() {
+    public void createTrip_Should_ThrowException_When_DateOrTime_Is_Not_Valid() {
         // Arrange
-        CreateTripDTO trip = new CreateTripDTO();
-        UserDTO user = null;
+        String invalidDepartureTime = "asd";
+        CreateTripDTO trip = new CreateTripDTO("Test", "test message", invalidDepartureTime,
+                "TestCity", "TestCity", 1, true, true, true);
+        UserDTO user = new UserDTO();
 
         // Act
         tripService.createTrip(trip, user);
@@ -118,15 +120,15 @@ public class TripServiceImplTests {
     public void addComment_Should_CallRepository() {
         // Arrange
         TripDTO trip = createTripHelper();
-        CommentDTO comment = new CommentDTO();
         UserDTO user = new UserDTO();
+        CommentDTO comment = new CommentDTO("test comment", 1);
         Mockito.when(tripRepository.getTrip(1)).thenReturn(trip);
 
         // Act
         tripService.addComment(1, user, comment);
 
         // Assert
-        Mockito.verify(tripRepository, Mockito.times(1)).addComment(trip, comment);
+        Mockito.verify(tripRepository, Mockito.times(1)).addComment(trip, comment, 0);
     }
 
     @Test
