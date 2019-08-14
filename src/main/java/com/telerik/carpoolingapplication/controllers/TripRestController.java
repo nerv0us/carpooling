@@ -59,13 +59,13 @@ public class TripRestController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping
     public String createTrip(@Valid @RequestBody CreateTripDTO createTripDTO, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.createTrip(createTripDTO, user);
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
         }
         return Constants.TRIP_CREATED;
     }
@@ -73,15 +73,13 @@ public class TripRestController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping
     public String editTrip(@Valid @RequestBody EditTripDTO editTripDTO, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.editTrip(editTripDTO, user);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
         }
         return Constants.TRIP_UPDATED;
     }
@@ -98,15 +96,15 @@ public class TripRestController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
     public String changeTripStatus(@PathVariable int id, @RequestParam String status, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.changeTripStatus(id, user, status);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         return Constants.TRIP_STATUS_CHANGED;
     }
@@ -114,11 +112,9 @@ public class TripRestController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/comments")
     public String addComment(@PathVariable int id, @Valid @RequestBody CommentDTO commentDTO, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.addComment(id, user, commentDTO);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -131,11 +127,9 @@ public class TripRestController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/passengers")
     public String apply(@PathVariable int id, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.apply(id, user);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -146,17 +140,17 @@ public class TripRestController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PatchMapping("{tripId}/passengers/{passengerId}")
-    public String changePassengerStatus(@PathVariable int tripId, @PathVariable int passengerId
-            , @RequestParam String status, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
+    public String changePassengerStatus(@PathVariable int tripId, @PathVariable int passengerId,
+                                        @RequestParam String status, HttpServletRequest request) {
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.changePassengerStatus(tripId, passengerId, user, status);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
         return Constants.PASSENGER_STATUS_CHANGED;
     }
@@ -164,11 +158,9 @@ public class TripRestController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("{id}/driver/rate")
     public String rateDriver(@PathVariable int id, @Valid @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.rateDriver(id, user, ratingDTO);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -179,13 +171,11 @@ public class TripRestController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("{tripId}/passengers/{passengerId}/rate")
-    public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId
-            , @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
-        UserDTO user = getAuthorizedUser(request);
+    public String ratePassenger(@PathVariable int tripId, @PathVariable int passengerId,
+                                @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
         try {
+            UserDTO user = getAuthorizedUser(request);
             tripService.ratePassenger(tripId, passengerId, user, ratingDTO);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -196,6 +186,9 @@ public class TripRestController {
 
     private UserDTO getAuthorizedUser(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
+        if (token == null) {
+            throw new UnauthorizedException(Constants.INVALID_TOKEN_MESSAGE);
+        }
         User user = userService.getByUsername(jwtTokenProvider.getUsername(token));
         return ModelsMapper.getUser(user);
     }

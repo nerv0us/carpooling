@@ -8,15 +8,15 @@ import javax.validation.constraints.Size;
 
 public class CreateTripDTO {
     @NotNull
-    @Size(min = 3, max = 20, message = "Car model should be between 3 and 20 symbols")
+    @Size(min = 3, max = 40, message = "Car model should be between 3 and 40 symbols")
     private String carModel;
 
-    @Size(min = 3, max = 200, message = "Message should be between 3 and 200 symbols")
+    @Size(max = 200, message = "Message should be between 3 and 200 symbols")
     @Lob
     private String message;
 
     @NotNull
-    @Size(min = 18, max = 19, message = "Departure time should be between 18 and 19 symbols")
+    @Size(min = 18, max = 19, message = "Departure time should be between 18 and 19 symbols in format \'MM/dd/yyyy hh:mm a\'")
     private String departureTime;
 
     @NotNull

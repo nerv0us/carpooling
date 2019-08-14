@@ -27,12 +27,15 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<TripDTO> getFilteredTrips(TripStatus status, String driverUsername, String origin, String destination
-            , String latestDepartureTime, String earliestDepartureTime, Integer places, Boolean cigarettes
-            , Boolean animals, Boolean baggage) {
+    public List<TripDTO> getFilteredTrips(TripStatus status, String driverUsername, String origin, String destination,
+                                          String latestDepartureTime, String earliestDepartureTime, Integer places,
+                                          Boolean cigarettes, Boolean animals, Boolean baggage) {
+
         Session session = sessionFactory.getCurrentSession();
-        Query<Trip> tripQuery = queryBuilder(session, status, driverUsername, origin, destination, latestDepartureTime
-                , earliestDepartureTime, places, cigarettes, animals, baggage);
+
+        Query<Trip> tripQuery = queryBuilder(session, status, driverUsername, origin, destination, latestDepartureTime,
+                earliestDepartureTime, places, cigarettes, animals, baggage);
+
         return getPassengersStatusesAndComments(tripQuery.list(), session);
     }
 

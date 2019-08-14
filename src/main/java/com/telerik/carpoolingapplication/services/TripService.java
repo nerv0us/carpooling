@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface TripService {
 
-    List<TripDTO> getTrips(Integer page, Integer showElements, String tripStatus, String driverUsername
-            , String origin, String destination, String latestDepartureTime
-            , String earliestDepartureTime, String availablePlaces
-            , String smoking, String pets, String luggage, String sortParameter, String ascending);
+    List<TripDTO> getTrips(Integer page, Integer showElements, String tripStatus, String driverUsername,
+                           String origin, String destination, String latestDepartureTime, String earliestDepartureTime,
+                           String availablePlaces, String smoking, String pets,
+                           String luggage, String sortParameter, String ascending);
 
     void createTrip(CreateTripDTO createTripDTO, UserDTO user);
 
