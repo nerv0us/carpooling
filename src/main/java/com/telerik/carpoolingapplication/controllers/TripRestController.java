@@ -1,7 +1,8 @@
 package com.telerik.carpoolingapplication.controllers;
 
 import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
-import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.ModelsMapper;
+import com.telerik.carpoolingapplication.models.User;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.security.JwtTokenProvider;
@@ -16,9 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -35,14 +33,6 @@ public class TripRestController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    /* Paging for getTripsFiltered()?
-                _end
-                integer($int32)
-            (query)
-                _start
-                integer($int32)
-            (query)
-            */
     @GetMapping
     public List<TripDTO> getTrips(@RequestParam(required = false) Integer page,
                                   @RequestParam(required = false) Integer showElements,
@@ -59,8 +49,8 @@ public class TripRestController {
                                   @RequestParam(required = false) String sortParameter,
                                   @RequestParam(required = false) String ascending) {
         try {
-            return tripService.getTrips(page, showElements, tripStatus, driverUsername, origin, destination, earliestDepartureTime
-                    , latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
+            return tripService.getTrips(page, showElements, tripStatus, driverUsername, origin, destination, earliestDepartureTime,
+                    latestDepartureTime, availablePlaces, smoking, pets, luggage, sortParameter, ascending);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -123,7 +113,7 @@ public class TripRestController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/comments")
-    public String addComment(@PathVariable int id, @RequestBody CommentDTO commentDTO, HttpServletRequest request) {
+    public String addComment(@PathVariable int id, @Valid @RequestBody CommentDTO commentDTO, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
         try {
             tripService.addComment(id, user, commentDTO);
@@ -173,7 +163,7 @@ public class TripRestController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("{id}/driver/rate")
-    public String rateDriver(@PathVariable int id, @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
+    public String rateDriver(@PathVariable int id, @Valid @RequestBody RatingDTO ratingDTO, HttpServletRequest request) {
         UserDTO user = getAuthorizedUser(request);
         try {
             tripService.rateDriver(id, user, ratingDTO);
