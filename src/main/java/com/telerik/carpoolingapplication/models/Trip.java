@@ -20,7 +20,7 @@ public class Trip {
     @NotNull
     private String carModel;
 
-    @ColumnDefault("")
+    @NotNull
     private String message;
 
     @NotNull
