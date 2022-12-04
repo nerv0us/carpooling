@@ -29,7 +29,7 @@ public class UserServiceImplTests {
     public void getByUsername_Should_ReturnUser_When_Exist() {
         // Arrange
         User user = new User("username", "firstName", "lastName", "user@example.com",
-                "08888888", "12345", 0D, 0D, "/images/avatar");
+                "08888888", "12345", "/images/avatar");
         Mockito.when(userRepository.getByUsername("username")).thenReturn(user);
 
         //Act
@@ -54,7 +54,7 @@ public class UserServiceImplTests {
     public void getById_Should_ReturnUser_When_UserExist() {
         // Arrange
         User user = new User("username", "firstName", "lastName", "user@example.com",
-                "08888888", "12345", 0D, 0D, "/images/avatar");
+                "08888888", "12345",  "/images/avatar");
         Mockito.when(userRepository.getById(1)).thenReturn(user);
 
         // Act
