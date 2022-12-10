@@ -18,11 +18,17 @@ function login() {
             "Content-Type": "application/json"
         },
         data: JSON.stringify(data),
-        success: function (data) {
-            setJwtToken(data);
+        success: function (response) {
+            Swal.fire({
+                position: 'top',
+                type: 'success',
+                title: 'You have successfully login!',
+                showConfirmButton: false,
+                timer: 2000
+            });
             updateNavigationButtons('none', 'initial');
             window.location.href = '/';
-            setTimeout(50);
+            setJwtToken(response);
             loadTopTenDrivers();
             loadTrips();
             location.reload();
@@ -62,12 +68,18 @@ function register() {
         data: JSON.stringify(data),
 
         success: function () {
-            alert("Successfully registered!");
-            $('#page-header').hide();
+            Swal.fire({
+                position: 'top',
+                type: 'success',
+                title: 'You have successfully registered!',
+                showConfirmButton: false,
+                timer: 2000
+            });
             $('#content').load('../login.html');
+            $('#page-header').hide();
         },
         error: function () {
-            alert("Failed");
+            $('#content').append()
         }
     });
 }
@@ -78,3 +90,10 @@ function logout() {
     updateNavigationButtons('initial', 'none');
     location.reload();
 }
+
+function successRegisterMessage() {
+    $("#message").append("Successfully registered")
+}
+
+
+

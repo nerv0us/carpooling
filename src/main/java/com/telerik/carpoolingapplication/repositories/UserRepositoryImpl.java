@@ -83,8 +83,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<DriverDTO> getTopTenDrivers() {
         Session session = sessionFactory.getCurrentSession();
-        Query<User> query = session.createQuery("from User order by ratingAsDriver desc ", User.class);
-        query.setMaxResults(10);
+        Query<User> query = session.createQuery("from User ", User.class);
         return ModelsMapper.fromUserToDriverDto(query.list());
     }
 }

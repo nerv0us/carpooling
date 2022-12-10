@@ -68,7 +68,9 @@ function createTrip() {
         },
         error: function () {
             console.log("failed");
-            alert("Failed")
+            alert("Failed");
+            $('#errorCreateTrip').append(`
+            <div><h6 style="color: #7f231c">Wrong input</h6></div>`)
         }
     });
 }
@@ -171,7 +173,10 @@ function searchTrips() {
     }
 
 
-    let url = `http://localhost:8080/api/trips${filterTrips}earliestDepartureTime=${searchByDateAndTimeEarliest}&latestDepartureTime=${searchByDateAndTimeLatest}&availablePlaces=${searchAvailablePlaces}&smoking=${searchIsAllowedSmoking}&pets=${searchIsAllowedPets}&luggage=${searchIsAllowedLuggage}&sortParameter=${sortParameter}`;
+    let url = `http://localhost:8080/api/trips${filterTrips}earliestDepartureTime=${searchByDateAndTimeEarliest}
+    &latestDepartureTime=${searchByDateAndTimeLatest}&availablePlaces=${searchAvailablePlaces}
+    &smoking=${searchIsAllowedSmoking}&pets=${searchIsAllowedPets}&luggage=${searchIsAllowedLuggage}
+    &sortParameter=${sortParameter}`;
 
     console.log(url);
 
@@ -221,17 +226,20 @@ function searchTrips() {
 }
 
 function navigateToLogin() {
-    $('#upperPart').hide();
-    $('#easySearch').hide();
-    $('#top-drivers').hide();
+    hideUpperPart();
     $('#content').load('../login.html');
 }
 
 function navigateToRegister() {
+    hideUpperPart();
+    $('#content').load('../register.html');
+}
+
+function hideUpperPart() {
     $('#upperPart').hide();
     $('#easySearch').hide();
     $('#top-drivers').hide();
-    $('#content').load('../register.html');
+    $('#frontTrips').hide();
 }
 
 function navigateToProfile() {

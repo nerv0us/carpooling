@@ -18,6 +18,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <link href="assets/css/main.css" rel="stylesheet"/>
+
+<!--    Swal fire   -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
 </head>
 
 <body>
@@ -52,14 +56,16 @@
                         </a>
                     </li>
 
-                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#search-trip-modal">
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#search-trip-modal"
+                        id="detailedSearchTrip">
                         <a class="nav-link">
-                            Detail search trip
+                            Detailed search trip
                             <div class="ripple-container"></div>
                         </a>
                     </li>
 
-                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#create-trip-modal">
+                    <li class="nav-item authorized-button" data-toggle="modal" data-target="#create-trip-modal"
+                        id="createTrip">
                         <a class="nav-link">
                             Create Trip
                             <div class="ripple-container"></div>
@@ -88,7 +94,6 @@
 <!--    upperPart   -->
 <!--    easySearch  -->
 <!--    top-drivers -->
-
 
 <!--                            Upper part                         -->
 
@@ -156,7 +161,7 @@
 
                 <!--                Origin input-->
                 <div class="form-group bmd-form-group">
-                    <label for="car_model"><h5>Origin</h5></label>
+                    <label for="car_model"><h5>Origin*</h5></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text"><i class="material-icons">car</i></div>
@@ -167,7 +172,7 @@
 
                 <!--                Destination input-->
                 <div class="form-group bmd-form-group">
-                    <label for="car_model"><h5>Destination</h5></label>
+                    <label for="car_model"><h5>Destination*</h5></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text"><i class="material-icons">car</i></div>
@@ -178,7 +183,7 @@
 
                 <!--                Car input-->
                 <div class="form-group bmd-form-group">
-                    <label for="car_model"><h5>Car model</h5></label>
+                    <label for="car_model"><h5>Car model*</h5></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text"><i class="material-icons">car</i></div>
@@ -189,7 +194,7 @@
 
                 <!--                Date and time input-->
                 <div class="form-group">
-                    <label for="date_time" class="label-control">Date and time</label>
+                    <label for="date_time" class="label-control">Date and time*</label>
                     <input type="text" class="form-control datetimepicker" value="08/01/2019" id="date_time"/>
                 </div>
 
@@ -201,7 +206,7 @@
                 </div>
 
                 <div class="form-group bmd-form-group">
-                    <label for="inputState">Available places</label>
+                    <label for="inputState">Available places*</label>
                     <select id="inputState" class="form-control">
                         <option selected>1</option>
                         <option>2</option>
@@ -233,7 +238,7 @@
                         </label>
                     </div>
                     <!--                Allow luggage-->
-                    <div class="form-check">
+                    <div class="form-check" id="errorCreateTrip">
                         <label class="form-check-label">
                             <input class="form-check-input" type="checkbox" id="allow_luggage">
                             Allow luggage
@@ -280,7 +285,7 @@
                     </div>
                 </div>
 
-                <!--                Destination -->
+                <!--Destination-->
                 <div class="form-group bmd-form-group">
                     <label for="car_model"><h5>Destination</h5></label>
                     <div class="input-group">
@@ -291,28 +296,17 @@
                     </div>
                 </div>
 
-                <!--                Earliest Date and time input-->
+                <!--Earliest Date and time input-->
                 <div class="form-group">
                     <label for="date_time" class="label-control">Earliest date and time</label>
-                    <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                    <input type="text" class="form-control datetimepicker"
                            id="searchDateTimeEarliest"/>
                 </div>
 
-                <!--                Allow latest date and time input-->
-<!--                <div class="form-check">-->
-<!--                    <label class="form-check-label">-->
-<!--                        <input class="form-check-input" type="checkbox" id="showLatestDateForm">-->
-<!--                        Add latest date and time-->
-<!--                        <span class="form-check-sign">-->
-<!--                            <span class="check"></span>-->
-<!--                            </span>-->
-<!--                    </label>-->
-<!--                </div>-->
-
-                <!--                Latest Date and time input-->
+                <!--Latest Date and time input-->
                 <div class="form-group dateTimeLatest">
                     <label for="date_time" class="label-control">Latest date and time</label>
-                    <input type="text" class="form-control datetimepicker" value="08/13/2019"
+                    <input type="text" class="form-control datetimepicker"
                            id="searchDateTimeLatest"/>
                 </div>
 
@@ -320,7 +314,8 @@
                 <div class="form-group bmd-form-group">
                     <label for="inputState">Available places</label>
                     <select id="searchAvailablePlaces" class="form-control">
-                        <option selected>1</option>
+                        <option selected>Select option</option>
+                        <option>1</option>
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
@@ -330,105 +325,103 @@
                 <!--                ALLOW   -->
                 <div class="form-group bmd-form-group">
                     <!--                Allow pets-->
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" id="searchIsAllowedPets">
-                            Allow pets
-                            <span class="form-check-sign">
-                            <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <!--                Allow smoking-->
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" id="searchIsAllowedSmoking">
-                            Allow smoking in car
-                            <span class="form-check-sign">
-                            <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <!--                Allow luggage-->
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" id="searchIsAllowedLuggage">
-                            Allow luggage
-                            <span class="form-check-sign">
-                            <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-
-                    <!--                Sort parameters-->
-                    <div class="form-group bmd-form-group">
-                        <label for="inputState">Sort by:</label>
-                        <select id="searchSortByParameter" class="form-control">
-                            <option selected>Departure time</option>
-                            <option>Available places</option>
-                            <option>Driver rating</option>
-                        </select>
-                    </div>
-
+                    <label for="inputState">Pets allowed</label>
+                    <select id="searchPetsAllowed" class="form-control">
+                        <option selected>Select option</option>
+                        <option>True</option>
+                        <option>False</option>
+                    </select>
+                </div>                 <!--Allow smoking-->
+                <div class="form-group bmd-form-group">
+                    <label for="inputState">Smoking allowed</label>
+                    <select id="searchSmokingAllowed" class="form-control">
+                        <option selected>Select option</option>
+                        <option>True</option>
+                        <option>False</option>
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="searchTrips()">Search
-                    </button>
+                <!--Allow luggage-->
+                <div class="form-group bmd-form-group">
+                    <label for="inputState">Luggage allowed</label>
+                    <select id="searchLuggageAllowed" class="form-control">
+                        <option selected>Select option</option>
+                        <option>True</option>
+                        <option>False</option>
+                    </select>
                 </div>
+
+                <!--                Sort parameters-->
+                <div class="form-group bmd-form-group">
+                    <label for="inputState">Sort by:</label>
+                    <select id="searchSortByParameter" class="form-control">
+                        <option selected>Select option</option>
+                        <option>Departure time</option>
+                        <option>Available places</option>
+                        <option>Driver rating</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="fullSearchBtn">Search
+                </button>
             </div>
         </div>
     </div>
 </div>
+</div>
 
-<div class="main main-raised" id="easySearch">
+<div class="main main-raised" id="frontTrips" style="margin-top: 100px">
     <div class="container">
-        <div class="section text-center" style="margin-top: 100px">
+        <div class="section text-center" style="margin-top: 50px">
+            <h2 class="title">Trips</h2>
+            <form id="easySearch">
 
-<!--Modal easy search trips                     -->
-            <blockquote class="blockquote text-center">
-                <h2 class="title">Search trips: </h2>
-<!--                <p class="mb-0 h5">SEARCH TRIP</p>-->
-            </blockquote>
-
-            <form style="margin-left: 260px">
-
-                <div class="form-row align-items-center">
+                <div class="form-row align-items-left">
                     <!--                        ORIGIN              -->
-                    <div class="col-3">
-                        <label class="label-control" for="easyOriginSearch">Origin</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="easyOriginSearch" placeholder="From"
-                                   style="color: #000000;">
-                        </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="From..." id="searchOriginFront">
+                    </div>
+                    &nbsp&nbsp
+
+                    <!--Destination-->
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="To..." id="searchDestinationFront">
+                    </div>
+                    &nbsp&nbsp
+
+                    <!--Earliest Date and time input-->
+                    <div class="form-group">
+                        <input type="text" class="form-control datetimepicker" placeholder="Earliest departure time..."
+                               id="searchDateTimeEarliestFront"/>
                     </div>
 
-                    <!--                        DESTINATION         -->
-                    <div class="col-3">
-                        <label for="easyDestinationSearch">Destination</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="easyDestinationSearch" placeholder="To"
-                                   style="color: #000000;">
-                        </div>
-                    </div>
-
-                    <!--                        DATE AND TIME         -->
-                    <div class="form-group mb-0 mb-3">
-                        <label for="date_time" class="label-control">Earliest date and time</label>
-                        <input type="text" class="form-control datetimepicker" value="08/13/2019"
-                               id="easyDateTimeEarliest"/>
-                    </div>
-
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-primary mb-2" onclick="shortSearchTrips()">Search
+                    <div class="col-auto" style="margin-left: 465px">
+                        <button type="button" class="btn btn-primary mb-2" id="easySearchBtn" onclick="loadTrips()">
+                            Search
                         </button>
                     </div>
 
                 </div>
 
             </form>
-            <h2 class="title">Trips</h2>
             <div class="row" id="trip-body"></div>
+            <nav aria-label="Page navigation example" style="margin-left: 720px">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#" id="page1">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page2">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page3">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page4">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="page5">5</a></li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -461,6 +454,11 @@
     </div>
 </div>
 
+<!--                HEADER MESSAGE  -->
+
+    <div class="alert-success" id="message" style="text-align: center; margin-top: 150px; background-color: palegreen"></div></h2>
+
+<!--                Content-->
 <div id="content"></div>
 
 <!--                FOOTER-->

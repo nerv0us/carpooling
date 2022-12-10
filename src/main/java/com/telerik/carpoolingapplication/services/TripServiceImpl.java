@@ -2,18 +2,19 @@ package com.telerik.carpoolingapplication.services;
 
 import com.telerik.carpoolingapplication.exceptions.UnauthorizedException;
 import com.telerik.carpoolingapplication.exceptions.ValidationException;
-import com.telerik.carpoolingapplication.models.*;
+import com.telerik.carpoolingapplication.models.PassengerStatus;
 import com.telerik.carpoolingapplication.models.constants.Constants;
 import com.telerik.carpoolingapplication.models.dto.*;
 import com.telerik.carpoolingapplication.models.enums.PassengerStatusEnum;
 import com.telerik.carpoolingapplication.models.enums.TripStatus;
 import com.telerik.carpoolingapplication.repositories.TripRepository;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripDTO> getTrips(String tripStatus, String driverUsername
+    public List<TripDTO> getTrips(Integer page, String tripStatus, String driverUsername
             , String origin, String destination, String latestDepartureTime
             , String earliestDepartureTime, String availablePlaces
             , String smoking, String pets, String luggage, String sortParameter, String ascending) {
@@ -45,16 +46,36 @@ public class TripServiceImpl implements TripService {
             tripSorter(trips, sortParameter, ascending);
         }
 
-        return trips;
+        if (page == null || page == 1) {
+            if (trips.isEmpty()) {
+                return new ArrayList<>();
+            } else if (trips.size() < 4) {
+                return trips.subList(0, trips.size());
+            } else {
+                return trips.subList(0, 4);
+            }
+        }
+
+        int start = (page - 1) * 4;
+        int end = start + 4;
+
+        if (start > trips.size() - 1) {
+            return new ArrayList<>();
+        } else if (trips.size() < end) {
+            return trips.subList(start, trips.size());
+        } else {
+            return trips.subList(start, end);
+        }
     }
 
     @Override
     public void createTrip(CreateTripDTO createTripDTO, UserDTO user) {
-        if (user == null) {
-            throw new ValidationException(Constants.USER_NOT_FOUND);
+        try {
+            departureTimeValidator(createTripDTO.getDepartureTime());
+            tripRepository.createTrip(createTripDTO, user.getId());
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage());
         }
-        departureTimeValidator(createTripDTO.getDepartureTime());
-        tripRepository.createTrip(createTripDTO, user.getId());
     }
 
     @Override
@@ -79,9 +100,13 @@ public class TripServiceImpl implements TripService {
     @Override
     public TripDTO getTrip(int id, UserDTO user) {
         if (user == null) {
-            throw new ValidationException(Constants.USER_NOT_FOUND);
+            throw new IllegalArgumentException(Constants.USER_NOT_FOUND);
         }
-        return tripRepository.getTrip(id);
+        try {
+            return tripRepository.getTrip(id);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(Constants.TRIP_NOT_FOUND);
+        }
     }
 
     @Override
@@ -93,7 +118,7 @@ public class TripServiceImpl implements TripService {
         try {
             TripStatus updatedStatus = TripStatus.valueOf(status);
             tripRepository.changeTripStatus(trip, updatedStatus);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalIdentifierException e) {
             throw new IllegalArgumentException(Constants.NO_SUCH_STATUS);
         }
     }
@@ -101,10 +126,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public void addComment(int tripId, UserDTO user, CommentDTO commentDTO) {
         TripDTO tripDTO = getTrip(tripId, user);
-        if (user.getId() != commentDTO.getUserId()) {
-            throw new IllegalArgumentException();
-        }
-        tripRepository.addComment(tripDTO, commentDTO);
+        tripRepository.addComment(tripDTO, commentDTO, user.getId());
     }
 
     @Override
@@ -198,8 +220,22 @@ public class TripServiceImpl implements TripService {
     }
 
     private void departureTimeValidator(String time) {
-        LocalDateTime departureTime = LocalDateTime.parse(time
-                , DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a"));
+        int timeLength = time.length();
+
+        String firstDateTimePattern = "MM/dd/yyyy hh:mm a";
+        String secondDateTimePattern = "MM/dd/yyyy h:mm a";
+
+        DateTimeFormatter dateTimeFormatter;
+        if (timeLength == 19) {
+            dateTimeFormatter = DateTimeFormatter.ofPattern(firstDateTimePattern);
+        } else if (timeLength == 18) {
+            dateTimeFormatter = DateTimeFormatter.ofPattern(secondDateTimePattern);
+        } else {
+            throw new ValidationException(Constants.INVALID_DATE_OR_TIME_MESSAGE);
+        }
+
+        LocalDateTime departureTime = LocalDateTime.parse(time, dateTimeFormatter);
+
         if (departureTime.isBefore(LocalDateTime.now()) || departureTime.isEqual(LocalDateTime.now())) {
             throw new IllegalArgumentException(Constants.CREATE_TRIP_IN_PAST);
         }
