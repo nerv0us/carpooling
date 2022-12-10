@@ -36,8 +36,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/trips/{id}").permitAll()
                 .antMatchers("/api/users/top-ten-drivers").permitAll()
                 .antMatchers("/").permitAll()
-
                 .anyRequest().authenticated();
+        // test
 
         http.exceptionHandling().accessDeniedPage("/login");
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
