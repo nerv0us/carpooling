@@ -40,7 +40,8 @@ public class HibernateConfiguration {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setDriverClassName("org.h2.Driver");
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUsername);
         dataSource.setPassword(dbPassword);
@@ -52,8 +53,8 @@ public class HibernateConfiguration {
         Properties hibernateProperties = new Properties();
 
         hibernateProperties.setProperty("spring.jpa.properties.hibernate.dialect"
-                , "org.hibernate.dialect.MySQLDialect");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+                , "org.hibernate.dialect.H2Dialect");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
 
         return hibernateProperties;
     }
