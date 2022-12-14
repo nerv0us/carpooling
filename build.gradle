@@ -11,6 +11,17 @@ sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://pkgs.dev.azure.com/ZhivkoTest/Carpooling/_packaging/BE/maven/v1'
+        name 'BE'
+        credentials {
+            username "ZhivkoTest"
+            password "m27oupgrbgr7goauqlvjwykyt6qwoewqgkls2q3k5oastcbyb3sa"
+        }
+        authentication {
+            basic(BasicAuthentication)
+        }
+    }
 }
 
 dependencies {
