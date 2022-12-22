@@ -21,7 +21,13 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'build'
-- task: PublishPipelineArtifact@1
+- task: Docker@2
   inputs:
-    targetPath: $(System.DefaultWorkingDirectory)
-    artifactName: BE
+    containerRegistry: 'Docker reg'
+    repository: 'carpooling'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+# - task: PublishPipelineArtifact@1
+#   inputs:
+#     targetPath: $(System.DefaultWorkingDirectory)
+#     artifactName: BE
