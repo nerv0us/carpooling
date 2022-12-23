@@ -22,13 +22,16 @@ steps:
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'build'
 
-#Sonar Scan
+#Sonar scannig
 - task: SonarQubeAnalyze@5
 
 # - task: SonarQubePrepare@5
 #   inputs:
 #     SonarQube: 'sonarqube'
 #     scannerMode: 'Other'
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
 
 
 # - task: Docker@2
