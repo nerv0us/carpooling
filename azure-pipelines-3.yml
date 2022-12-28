@@ -23,4 +23,3 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'BE'
     publishLocation: 'Container'
-    StoreAsTar: true
