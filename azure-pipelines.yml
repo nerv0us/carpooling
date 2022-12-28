@@ -32,7 +32,12 @@ steps:
 - task: SonarQubePublish@5
   inputs:
     pollingTimeoutSec: '300'
-
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+    StoreAsTar: true
 
 # - task: Docker@2
 #   inputs:
