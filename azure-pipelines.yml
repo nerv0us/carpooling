@@ -23,15 +23,21 @@ steps:
     tasks: 'build'
 
 #Sonar scannig
-- task: SonarQubeAnalyze@5
+#1
+# - task: SonarQubeAnalyze@5
 
+#2
 # - task: SonarQubePrepare@5
 #   inputs:
 #     SonarQube: 'sonarqube'
 #     scannerMode: 'Other'
-- task: SonarQubePublish@5
-  inputs:
-    pollingTimeoutSec: '300'
+
+#3
+# - task: SonarQubePublish@5
+#   inputs:
+#     pollingTimeoutSec: '300'
+
+#Publish artifact
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
