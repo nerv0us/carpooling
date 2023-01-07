@@ -18,20 +18,31 @@ stages:
   - job: Build
     displayName: Build and push Docker image
     steps:  
-    - task: Gradle@3
+    # - task: Gradle@3
+    #   inputs:
+    #     gradleWrapperFile: 'gradlew'
+    #     tasks: 'build'
+    #     publishJUnitResults: true
+    #     testResultsFiles: '**/TEST-*.xml'
+    #     javaHomeOption: 'JDKVersion'
+    #     jdkVersionOption: '1.8'
+    #     sonarQubeRunAnalysis: true
+    #     sqGradlePluginVersionChoice: 'specify'
+    #     sonarQubeGradlePluginVersion: '2.6.1'
+    #     checkStyleRunAnalysis: true
+    #     findBugsRunAnalysis: true
+    #     spotBugsAnalysis: false
+    - task: Gradle@2
       inputs:
+        workingDirectory: ''
         gradleWrapperFile: 'gradlew'
-        tasks: 'build'
-        publishJUnitResults: true
-        testResultsFiles: '**/TEST-*.xml'
+        gradleOptions: '-Xmx3072m'
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.8'
-        sonarQubeRunAnalysis: true
-        sqGradlePluginVersionChoice: 'specify'
-        sonarQubeGradlePluginVersion: '2.6.1'
-        checkStyleRunAnalysis: true
-        findBugsRunAnalysis: true
-        spotBugsAnalysis: false
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: true
+        testResultsFiles: '**/TEST-*.xml'
+        tasks: 'build'  
     - task: Docker@1      
       inputs:
         containerregistrytype: 'Container Registry'
