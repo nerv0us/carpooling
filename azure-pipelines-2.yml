@@ -49,8 +49,11 @@ stages:
         imageName: '$(ImageName)'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       displayName: 'Push the Docker image to Dockerhub'
-
-
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
     # - task: Gradle@3
     #   inputs:
