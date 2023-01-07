@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine
-COPY . carpooling-1.0.SNAPSHOT.jar
-WORKDIR /tmp
-ENTRYPOINT ["java","-jar", "carpooling-1.0.SNAPSHOT.jar"]
+COPY . /app/build/libs/
+#WORKDIR /tmp
+ENTRYPOINT ["java","-jar", "/app/build/libs/carpooling-1.0.SNAPSHOT.jar"]
 
 # ENV FOO=/bar
 # WORKDIR ${FOO}   # WORKDIR /bar
