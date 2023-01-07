@@ -18,20 +18,6 @@ stages:
   - job: Build
     displayName: Build and push Docker image
     steps:  
-    # - task: Gradle@3
-    #   inputs:
-    #     gradleWrapperFile: 'gradlew'
-    #     tasks: 'build'
-    #     publishJUnitResults: true
-    #     testResultsFiles: '**/TEST-*.xml'
-    #     javaHomeOption: 'JDKVersion'
-    #     jdkVersionOption: '1.8'
-    #     sonarQubeRunAnalysis: true
-    #     sqGradlePluginVersionChoice: 'specify'
-    #     sonarQubeGradlePluginVersion: '2.6.1'
-    #     checkStyleRunAnalysis: true
-    #     findBugsRunAnalysis: true
-    #     spotBugsAnalysis: false
     - task: Gradle@2
       inputs:
         workingDirectory: ''
@@ -46,7 +32,7 @@ stages:
     - task: Docker@1      
       inputs:
         containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
+        dockerRegistryEndpoint: 'Docker Reg'
         command: 'Build an image'
         dockerFile: '**/Dockerfile'
         tags: '$(Build.BuildId)'
@@ -57,15 +43,29 @@ stages:
     - task: Docker@1      
       inputs:
         containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
+        dockerRegistryEndpoint: 'Docker Reg'
         command: 'Push an image'
+        tags: '$(Build.BuildId)'
         imageName: '$(ImageName)'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       displayName: 'Push the Docker image to Dockerhub'
 
 
 
-
+    # - task: Gradle@3
+    #   inputs:
+    #     gradleWrapperFile: 'gradlew'
+    #     tasks: 'build'
+    #     publishJUnitResults: true
+    #     testResultsFiles: '**/TEST-*.xml'
+    #     javaHomeOption: 'JDKVersion'
+    #     jdkVersionOption: '1.8'
+    #     sonarQubeRunAnalysis: true
+    #     sqGradlePluginVersionChoice: 'specify'
+    #     sonarQubeGradlePluginVersion: '2.6.1'
+    #     checkStyleRunAnalysis: true
+    #     findBugsRunAnalysis: true
+    #     spotBugsAnalysis: false
 
 
 # stages:
