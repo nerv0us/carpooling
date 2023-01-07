@@ -49,9 +49,10 @@ stages:
         dockerRegistryEndpoint: 'Docker Hub'
         command: 'Build an image'
         dockerFile: '**/Dockerfile'
+        tags: '$(Build.BuildId)'
         imageName: '$(ImageName)'
-        useDefaultContext: false
-        buildContext: 'CustomerApi'
+        # useDefaultContext: false
+        # buildContext: 'CustomerApi'
         displayName: 'Build the Docker image'
 
 
