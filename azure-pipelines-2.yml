@@ -20,6 +20,8 @@ pool:
 #             command: 'buildAndPush'
 #             Dockerfile: '**/Dockerfile'
 #             tags: '$(Build.BuildId)'
+variables:
+  ImageName: 'carpooling:$(Build.BuildId)'
 stages:
 - stage: Build
   displayName: Build image
