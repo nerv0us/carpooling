@@ -35,7 +35,7 @@ stages:
         dockerRegistryEndpoint: 'Docker Reg'
         command: 'Build an image'
         dockerFile: '**/Dockerfile'
-        tags: 'zhzhelev/+$(Build.BuildId)'
+        tags: 'zhzhelev/carpooling:1'
         imageName: '$(ImageName)'
         # useDefaultContext: false
         # buildContext: 'CustomerApi'
@@ -45,7 +45,7 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'Docker Reg'
         command: 'Push an image'
-        tags: 'zhzhelev/+$(Build.BuildId)'
+        tags: 'zhzhelev/carpooling:1'
         imageName: '$(ImageName)'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       displayName: 'Push the Docker image to Dockerhub'
