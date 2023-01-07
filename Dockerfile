@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine
-COPY . .
+COPY /build/libs/carpooling-application-1.0-SNAPSHOT.jar .
 #WORKDIR /tmp
 ENTRYPOINT ["java","-jar", "carpooling-application-1.0-SNAPSHOT.jar"]
 
