@@ -3,7 +3,8 @@ ENV FOO=/bar
 # WORKDIR ${FOO}   # WORKDIR /bar
 # ADD . $FOO       # ADD . /bar
 # COPY \$FOO /quux # COPY $FOO /quux
-COPY /build/libs/carpooling-application-1.0-SNAPSHOT.jar /tmp
+#COPY /build/libs/carpooling-application-1.0-SNAPSHOT.jar /tmp
+COPY . .
 WORKDIR /tmp
 ENTRYPOINT ["java","-jar", "carpooling-application-1.0-SNAPSHOT.jar"]
 
