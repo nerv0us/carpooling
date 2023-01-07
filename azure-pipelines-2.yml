@@ -51,7 +51,8 @@ stages:
     #   displayName: 'Push the Docker image to Dockerhub'
     - task: CopyFiles@2
       inputs:
-        targetFolder: '$(Build.ArtifactStagingDirectory)/build/libs/'      
+        SourceFolder: '$(Build.ArtifactStagingDirectory)/build/libs/*'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'     
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
