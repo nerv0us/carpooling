@@ -6,8 +6,49 @@
 trigger:
 - development
 
+variables:
+  ImageName: 'carpooling:$(Build.BuildId)'
+
 pool:
   vmImage: ubuntu-latest
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build and push Docker image
+    steps:  
+    - task: Gradle@3
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'build'
+        publishJUnitResults: true
+        testResultsFiles: '**/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.8'
+        sonarQubeRunAnalysis: true
+        sqGradlePluginVersionChoice: 'specify'
+        sonarQubeGradlePluginVersion: '2.6.1'
+        checkStyleRunAnalysis: true
+        findBugsRunAnalysis: true
+        spotBugsAnalysis: false
+    - task: Docker@1      
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Build an image'
+        dockerFile: '**/Dockerfile'
+        imageName: '$(ImageName)'
+        useDefaultContext: false
+        buildContext: 'CustomerApi'
+        displayName: 'Build the Docker image'
+
+
+
+
+
+
+
 # stages:
 #   - stage: BuildApp
 #     jobs:
@@ -20,22 +61,31 @@ pool:
 #             command: 'buildAndPush'
 #             Dockerfile: '**/Dockerfile'
 #             tags: '$(Build.BuildId)'
-variables:
-  ImageName: 'carpooling:$(Build.BuildId)'
-stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build and push Docker image
-    steps:
-    - task: Docker@1      
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Build an image'
-        dockerFile: '**/Dockerfile'
-        imageName: '$(ImageName)'
-        useDefaultContext: false
-        buildContext: 'CustomerApi'
-      displayName: 'Build the Docker image'
+# stages:
+# - stage: Build
+#   displayName: Build image
+#   jobs:  
+#   - job: Build
+#     displayName: Build and push Docker image
+#     steps:
+#     - task: Gradle@2
+#         inputs:
+#           workingDirectory: ''
+#           gradleWrapperFile: 'gradlew'
+#           gradleOptions: '-Xmx3072m'
+#           javaHomeOption: 'JDKVersion'
+#           jdkVersionOption: '1.8'
+#           jdkArchitectureOption: 'x64'
+#           publishJUnitResults: true
+#           testResultsFiles: '**/TEST-*.xml'
+#           tasks: 'build'
+#     - task: Docker@1      
+#       inputs:
+#         containerregistrytype: 'Container Registry'
+#         dockerRegistryEndpoint: 'Docker Hub'
+#         command: 'Build an image'
+#         dockerFile: '**/Dockerfile'
+#         imageName: '$(ImageName)'
+#         useDefaultContext: false
+#         buildContext: 'CustomerApi'
+#       displayName: 'Build the Docker image'
