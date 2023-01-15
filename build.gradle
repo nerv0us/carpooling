@@ -1,6 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.1.6.RELEASE'
     id 'java'
+    id 'java-library'
+    id 'maven-publish'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -12,11 +14,11 @@ sourceCompatibility = '1.8'
 repositories {
     mavenCentral()
     maven {
-        url 'https://pkgs.dev.azure.com/ZhivkoTest/Carpooling/_packaging/BE/maven/v1'
+        url 'https://pkgs.dev.azure.com/ZhivkoDevOpsProjects/Carpooling/_packaging/BE/maven/v1'
         name 'BE'
         credentials {
-            username "ZhivkoTest"
-            password "m27oupgrbgr7goauqlvjwykyt6qwoewqgkls2q3k5oastcbyb3sa"
+            username "ZhivkoDevOpsProjects"
+            password "bxlysw6ccgcalcv2sml465u3njc7xwxzxjkdjgnd5zpnu747vjea"
         }
         authentication {
             basic(BasicAuthentication)
