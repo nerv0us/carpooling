@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: carpooling
-        image: carpooling:v2
+        image: carpooling:89
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
@@ -44,4 +44,4 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30000       
+      nodePort: 30010
