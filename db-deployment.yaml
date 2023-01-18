@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb-deployment
+  labels:
+    app: mariadb
+spec:
+  replicas: 1 #If we want multiple replicas we need to use ReplicaSet instead of Deployment
+  selector:
+    matchLabels: # All Pods witch label "mariadb" belong to this Deployment
+      app: mariadb
+  template: #Configuration for Pod
+    metadata: #has its own metadata and spec
+      labels:
+        app: mariadb
+    spec:
+      containers: #We can have more than one container, but mostly have only one
+      - name: db #mongodb in the example
+        image: mariadb:latest
+        ports:
+        - containerPort: 3306
+
+#Service
+apiVersion: v1
+kind: Service
+metadata:
+  app: mariadb
+spec:
+  selector: #Select pods to forward the requests to
+    app.kubernetes.io/name: MyApp
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306 #This should be containerPort
