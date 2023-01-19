@@ -1,5 +1,5 @@
 trigger:
-- master
+- development
 
 variables:
   ImageName: 'zhzhelev/carpooling:$(Build.BuildId)'
@@ -24,26 +24,26 @@ stages:
         publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'  
-    # - task: Docker@1      
-    #   inputs:
-    #     containerregistrytype: 'Container Registry'
-    #     dockerRegistryEndpoint: 'Docker Reg'
-    #     command: 'Build an image'
-    #     dockerFile: '**/Dockerfile'
-    #     # tags: 'zhzhelev/carpooling:1'
-    #     imageName: '$(ImageName)'
-    #     # useDefaultContext: false
-    #     # buildContext: 'CustomerApi'
-    #     displayName: 'Build the Docker image'
-    # - task: Docker@1      
-    #   inputs:
-    #     containerregistrytype: 'Container Registry'
-    #     dockerRegistryEndpoint: 'Docker Reg'
-    #     command: 'Push an image'
-    #     # tags: 'zhzhelev/carpooling:1'
-    #     imageName: '$(ImageName)'
-    #   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    #   displayName: 'Push the Docker image to Dockerhub'
+    - task: Docker@1      
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Reg'
+        command: 'Build an image'
+        dockerFile: '**/Dockerfile'
+        # tags: 'zhzhelev/carpooling:1'
+        imageName: '$(ImageName)'
+        # useDefaultContext: false
+        # buildContext: 'CustomerApi'
+        displayName: 'Build the Docker image'
+    - task: Docker@1      
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Reg'
+        command: 'Push an image'
+        # tags: 'zhzhelev/carpooling:1'
+        imageName: '$(ImageName)'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      displayName: 'Push the Docker image to Dockerhub'
     
 
     # For Delete
