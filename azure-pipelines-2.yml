@@ -22,7 +22,7 @@ stages:
         jdkVersionOption: '1.8'
         jdkArchitectureOption: 'x64'
         # publishJUnitResults: true #temporary commented
-        testResultsFiles: '**/TEST-*.xml'
+        # testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'  
     - task: Docker@1      
       inputs:
