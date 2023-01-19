@@ -21,30 +21,30 @@ stages:
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.8'
         jdkArchitectureOption: 'x64'
-        # publishJUnitResults: true #temporary commented
-        # testResultsFiles: '**/TEST-*.xml'
+        publishJUnitResults: true #temporary commented
+        testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'  
-    - task: Docker@1      
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Reg'
-        command: 'Build an image'
-        dockerFile: '**/Dockerfile'
-        # tags: 'zhzhelev/carpooling:1' #for delete
-        imageName: '$(ImageName)'
-        # useDefaultContext: false #for delete
-        # buildContext: 'CustomerApi' #for delete
-        displayName: 'Build the Docker image'
-    - task: Docker@1      
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Reg'
-        command: 'Push an image'
-        # tags: 'zhzhelev/carpooling:1' #for delete
-        imageName: '$(ImageName)'
-      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-      displayName: 'Push the Docker image to Dockerhub'
-    
+    # - task: Docker@1      
+    #   inputs:
+    #     containerregistrytype: 'Container Registry'
+    #     dockerRegistryEndpoint: 'Docker Reg'
+    #     command: 'Build an image'
+    #     dockerFile: '**/Dockerfile'
+    #     # tags: 'zhzhelev/carpooling:1' #for delete
+    #     imageName: '$(ImageName)'
+    #     # useDefaultContext: false #for delete
+    #     # buildContext: 'CustomerApi' #for delete
+    #     displayName: 'Build the Docker image'
+    # - task: Docker@1      
+    #   inputs:
+    #     containerregistrytype: 'Container Registry'
+    #     dockerRegistryEndpoint: 'Docker Reg'
+    #     command: 'Push an image'
+    #     # tags: 'zhzhelev/carpooling:1' #for delete
+    #     imageName: '$(ImageName)'
+    #   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    #   displayName: 'Push the Docker image to Dockerhub'
+
  #for delete
     # For Delete
     # - task: CopyFiles@2
