@@ -19,16 +19,16 @@ spec:
         image: mariadb:latest
         ports:
         - containerPort: 3306
-
+---
 #Service
 apiVersion: v1
 kind: Service
 metadata:
-  app: mariadb
+  app: mariadb-service
 spec:
   selector: #Select pods to forward the requests to
-    app.kubernetes.io/name: MyApp
+    app: mariadb
   ports:
     - protocol: TCP
       port: 3306
-      targetPort: 3306 #This should be containerPort
+      targetPort: 3306 #This should be the same as containerPort

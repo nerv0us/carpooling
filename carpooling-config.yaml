@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: carpooling-configdata
   data:
-    url: db-service #mongo-service=db-service
+    mariadb-url: db-service #mongo-service=db-service
