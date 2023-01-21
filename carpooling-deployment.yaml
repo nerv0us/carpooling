@@ -16,30 +16,27 @@ spec:
     spec:
       containers:
       - name: carpooling
-        image: zhzhelev/carpooling:108
+        image: zhzhelev/carpooling:110
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "1500m"
         ports:
         - containerPort: 8080
         env:
-        - name: SPRING.DATASOURCE.USERNAME
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: carpooling-config
+              key: mariadb_url
+        - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
               name: carpooling-secret
               key: db-username
-        - name: SPRING.DATASOURCE.PASSWORD
+        - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: carpooling-secret
               key: db-password
-        - name: SPRING.DATASOURCE.URL
-          valueFrom:
-            configMapKeyRef:
-              name: carpooling-config
-              key: mariadb-url
+
 ---
 apiVersion: v1
 kind: Service
@@ -53,4 +50,4 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30000
+      nodePort: 30005

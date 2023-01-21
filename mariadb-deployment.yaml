@@ -9,11 +9,6 @@ spec:
   selector:
     matchLabels: # All Pods witch label "mariadb" belong to this Deployment
       app: mariadb
-  strategy:                               # how updating the deployment affect the Replicat Set and Pods
-    type: RollingUpdate         #Recreate/RollingUpdate
-    rollingUpdate:
-      maxSurge: 1               # default, number of PODS created over desired number of replicas
-      maxUnavailable: 0         # default (this can be in percentage as well)
   template: #Configuration for Pod
     metadata: #has its own metadata and spec
       labels:
@@ -23,23 +18,15 @@ spec:
       - name: mariadb #mongodb in the example
         image: mariadb:latest #
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "1500m"
         ports:
         - containerPort: 3306
         env:
-        - name: MARIADB_ROOT_USER
-          valueFrom:
-            secretKeyRef:
-              name: carpooling-secret
-              key: db-username
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: carpooling-secret
               key: db-password
+---
 apiVersion: v1
 kind: Service
 metadata:

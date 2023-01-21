@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: carpooling-config
 data:
-  mariadb-url: mariadb-service
+  mariadb_url: jdbc:mysql://mariadb-service/carpooling?useSSL=false
