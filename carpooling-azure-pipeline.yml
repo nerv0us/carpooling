@@ -50,6 +50,6 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'Docker Reg'
         command: 'Push an image'
-        imageName: 'test+$(ImageName)'
+        imageName: '$(ImageName)'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       displayName: 'Push the Docker image to Dockerhub'
