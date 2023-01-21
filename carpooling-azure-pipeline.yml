@@ -7,7 +7,7 @@ trigger:
 - development
 
 variables:
-  ImageName: 'carpooling:$(Build.BuildId)'
+  ImageName: 'zhzhelev/carpooling:$(Build.BuildId)'
 
 pool:
   vmImage: ubuntu-latest
