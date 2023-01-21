@@ -18,14 +18,14 @@ stages:
   - job: Build
     displayName: Build and push Docker image
     steps:  
-    - task: SonarQubeAnalyze@5
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'sonarqube'
-        scannerMode: 'Other'
-    - task: SonarQubePublish@5
-      inputs:
-        pollingTimeoutSec: '300'
+    # - task: SonarQubeAnalyze@5
+    # - task: SonarQubePrepare@5
+    #   inputs:
+    #     SonarQube: 'sonarqube'
+    #     scannerMode: 'Other'
+    # - task: SonarQubePublish@5
+    #   inputs:
+    #     pollingTimeoutSec: '300'
     - task: Gradle@2
       inputs:
         workingDirectory: ''
