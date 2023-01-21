@@ -26,6 +26,11 @@ spec:
             configMapKeyRef:
               name: carpooling-config
               key: mariadb_url
+        - name: SPRING_JPA_DATABASE-PLATFORM
+          valueFrom:
+            configMapKeyRef:
+              name: carpooling-config
+              key: hibernate_dialect
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:

@@ -2,7 +2,7 @@ trigger:
 - development
 
 variables:
-  ImageName: 'zhzhelev/carpooling:$(Build.BuildId)'
+  ImageName: 'carpooling:$(Build.BuildId)'
 
 pool:
   vmImage: ubuntu-latest
@@ -21,7 +21,7 @@ stages:
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.8'
         jdkArchitectureOption: 'x64'
-        publishJUnitResults: true #temporary commented
+        publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'  
     - task: Docker@1      
@@ -30,29 +30,13 @@ stages:
         dockerRegistryEndpoint: 'Docker Reg'
         command: 'Build an image'
         dockerFile: '**/Dockerfile'
-        # tags: 'zhzhelev/carpooling:1' #for delete
         imageName: '$(ImageName)'
-        # useDefaultContext: false #for delete
-        # buildContext: 'CustomerApi' #for delete
         displayName: 'Build the Docker image'
     - task: Docker@1      
       inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'Docker Reg'
         command: 'Push an image'
-        # tags: 'zhzhelev/carpooling:1' #for delete
-        imageName: '$(ImageName)'
+        imageName: 'test+$(ImageName)'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       displayName: 'Push the Docker image to Dockerhub'
-
- #for delete
-    # For Delete
-    # - task: CopyFiles@2
-    #   inputs:
-    #     SourceFolder: '$(Build.SourcesDirectory)/build/libs'
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    # - task: PublishBuildArtifacts@1
-    #   inputs:
-    #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    #     ArtifactName: 'drop'
-    #     publishLocation: 'Container'
