@@ -16,31 +16,34 @@ spec:
     spec:
       containers:
       - name: carpooling
-        image: zhzhelev/carpooling:110
+        image: carpooling:1
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
-        env:
-        - name: SPRING_DATASOURCE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: carpooling-config
-              key: mariadb_url
-        - name: SPRING_JPA_DATABASE-PLATFORM
-          valueFrom:
-            configMapKeyRef:
-              name: carpooling-config
-              key: hibernate_dialect
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: carpooling-secret
-              key: db-username
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: carpooling-secret
-              key: db-password
+        env:   # Setting Enviornmental Variables
+          - name: DB_HOST   # Setting Database host address from configMap
+            valueFrom :
+              configMapKeyRef :
+                name : db-config
+                key :  host
+
+          - name: DB_NAME  # Setting Database name from configMap
+            valueFrom :
+              configMapKeyRef :
+                name : db-config
+                key :  dbName
+
+          - name: DB_USERNAME  # Setting Database username from Secret
+            valueFrom :
+              secretKeyRef :
+                name : mysql-secrets
+                key :  username
+
+          - name: DB_PASSWORD # Setting Database password from Secret
+            valueFrom :
+              secretKeyRef :
+                name : mysql-secrets
+                key :  password
 
 ---
 apiVersion: v1
