@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carpooling-deployment
+  labels:
+    app: carpooling #key-value pair. Identifier which should be meaningful. Example "env" : "dev"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: carpooling
+  template:
+    metadata:
+      labels:
+        app: carpooling
+    spec:
+      containers:
+      - name: carpooling
+        image: zhzhelev/carpooling:110
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: carpooling-config
+              key: mariadb_url
+        - name: SPRING_JPA_DATABASE-PLATFORM
+          valueFrom:
+            configMapKeyRef:
+              name: carpooling-config
+              key: hibernate_dialect
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: carpooling-secret
+              key: db-username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: carpooling-secret
+              key: db-password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: carpooling-service
+spec:
+  selector:
+    app: carpooling
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30005
