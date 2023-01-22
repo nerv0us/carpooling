@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: carpooling-config
+data:
+  mariadb_url: jdbc:mysql://mariadb-service/carpooling?useSSL=false
+  hibernate_dialect: org.hibernate.dialect.H2Dialect

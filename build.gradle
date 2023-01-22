@@ -1,6 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.1.6.RELEASE'
     id 'java'
+    id 'java-library'
+    id 'maven-publish'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -11,17 +13,28 @@ sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://pkgs.dev.azure.com/ZhivkoDevOpsProjects/Carpooling/_packaging/BE/maven/v1'
+        name 'BE'
+        credentials {
+            username "ZhivkoDevOpsProjects"
+            password "bxlysw6ccgcalcv2sml465u3njc7xwxzxjkdjgnd5zpnu747vjea"
+        }
+        authentication {
+            basic(BasicAuthentication)
+        }
+    }
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    compile 'mysql:mysql-connector-java'
+    compile 'mysql:mysql-connector-java'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     
-//    runtimeOnly 'mysql:mysql-connector-java'
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+//    runtimeOnly 'com.h2database:h2'
 
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
 
@@ -32,5 +45,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     compile group: 'org.webjars', name: 'jquery', version: '3.4.1'
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
+//    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
 }

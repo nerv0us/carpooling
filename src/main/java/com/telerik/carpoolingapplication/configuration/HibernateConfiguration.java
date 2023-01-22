@@ -40,8 +40,8 @@ public class HibernateConfiguration {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-//        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        dataSource.setDriverClassName("org.h2.Driver");
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUsername);
         dataSource.setPassword(dbPassword);
