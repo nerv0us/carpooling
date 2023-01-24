@@ -1,5 +1,5 @@
 function login() {
-    const url = 'http://localhost:8080/api/users/authenticate';
+    const url = 'http://carpooling-service:8080/api/users/authenticate';
 
     let username = $('#username').val();
     let password = $('#password').val();
@@ -40,7 +40,7 @@ function login() {
 }
 
 function register() {
-    const url = 'http://localhost:8080/api/users/register';
+    const url = 'http://carpooling-service:8080/api/users/register';
 
     let username = $('#username').val();
     let firstName = $('#first_name').val();
