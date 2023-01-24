@@ -20,7 +20,7 @@ stages:
     steps:  
     - task: SonarQubePrepare@5
       inputs:
-        SonarQube: 'sonarqube'
+        SonarQube: 'sonarcloud-carpooling'
         scannerMode: 'MSBuild'
         projectKey: 'ZhivkoDevOpsProjects_Carpooling'
         projectName: 'Carpooling'
