@@ -5,7 +5,7 @@ metadata:
   labels:
     app: carpooling #key-value pair. Identifier which should be meaningful. Example "env" : "dev"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: carpooling
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: carpooling
-        image: carpooling:1
+        image: carpooling:23
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
@@ -53,9 +53,11 @@ metadata:
 spec:
   selector:
     app: carpooling
-  type: LoadBalancer  
+#  type: LoadBalancer
+#  type: ClusterIP
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30005
+#      nodePort: 30005
+      name: http
