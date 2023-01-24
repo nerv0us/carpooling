@@ -23,6 +23,7 @@ stages:
         SonarQube: 'sonarqube'
         scannerMode: 'MSBuild'
         projectKey: 'ZhivkoDevOpsProjects_Carpooling'
+        projectName: 'Carpooling'
     - task: SonarQubePublish@5
       inputs:
         pollingTimeoutSec: '300'
