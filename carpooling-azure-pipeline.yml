@@ -20,6 +20,10 @@ stages:
     steps:  
     - task: SonarQubePrepare@5
       inputs:
+        SonarQube: 'sonarcloud-carpooling'
+        scannerMode: 'Other'
+    - task: SonarQubePrepare@5
+      inputs:
         SonarQube: 'sonarqube'
         scannerMode: 'Other'
     - task: SonarQubePublish@5
