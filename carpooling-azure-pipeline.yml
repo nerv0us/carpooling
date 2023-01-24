@@ -18,7 +18,6 @@ stages:
   - job: Build
     displayName: Build and push Docker image
     steps:  
-    - task: SonarQubeAnalyze@5
     - task: SonarQubePrepare@5
       inputs:
         SonarQube: 'sonarqube'
