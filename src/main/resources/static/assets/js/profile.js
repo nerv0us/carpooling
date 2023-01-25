@@ -4,7 +4,7 @@ let reader;
 const token = getJwtToken();
 
 $(document).ready(function () {
-    const url = 'http://carpooling-service:8080/api/users/my-profile';
+    const url = 'http://localhost:8080/api/users/my-profile';
     $.ajax({
         async: true,
         crossDomain: true,
@@ -58,7 +58,7 @@ $(document).ready(function () {
 });
 
 function updateProfileAvatar() {
-    let url = `http://carpooling-service:8080/api/users/${id}/avatar`;
+    let url = `http://localhost:8080/api/users/${id}/avatar`;
 
     let image = $('#file')[0].files[0];
     let formData = new FormData();
@@ -87,7 +87,7 @@ function updateProfileAvatar() {
 }
 
 function updateProfileInfo() {
-    const url = 'http://carpooling-service:8080/api/users/update';
+    const url = 'http://localhost:8080/api/users/update';
 
     let firstName = $('#updateFirstName').val();
     let lastName = $('#updateLastName').val();

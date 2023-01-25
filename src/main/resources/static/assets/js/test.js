@@ -32,7 +32,7 @@ function getData() {
     $("#btnSubmit").on("click", () => alert(`Hello ${$("#txtName").val()}`));
     $("#btnData").on("click", () =>
         /*$.ajax({
-            url: "http://carpooling-service:8080/api/trips/77",
+            url: "http://localhost:8080/api/trips/77",
             method: "GET",
             success: function (data) {
                 $("#txtSample").html(JSON.stringify(data));
@@ -42,7 +42,7 @@ function getData() {
                 $(".error").html(JSON.stringify(err));
             }
         })*/
-        $.get("http://carpooling-service:8080/api/trips/1", function (data) {
+        $.get("http://localhost:8080/api/trips/1", function (data) {
             $("#txtSample").html(`<h1> Driver:${data.driver.username}</h1><h2>${data.carModel}</h2><h2>${data.tripStatus}</h2>`);
         }).fail(function (err) {
             $(".error").html(JSON.stringify(err));

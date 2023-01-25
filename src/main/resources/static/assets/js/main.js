@@ -24,7 +24,7 @@ function updateNavigationButtons(first, second) {
 }
 
 function createTrip() {
-    const url = 'http://carpooling-service:8080/api/trips';
+    const url = 'http://localhost:8080/api/trips';
     const token = getJwtToken();
 
     let origin = $('#origin').val();
@@ -93,7 +93,7 @@ function shortSearchTrips() {
 
     console.log(filter);
 
-    let url = `http://carpooling-service:8080/api/trips${filter}&earliestDepartureTime=${easyDateTimeEarliest}`;
+    let url = `http://localhost:8080/api/trips${filter}&earliestDepartureTime=${easyDateTimeEarliest}`;
 
     $.ajax({
         url: url,
@@ -173,7 +173,7 @@ function searchTrips() {
     }
 
 
-    let url = `http://carpooling-service:8080/api/trips${filterTrips}earliestDepartureTime=${searchByDateAndTimeEarliest}
+    let url = `http://localhost:8080/api/trips${filterTrips}earliestDepartureTime=${searchByDateAndTimeEarliest}
     &latestDepartureTime=${searchByDateAndTimeLatest}&availablePlaces=${searchAvailablePlaces}
     &smoking=${searchIsAllowedSmoking}&pets=${searchIsAllowedPets}&luggage=${searchIsAllowedLuggage}
     &sortParameter=${sortParameter}`;
@@ -243,7 +243,7 @@ function hideUpperPart() {
 }
 
 function navigateToProfile() {
-    window.location.href = "http://carpooling-service:8080/profile.html";
+    window.location.href = "http://localhost:8080/profile.html";
 }
 
 $('.datetimepicker').datetimepicker({

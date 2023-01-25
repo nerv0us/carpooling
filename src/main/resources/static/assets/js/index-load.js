@@ -1,6 +1,6 @@
 function loadTopTenDrivers() {
     $.ajax({
-        url: "http://carpooling-service:8080/api/users/top-ten-drivers",
+        url: "http://localhost:8080/api/users/top-ten-drivers",
         method: 'GET',
         success: function (response) {
             $('#top-ten-drivers').html('');
@@ -139,7 +139,7 @@ function loadTrips() {
 
     let pagingUrl = 'page=' + page;
     console.log(page);
-    let url = `http://carpooling-service:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
+    let url = `http://localhost:8080/api/trips?` + searchOriginUrl + searchDestinationUrl +
         searchDateTimeEarliestUrl + searchDateTimeLatestUrl + searchAvailablePlacesUrl + searchPetsAllowedUrl +
         searchSmokingAllowedUrl + searchLuggageAllowedUrl + searchSortByParameterUrl + pagingUrl;
     console.log(url);
@@ -197,7 +197,7 @@ $(document).on("click", ".trip", function () {
     tripId = $(this).parent().find('.tripId').val();
     console.log(tripId);
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId,
+        url: `http://localhost:8080/api/trips/` + tripId,
         method: 'GET',
         success: function (response) {
             let passengers = response.passengers;
@@ -405,7 +405,7 @@ $(document).on("change", "#addComment", function () {
         userId
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/comments/`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/comments/`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -426,7 +426,7 @@ $(document).on("click", ".passenger-status-pending", function () {
     passengerId = $(this).parent().find('.passenger-id').val();
     passengerName = $(this).parent().find('.passenger-name').val();
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=PENDING`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=PENDING`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -445,7 +445,7 @@ $(document).on("click", ".passenger-status-accepted", function () {
     passengerId = $(this).parent().find('.passenger-id').val();
     passengerName = $(this).parent().find('.passenger-name').val();
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=ACCEPTED`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=ACCEPTED`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -464,7 +464,7 @@ $(document).on("click", ".passenger-status-rejected", function () {
     passengerId = $(this).parent().find('.passenger-id').val();
     passengerName = $(this).parent().find('.passenger-name').val();
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=REJECTED`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=REJECTED`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -483,7 +483,7 @@ $(document).on("click", ".passenger-status-canceled", function () {
     passengerId = $(this).parent().find('.passenger-id').val();
     passengerName = $(this).parent().find('.passenger-name').val();
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=CANCELED`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=CANCELED`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -502,7 +502,7 @@ $(document).on("click", ".passenger-status-absent", function () {
     passengerId = $(this).parent().find('.passenger-id').val();
     passengerName = $(this).parent().find('.passenger-name').val();
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=ABSENT`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `?status=ABSENT`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -521,7 +521,7 @@ $(document).on("click", "#tripStatus-available", function () {
     const token = getJwtToken();
 
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + "?status=AVAILABLE",
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=AVAILABLE",
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -539,7 +539,7 @@ $(document).on("click", "#tripStatus-booked", function () {
     const token = getJwtToken();
 
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + "?status=BOOKED",
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=BOOKED",
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -557,7 +557,7 @@ $(document).on("click", "#tripStatus-ongoing", function () {
     const token = getJwtToken();
 
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + "?status=ONGOING",
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=ONGOING",
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -575,7 +575,7 @@ $(document).on("click", "#tripStatus-done", function () {
     const token = getJwtToken();
 
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + "?status=DONE",
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=DONE",
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -593,7 +593,7 @@ $(document).on("click", "#tripStatus-canceled", function () {
     const token = getJwtToken();
 
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + "?status=CANCELED",
+        url: `http://localhost:8080/api/trips/` + tripId + "?status=CANCELED",
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -618,7 +618,7 @@ $(document).on("click", ".passenger-rate-1", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -643,7 +643,7 @@ $(document).on("click", ".passenger-rate-2", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -668,7 +668,7 @@ $(document).on("click", ".passenger-rate-3", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -693,7 +693,7 @@ $(document).on("click", ".passenger-rate-4", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -718,7 +718,7 @@ $(document).on("click", ".passenger-rate-5", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers/` + passengerId + `/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -740,7 +740,7 @@ $(document).on("click", "#driver-rate-1", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/driver/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -762,7 +762,7 @@ $(document).on("click", "#driver-rate-2", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/driver/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -784,7 +784,7 @@ $(document).on("click", "#driver-rate-3", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/driver/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -806,7 +806,7 @@ $(document).on("click", "#driver-rate-4", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/driver/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -828,7 +828,7 @@ $(document).on("click", "#driver-rate-5", function () {
         rating
     };
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/driver/rate`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/driver/rate`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
@@ -846,7 +846,7 @@ $(document).on("click", "#driver-rate-5", function () {
 $(document).on("click", "#applyButton", function () {
     const token = getJwtToken();
     $.ajax({
-        url: `http://carpooling-service:8080/api/trips/` + tripId + `/passengers`,
+        url: `http://localhost:8080/api/trips/` + tripId + `/passengers`,
         headers: {
             'Content-Type': 'application/json',
             Authorization: ` Bearer ${token}`
