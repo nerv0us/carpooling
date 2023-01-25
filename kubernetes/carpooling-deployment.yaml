@@ -5,7 +5,7 @@ metadata:
   labels:
     app: carpooling #key-value pair. Identifier which should be meaningful. Example "env" : "dev"
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: carpooling
@@ -14,10 +14,12 @@ spec:
       labels:
         app: carpooling
     spec:
+      imagePullSecrets:
+      - name: my-registry-key-two
       containers:
       - name: carpooling
-        image: carpooling:23
-        imagePullPolicy: Never
+        image: zhzhelev/carpooling:136
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         env:   # Setting Enviornmental Variables
