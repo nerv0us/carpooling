@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- master
+- development
 
 variables:
   ImageName: 'zhzhelev/carpooling:$(Build.BuildId)'
@@ -18,38 +18,34 @@ stages:
   - job: Build
     displayName: Build and push Docker image
     steps:  
-    # - task: SonarQubeAnalyze@5
-    # - task: SonarQubePrepare@5
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'sonarqube'
+        scannerMode: 'Other'
+    # - task: Gradle@2
     #   inputs:
-    #     SonarQube: 'sonarqube'
-    #     scannerMode: 'Other'
-    # - task: SonarQubePublish@5
+    #     workingDirectory: ''
+    #     gradleWrapperFile: 'gradlew'
+    #     gradleOptions: '-Xmx3072m'
+    #     javaHomeOption: 'JDKVersion'
+    #     jdkVersionOption: '1.8'
+    #     jdkArchitectureOption: 'x64'
+    #     publishJUnitResults: true
+    #     testResultsFiles: '**/TEST-*.xml'
+    #     tasks: 'build'  
+    # - task: Docker@1      
     #   inputs:
-    #     pollingTimeoutSec: '300'
-    - task: Gradle@2
-      inputs:
-        workingDirectory: ''
-        gradleWrapperFile: 'gradlew'
-        gradleOptions: '-Xmx3072m'
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: true
-        testResultsFiles: '**/TEST-*.xml'
-        tasks: 'build'  
-    - task: Docker@1      
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Reg'
-        command: 'Build an image'
-        dockerFile: '**/Dockerfile'
-        imageName: '$(ImageName)'
-        displayName: 'Build the Docker image'
-    - task: Docker@1      
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Reg'
-        command: 'Push an image'
-        imageName: '$(ImageName)'
-      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-      displayName: 'Push the Docker image to Dockerhub'
+    #     containerregistrytype: 'Container Registry'
+    #     dockerRegistryEndpoint: 'Docker Reg'
+    #     command: 'Build an image'
+    #     dockerFile: '**/Dockerfile'
+    #     imageName: '$(ImageName)'
+    #     displayName: 'Build the Docker image'
+    # - task: Docker@1      
+    #   inputs:
+    #     containerregistrytype: 'Container Registry'
+    #     dockerRegistryEndpoint: 'Docker Reg'
+    #     command: 'Push an image'
+    #     imageName: '$(ImageName)'
+    #   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    #   displayName: 'Push the Docker image to Dockerhub'
