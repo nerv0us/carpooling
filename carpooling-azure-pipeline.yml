@@ -35,16 +35,7 @@ stages:
         testType: 'app'
         monitorWhen: 'always'
         failOnIssues: false
-        testDirectory: 
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'sonarqube'
-        scannerMode: 'Other'  
-    - task: SonarQubeAnalyze@5
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'sonarcloud-carpooling'
-        scannerMode: 'Other'
+        projectName: carpooling
     # - task: Docker@1      
     #   inputs:
     #     containerregistrytype: 'Container Registry'
