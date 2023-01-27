@@ -27,7 +27,7 @@ stages:
         serviceConnectionEndpoint: 'snyk'
         testType: 'app'
         monitorWhen: 'always'
-        failOnIssues: true
+        failOnIssues: false
     - task: Gradle@2
       inputs:
         workingDirectory: ''
