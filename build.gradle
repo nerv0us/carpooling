@@ -25,25 +25,24 @@ repositories {
         }
     }
 }
-
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services:2.6.14'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.5.12'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.5.13'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.4.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.springframework.boot:spring-boot-starter-web-services'
-    
+
     runtimeOnly 'mysql:mysql-connector-java'
 //    runtimeOnly 'com.h2database:h2'
 
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
+    compile 'mysql:mysql-connector-java'
 
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.4'
-    
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 
     compile group: 'org.webjars', name: 'jquery', version: '3.4.1'
 //    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
+
