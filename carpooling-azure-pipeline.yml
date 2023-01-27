@@ -18,10 +18,6 @@ stages:
   - job: Build
     displayName: Build and push Docker image
     steps:  
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'sonarqube'
-        scannerMode: 'Other'
     - task: Gradle@2
       inputs:
         workingDirectory: ''
@@ -40,6 +36,15 @@ stages:
         monitorWhen: 'always'
         failOnIssues: false
         testDirectory: 
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'sonarqube'
+        scannerMode: 'Other'  
+    - task: SonarQubeAnalyze@5
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'sonarcloud-carpooling'
+        scannerMode: 'Other'
     # - task: Docker@1      
     #   inputs:
     #     containerregistrytype: 'Container Registry'
