@@ -22,12 +22,6 @@ stages:
       inputs:
         SonarQube: 'sonarqube'
         scannerMode: 'Other'
-    - task: SnykSecurityScan@1
-      inputs:
-        serviceConnectionEndpoint: 'snyk'
-        testType: 'app'
-        monitorWhen: 'always'
-        failOnIssues: false
     - task: Gradle@2
       inputs:
         workingDirectory: ''
@@ -38,7 +32,14 @@ stages:
         jdkArchitectureOption: 'x64'
         publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
-        tasks: 'build'  
+        tasks: 'build'          
+    - task: SnykSecurityScan@1
+      inputs:
+        serviceConnectionEndpoint: 'snyk'
+        testType: 'app'
+        monitorWhen: 'always'
+        failOnIssues: false
+        testDirectory: 
     # - task: Docker@1      
     #   inputs:
     #     containerregistrytype: 'Container Registry'
