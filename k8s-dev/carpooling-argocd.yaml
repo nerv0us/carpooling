@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://ZhivkoDevOpsProjects@dev.azure.com/ZhivkoDevOpsProjects/Carpooling/_git/Carpooling
-    targetRevision: HEAD
+    targetRevision: development
     path: k8s-dev
   destination:
     server: https://kubernetes.default.svc
