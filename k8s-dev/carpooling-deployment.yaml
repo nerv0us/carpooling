@@ -4,6 +4,7 @@ metadata:
   name: carpooling-deployment
   labels:
     app: carpooling #key-value pair. Identifier which should be meaningful. Example "env" : "dev"
+  namespace: carpooling
 spec:
   replicas: 2
   selector:
@@ -15,10 +16,10 @@ spec:
         app: carpooling
     spec:
       imagePullSecrets:
-      - name: my-registry-key-two
+      - name: docker-secrets
       containers:
       - name: carpooling
-        image: zhzhelev/carpooling:136
+        image: zhzhelev/carpooling:138
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
