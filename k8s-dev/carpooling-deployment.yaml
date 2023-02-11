@@ -6,7 +6,7 @@ metadata:
     app: carpooling #key-value pair. Identifier which should be meaningful. Example "env" : "dev"
   namespace: carpooling
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: carpooling
@@ -57,11 +57,8 @@ metadata:
 spec:
   selector:
     app: carpooling
-  type: LoadBalancer
-#  type: ClusterIP
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-#      nodePort: 30005
       name: http
