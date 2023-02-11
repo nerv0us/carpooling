@@ -36,7 +36,7 @@ stages:
         projectName: carpooling
     - task: SonarQubePrepare@5
       inputs:
-        SonarQube: 'sonarqube'
+        SonarQube: 'sonarcloud-carpooling'
         scannerMode: 'Other'
     - task: SonarQubeAnalyze@5
     - task: SonarQubePublish@5
