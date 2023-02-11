@@ -38,10 +38,6 @@ stages:
       inputs:
         SonarQube: 'sonarcloud-carpooling'
         scannerMode: 'MSBuild'
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'sonarcloud-carpooling'
-        scannerMode: 'MSBuild'
         projectKey: 'carpooling'
         projectName: 'carpooling'
     - task: SonarQubeAnalyze@5
