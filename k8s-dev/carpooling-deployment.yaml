@@ -57,7 +57,7 @@ metadata:
 spec:
   selector:
     app: carpooling
-#  type: LoadBalancer
+  type: LoadBalancer
 #  type: ClusterIP
   ports:
     - protocol: TCP
