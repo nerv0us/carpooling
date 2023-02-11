@@ -14,6 +14,11 @@ stages:
   - job: Build
     displayName: Buidl and push Docker image
     steps:  
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'SonarCloud'
+        organization: 'carpooling'
+        scannerMode: 'Other'
     - task: Gradle@2
       displayName: Gradle build
       inputs:
@@ -23,25 +28,18 @@ stages:
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.11'
         jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
+        publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'
-    - task: SnykSecurityScan@1
-      displayName: Scan for security vulnerabilities
-      inputs:
-        serviceConnectionEndpoint: 'snyk'
-        testType: 'app'
-        monitorWhen: 'always'
-        failOnIssues: false
-        projectName: carpooling
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'sonarcloud-carpooling'
-        scannerMode: 'Other'
-    - task: SonarQubeAnalyze@5
-    - task: SonarQubePublish@5
-      inputs:
-        pollingTimeoutSec: '300'
+    # - task: SnykSecurityScan@1
+    #   displayName: Scan for security vulnerabilities
+    #   inputs:
+    #     serviceConnectionEndpoint: 'snyk'
+    #     testType: 'app'
+    #     monitorWhen: 'always'
+    #     failOnIssues: false
+    #     projectName: carpooling
+    - task: SonarCloudAnalyze@1
     - task: Docker@1
       inputs:
         containerregistrytype: 'Container Registry'
