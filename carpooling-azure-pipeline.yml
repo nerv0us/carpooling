@@ -34,6 +34,15 @@ stages:
         monitorWhen: 'always'
         failOnIssues: false
         projectName: carpooling
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'sonarcloud-carpooling'
+        scannerMode: 'Other'
+    - task: SonarQubeAnalyze@5
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
+   
     # - task: Docker@1      
     #   inputs:
     #     containerregistrytype: 'Container Registry'
