@@ -6,7 +6,7 @@ metadata:
     app: carpooling #key-value pair. Identifier which should be meaningful. Example "env" : "dev"
   namespace: carpooling
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: carpooling
