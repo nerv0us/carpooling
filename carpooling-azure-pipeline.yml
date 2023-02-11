@@ -38,8 +38,8 @@ stages:
       inputs:
         SonarQube: 'sonarcloud-carpooling'
         scannerMode: 'MSBuild'
-        projectKey: 'carpooling'
-        projectName: 'carpooling'
+        projectKey: 'ZhivkoDevOpsProjects_Carpooling'
+        projectName: 'Carpooling'
     - task: SonarQubeAnalyze@5
     - task: SonarQubePublish@5
       inputs:
