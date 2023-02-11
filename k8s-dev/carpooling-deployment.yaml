@@ -19,8 +19,8 @@ spec:
       - name: docker-secrets
       containers:
       - name: carpooling
-        image: zhzhelev/carpooling:139
-        imagePullPolicy: IfNotPresent
+        image: zhzhelev/carpooling:140
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:   # Setting Enviornmental Variables
