@@ -14,6 +14,12 @@ stages:
   - job: Build
     displayName: Buidl and push Docker image
     steps:  
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'SonarCloud'
+        organization: 'carpooling'
+        scannerMode: 'MSBuild'
+        projectKey: 'zhivkodevopsprojects_carpooling'    
     - task: Gradle@2
       displayName: Gradle build
       inputs:
@@ -23,7 +29,7 @@ stages:
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.11'
         jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
+        publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'
     - task: SnykSecurityScan@1
@@ -34,12 +40,6 @@ stages:
         monitorWhen: 'always'
         failOnIssues: false
         projectName: carpooling
-    - task: SonarCloudPrepare@1
-      inputs:
-        SonarCloud: 'SonarCloud'
-        organization: 'carpooling'
-        scannerMode: 'MSBuild'
-        projectKey: 'zhivkodevopsprojects_carpooling'
     - task: SonarCloudAnalyze@1
     - task: Docker@1
       inputs:
