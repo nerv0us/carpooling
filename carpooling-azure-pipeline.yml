@@ -40,6 +40,7 @@ stages:
         organization: 'carpooling'
         scannerMode: 'MSBuild'
         projectKey: 'zhivkodevopsprojects_carpooling'
+    - task: SonarCloudAnalyze@1
     - task: Docker@1
       inputs:
         containerregistrytype: 'Container Registry'
