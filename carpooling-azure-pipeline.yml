@@ -34,16 +34,12 @@ stages:
         monitorWhen: 'always'
         failOnIssues: false
         projectName: carpooling
-    - task: SonarQubePrepare@5
+    - task: SonarCloudPrepare@1
       inputs:
-        SonarQube: 'sonarcloud-carpooling'
+        SonarCloud: 'SonarCloud'
+        organization: 'carpooling'
         scannerMode: 'MSBuild'
-        projectKey: 'ZhivkoDevOpsProjects_Carpooling'
-        projectName: 'carpooling'
-    - task: SonarQubeAnalyze@5
-    - task: SonarQubePublish@5
-      inputs:
-        pollingTimeoutSec: '300'
+        projectKey: 'zhivkodevopsprojects_carpooling'
     - task: Docker@1
       inputs:
         containerregistrytype: 'Container Registry'
