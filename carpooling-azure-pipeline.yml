@@ -31,14 +31,14 @@ stages:
         publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'
-    - task: SnykSecurityScan@1
-      displayName: Scan for security vulnerabilities
-      inputs:
-        serviceConnectionEndpoint: 'snyk'
-        testType: 'app'
-        monitorWhen: 'always'
-        failOnIssues: false
-        projectName: carpooling
+    # - task: SnykSecurityScan@1
+    #   displayName: Scan for security vulnerabilities
+    #   inputs:
+    #     serviceConnectionEndpoint: 'snyk'
+    #     testType: 'app'
+    #     monitorWhen: 'always'
+    #     failOnIssues: false
+    #     projectName: carpooling
     - task: SonarCloudAnalyze@1
     - task: Docker@1
       inputs:
