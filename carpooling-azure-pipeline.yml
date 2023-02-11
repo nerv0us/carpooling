@@ -34,6 +34,10 @@ stages:
         monitorWhen: 'always'
         failOnIssues: false
         projectName: carpooling
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'sonarqube'
+        scannerMode: 'Other'
     - task: SonarQubeAnalyze@5
     - task: SonarQubePublish@5
       inputs:
