@@ -42,19 +42,19 @@ stages:
     - task: SonarQubePublish@5
       inputs:
         pollingTimeoutSec: '300'
-     - task: Docker@1
-       inputs:
-         containerregistrytype: 'Container Registry'
-         dockerRegistryEndpoint: 'Docker Reg'
-         command: 'Build an image'
-         dockerFile: '**/Dockerfile'
-         imageName: '$(ImageName)'
-         displayName: 'Build the Docker image'
-     - task: Docker@1
-       inputs:
-         containerregistrytype: 'Container Registry'
-         dockerRegistryEndpoint: 'Docker Reg'
-         command: 'Push an image'
-         imageName: '$(ImageName)'
-       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-       displayName: 'Push the Docker image to Dockerhub'
+    - task: Docker@1
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Reg'
+        command: 'Build an image'
+        dockerFile: '**/Dockerfile'
+        imageName: '$(ImageName)'
+        displayName: 'Build the Docker image'
+    - task: Docker@1
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Reg'
+        command: 'Push an image'
+        imageName: '$(ImageName)'
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        displayName: 'Push the Docker image to Dockerhub'
