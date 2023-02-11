@@ -18,8 +18,7 @@ stages:
       inputs:
         SonarCloud: 'SonarCloud'
         organization: 'carpooling'
-        scannerMode: 'MSBuild'
-        projectKey: 'zhivkodevopsprojects_carpooling'    
+        scannerMode: 'Other'
     - task: Gradle@2
       displayName: Gradle build
       inputs:
