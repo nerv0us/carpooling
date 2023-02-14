@@ -14,11 +14,21 @@ stages:
   - job: Build
     displayName: Buidl and push Docker image
     steps:  
+    # - task: SonarCloudPrepare@1
+    #   inputs:
+    #     SonarCloud: 'SonarCloud'
+    #     organization: 'carpooling'
+    #     scannerMode: 'Other'
     - task: SonarCloudPrepare@1
       inputs:
         SonarCloud: 'SonarCloud'
         organization: 'carpooling'
-        scannerMode: 'Other'
+        scannerMode: 'MSBuild'
+        projectKey: 'ZhivkoDevOpsProjects_Carpooling'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
     - task: Gradle@2
       displayName: Gradle build
       inputs:
@@ -39,7 +49,6 @@ stages:
     #     monitorWhen: 'always'
     #     failOnIssues: false
     #     projectName: carpooling
-    - task: SonarCloudAnalyze@1
     - task: Docker@1
       inputs:
         containerregistrytype: 'Container Registry'
