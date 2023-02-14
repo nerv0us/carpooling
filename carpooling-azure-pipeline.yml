@@ -42,7 +42,7 @@ stages:
         scannerMode: 'CLI'
         configMode: 'manual'
         cliProjectKey: 'ZhivkoDevOpsProjects_Carpooling'
-        cliSources: '.'
+        cliSources: 'src/main/java/'
         extraProperties: |
           # Additional properties that will be passed to the scanner, 
           # Put one key=value per line, example:
