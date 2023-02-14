@@ -42,12 +42,13 @@ stages:
         scannerMode: 'CLI'
         configMode: 'manual'
         cliProjectKey: 'ZhivkoDevOpsProjects_Carpooling'
-        cliSources: 'src/main/java/'
+        # cliSources: 'src/main/java/'
+        cliSources: 'src/main/java/com/telerik/carpoolingapplication/models/'
         extraProperties: |
           # Additional properties that will be passed to the scanner, 
           # Put one key=value per line, example:
           # sonar.exclusions=**/*.bin
-          sonar.java.binaries= build/classes/java
+          sonar.java.binaries= build/classes/java/main/com/telerik/carpoolingapplication/models
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
