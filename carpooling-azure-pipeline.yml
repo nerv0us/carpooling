@@ -47,7 +47,7 @@ stages:
           # Additional properties that will be passed to the scanner, 
           # Put one key=value per line, example:
           # sonar.exclusions=**/*.bin
-          sonar.java.binaries=**/*.java
+          sonar.java.binaries= **/*.bin
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
