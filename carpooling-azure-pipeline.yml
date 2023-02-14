@@ -27,6 +27,14 @@ stages:
         publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'
+    # - task: SonarCloudPrepare@1
+    #   inputs:
+    #     SonarCloud: 'SonarCloud'
+    #     organization: 'carpooling'
+    #     scannerMode: 'CLI'
+    #     configMode: 'manual'
+    #     cliProjectKey: 'ZhivkoDevOpsProjects_Carpooling'
+    #     cliSources: '.'
     - task: SonarCloudPrepare@1
       inputs:
         SonarCloud: 'SonarCloud'
@@ -35,6 +43,11 @@ stages:
         configMode: 'manual'
         cliProjectKey: 'ZhivkoDevOpsProjects_Carpooling'
         cliSources: '.'
+        extraProperties: |
+          # Additional properties that will be passed to the scanner, 
+          # Put one key=value per line, example:
+          # sonar.exclusions=**/*.bin
+          sonar.java.binaries=build/classes
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
