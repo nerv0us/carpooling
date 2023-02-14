@@ -38,16 +38,29 @@ stages:
     - task: SonarCloudPrepare@1
       inputs:
         SonarCloud: 'SonarCloud'
-        organization: 'carpooling'
+        organization: 'carpooling-test'
         scannerMode: 'CLI'
         configMode: 'manual'
-        cliProjectKey: 'zhivkodevopsprojects_carpooling'
-        cliSources: 'src/main/java/com/telerik/carpoolingapplication/models/dto'
+        cliProjectKey: 'carpooling-test_carpooling'
+        cliSources: 'src/main/java'
         extraProperties: |
           # Additional properties that will be passed to the scanner, 
           # Put one key=value per line, example:
           # sonar.exclusions=**/*.bin
-          sonar.java.binaries= build/classes/java/main/com/telerik/carpoolingapplication/models/dto
+          sonar.java.binaries= build/classes
+    # - task: SonarCloudPrepare@1
+    #   inputs:
+    #     SonarCloud: 'SonarCloud'
+    #     organization: 'carpooling'
+    #     scannerMode: 'CLI'
+    #     configMode: 'manual'
+    #     cliProjectKey: 'zhivkodevopsprojects_carpooling'
+    #     cliSources: 'src/main/java/com/telerik/carpoolingapplication/models/dto'
+    #     extraProperties: |
+    #       # Additional properties that will be passed to the scanner, 
+    #       # Put one key=value per line, example:
+    #       # sonar.exclusions=**/*.bin
+    #       sonar.java.binaries= build/classes/java/main/com/telerik/carpoolingapplication/models/dto
     # - task: SonarCloudPrepare@1
     #   inputs:
     #     SonarCloud: 'SonarCloud'
