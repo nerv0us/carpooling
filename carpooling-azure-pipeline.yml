@@ -1,4 +1,4 @@
-# Build the project and run tests
+#Build the project and run tests
 trigger:
 - development
 
