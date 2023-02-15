@@ -19,7 +19,7 @@ spec:
       - name: docker-secrets
       containers:
       - name: carpooling
-        image: zhzhelev/carpooling:175
+        image: zhzhelev/carpooling:216
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
