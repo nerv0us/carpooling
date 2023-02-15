@@ -1,7 +1,8 @@
-# trigger:
-#   branches:
-#     include:
-#     - feature/*
+trigger:
+  branches:
+    exclude:
+    - development
+    - master
 pool:
   vmImage: ubuntu-latest
 stages:
