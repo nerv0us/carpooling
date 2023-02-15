@@ -12,8 +12,8 @@ stages:
   displayName: Scan
   jobs:  
   - job: Build
-    displayName: Buidl and push Docker image
-    steps:  
+    displayName: Build the application
+    steps:
 
     - task: Gradle@2
       displayName: Gradle build
@@ -27,14 +27,7 @@ stages:
         publishJUnitResults: true
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'build'
-    # - task: SonarCloudPrepare@1
-    #   inputs:
-    #     SonarCloud: 'SonarCloud'
-    #     organization: 'carpooling'
-    #     scannerMode: 'CLI'
-    #     configMode: 'manual'
-    #     cliProjectKey: 'ZhivkoDevOpsProjects_Carpooling'
-    #     cliSources: '.'
+
     - task: SonarCloudPrepare@1
       inputs:
         SonarCloud: 'SonarCloud'
@@ -44,41 +37,14 @@ stages:
         cliProjectKey: 'carpooling-test_carpooling'
         cliSources: 'src/main/java'
         extraProperties: |
-          # Additional properties that will be passed to the scanner, 
+          # Additional properties that will be passed to the scanner,
           # Put one key=value per line, example:
           # sonar.exclusions=**/*.bin
           sonar.java.binaries= build/classes
-    # - task: SonarCloudPrepare@1
-    #   inputs:
-    #     SonarCloud: 'SonarCloud'
-    #     organization: 'carpooling'
-    #     scannerMode: 'CLI'
-    #     configMode: 'manual'
-    #     cliProjectKey: 'zhivkodevopsprojects_carpooling'
-    #     cliSources: 'src/main/java/com/telerik/carpoolingapplication/models/dto'
-    #     extraProperties: |
-    #       # Additional properties that will be passed to the scanner, 
-    #       # Put one key=value per line, example:
-    #       # sonar.exclusions=**/*.bin
-    #       sonar.java.binaries= build/classes/java/main/com/telerik/carpoolingapplication/models/dto
-    # - task: SonarCloudPrepare@1
-    #   inputs:
-    #     SonarCloud: 'SonarCloud'
-    #     organization: 'carpooling'
-    #     scannerMode: 'CLI'
-    #     configMode: 'manual'
-    #     cliProjectKey: 'zhivkodevopsprojects_carpooling'
-    #     # cliSources: 'src/main/java/'
-    #     cliSources: 'src/main/java/com/telerik/carpoolingapplication/models/dto'
-    #     extraProperties: |
-    #       # Additional properties that will be passed to the scanner, 
-    #       # Put one key=value per line, example:
-    #       # sonar.exclusions=**/*.bin
-    #       sonar.java.binaries= build/classes/java/main/com/telerik/carpoolingapplication/models/dto
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
-        pollingTimeoutSec: '300'    
+        pollingTimeoutSec: '300'
     - task: SnykSecurityScan@1
       displayName: Scan for security vulnerabilities
       inputs:
@@ -87,19 +53,19 @@ stages:
         monitorWhen: 'always'
         failOnIssues: false
         projectName: carpooling
-    # - task: Docker@1
-    #   inputs:
-    #     containerregistrytype: 'Container Registry'
-    #     dockerRegistryEndpoint: 'Docker Reg'
-    #     command: 'Build an image'
-    #     dockerFile: '**/Dockerfile'
-    #     imageName: '$(ImageName)'
-    #     displayName: 'Build the Docker image'
-    # - task: Docker@1
-    #   inputs:
-    #     containerregistrytype: 'Container Registry'
-    #     dockerRegistryEndpoint: 'Docker Reg'
-    #     command: 'Push an image'
-    #     imageName: '$(ImageName)'
-    #     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    #     displayName: 'Push the Docker image to Dockerhub'
+    - task: Docker@1
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Reg'
+        command: 'Build an image'
+        dockerFile: '**/Dockerfile'
+        imageName: '$(ImageName)'
+        displayName: 'Build the Docker image'
+    - task: Docker@1
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Reg'
+        command: 'Push an image'
+        imageName: '$(ImageName)'
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        displayName: 'Push the Docker image to Dockerhub'
