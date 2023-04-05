@@ -4,8 +4,9 @@ metadata:
   name: carpooling-deployment
   labels:
     app: carpooling #key-value pair. Identifier which should be meaningful. Example "env" : "dev"
+  namespace: carpooling
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       app: carpooling
@@ -14,10 +15,12 @@ spec:
       labels:
         app: carpooling
     spec:
+      imagePullSecrets:
+      - name: docker-secrets
       containers:
       - name: carpooling
-        image: carpooling:1
-        imagePullPolicy: Never
+        image: zhzhelev/carpooling:233
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:   # Setting Enviornmental Variables
@@ -50,12 +53,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: carpooling-service
+  namespace: carpooling
 spec:
   selector:
     app: carpooling
-  type: LoadBalancer  
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30005
+      name: http

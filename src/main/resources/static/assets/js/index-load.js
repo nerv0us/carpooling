@@ -1,6 +1,6 @@
 function loadTopTenDrivers() {
     $.ajax({
-        url: `http://localhost:8080/api/users/top-ten-drivers`,
+        url: "http://localhost:8080/api/users/top-ten-drivers",
         method: 'GET',
         success: function (response) {
             $('#top-ten-drivers').html('');

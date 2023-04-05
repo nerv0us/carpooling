@@ -1,16 +1,10 @@
-#Build the project and run tests
-trigger:
-- development
-
-variables:
-  ImageName: 'zhzhelev/carpooling:$(Build.BuildId)'
-
+trigger: none
 pool:
   vmImage: ubuntu-latest
 stages:
 - stage: Build
   displayName: Scan
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build the application
     steps:
@@ -37,7 +31,7 @@ stages:
         cliProjectKey: 'carpooling-test_carpooling'
         cliSources: 'src/main/java'
         extraProperties: |
-          # Additional properties that will be passed to the scanner,
+          #Additional properties that will be passed to the scanner,
           # Put one key=value per line, example:
           # sonar.exclusions=**/*.bin
           sonar.java.binaries= build/classes
@@ -53,19 +47,3 @@ stages:
         monitorWhen: 'always'
         failOnIssues: false
         projectName: carpooling
-    - task: Docker@1
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Reg'
-        command: 'Build an image'
-        dockerFile: '**/Dockerfile'
-        imageName: '$(ImageName)'
-        displayName: 'Build the Docker image'
-    - task: Docker@1
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Reg'
-        command: 'Push an image'
-        imageName: '$(ImageName)'
-        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-        displayName: 'Push the Docker image to Dockerhub'
